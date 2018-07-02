@@ -79,9 +79,9 @@ public class SplitTimeCount {
 			new AtFileWriter(this.splitAsciiFileKn.get(index), GlobalProperty.sobekDelicateDemKn).textWriter("    ");
 
 			// save the split dem at this split folder
-			new AtFileWriter(this.splitAsciiFile.get(index), splitFolder + GlobalProperty.splitDemTempSaveName)
+			new AtFileWriter(this.splitAsciiFile.get(index), splitFolder + GlobalProperty.demTempSaveName)
 					.textWriter("    ");
-			new AtFileWriter(this.splitAsciiFileKn.get(index), splitFolder + GlobalProperty.splitDemTempSaveNameKn)
+			new AtFileWriter(this.splitAsciiFileKn.get(index), splitFolder + GlobalProperty.demTempSaveNameKn)
 					.textWriter("    ");
 
 			// run sobek model and calculate the time

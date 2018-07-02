@@ -24,6 +24,11 @@ public class DetectDem {
 	private ArrayList<String> splitTimeSpend = new ArrayList<String>();
 	private ArrayList<String[]> selections = new ArrayList<String[]>();
 
+	private double boundaryMinX;
+	private double boundaryMaxX;
+	private double boundaryMinY;
+	private double boundaryMaxY;
+
 	public DetectDem() throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
 		this.property = new AtFileReader(GlobalProperty.workSpace + GlobalProperty.propertyFileName).getJsonObject();
 	}
@@ -73,22 +78,22 @@ public class DetectDem {
 		new FileFunction().newFolder(GlobalProperty.mergeSaveFolder + this.splitModel);
 
 		for (int index = 0; index < selections.size(); index++) {
+
 			// get the selections collection
 			String[] sectionArray = selections.get(index);
 
 			// initialize the section dem, including the kn
-			String[][] outAscii = new AsciiBasicControl(
-					splitDemAdd + sectionArray[0] + GlobalProperty.splitDemTempSaveName).getAsciiFile();
+			String[][] outAscii = new AsciiBasicControl(splitDemAdd + sectionArray[0] + GlobalProperty.demTempSaveName)
+					.getAsciiFile();
 			String[][] outAsciiKn = new AsciiBasicControl(
-					splitDemAdd + sectionArray[0] + GlobalProperty.splitDemTempSaveNameKn).getAsciiFile();
+					splitDemAdd + sectionArray[0] + GlobalProperty.demTempSaveNameKn).getAsciiFile();
 
 			// merge the dem in collection, and output to the merge
 			for (int mergeIndex = 1; mergeIndex < sectionArray.length; mergeIndex++) {
 				outAscii = new AsciiMerge(outAscii,
-						splitDemAdd + sectionArray[mergeIndex] + GlobalProperty.splitDemTempSaveName).getMergedAscii();
+						splitDemAdd + sectionArray[mergeIndex] + GlobalProperty.demTempSaveName).getMergedAscii();
 				outAsciiKn = new AsciiMerge(outAsciiKn,
-						splitDemAdd + sectionArray[mergeIndex] + GlobalProperty.splitDemTempSaveNameKn)
-								.getMergedAscii();
+						splitDemAdd + sectionArray[mergeIndex] + GlobalProperty.demTempSaveNameKn).getMergedAscii();
 			}
 
 			// output the merged ascii file
@@ -102,9 +107,19 @@ public class DetectDem {
 		// get the list of the merge folder
 		String folderList[] = new File(GlobalProperty.mergeSaveFolder).list();
 		for (String folder : folderList) {
+
+			// get the revise boundary
 			AsciiBasicControl delicateAscii = new AsciiBasicControl(
 					GlobalProperty.mergeSaveFolder + folder + GlobalProperty.mergeDelicateDem);
+			getBufferBoundary(delicateAscii);
 
+			// write the rough dem to the merge folder
+			AsciiIntercept interceptRough = new AsciiIntercept(GlobalProperty.originalRough);
+			AsciiIntercept interceptRoughKn = new AsciiIntercept(GlobalProperty.originalRoughKn);
+			new AtFileWriter(interceptRough.getIntercept(boundaryMinX, boundaryMaxX, boundaryMinY, boundaryMaxY),
+					GlobalProperty.mergeSaveFolder + folder + GlobalProperty.demTempSaveName);
+			new AtFileWriter(interceptRoughKn.getIntercept(boundaryMinX, boundaryMaxX, boundaryMinY, boundaryMaxY),
+					GlobalProperty.mergeSaveFolder + folder + GlobalProperty.demTempSaveNameKn);
 		}
 
 	}
@@ -132,10 +147,10 @@ public class DetectDem {
 		double yLength = (splitMaxY - splitMinY) * ratio;
 
 		// get the output boundary
-		double boundaryMinX = splitMinX - xLength * 0.5;
-		double boundaryMaxX = splitMaxX + xLength * 0.5;
-		double boundaryMinY = splitMinY - yLength * 0.5;
-		double boundaryMaxY = splitMaxY + yLength * 0.5;
+		this.boundaryMinX = splitMinX - xLength * 0.5;
+		this.boundaryMaxX = splitMaxX + xLength * 0.5;
+		this.boundaryMinY = splitMinY - yLength * 0.5;
+		this.boundaryMaxY = splitMaxY + yLength * 0.5;
 
 		// revise the output boundary, to center the original total ascii
 		if (boundaryMinX < originalMinX) {
@@ -146,10 +161,6 @@ public class DetectDem {
 			boundaryMinY = originalMinY;
 			boundaryMaxY = boundaryMaxY + originalMinY - boundaryMinY;
 		}
-
-		AsciiIntercept interceptRough = new AsciiIntercept(GlobalProperty.originalRough);
-		AsciiIntercept interceptRoughKn = new AsciiIntercept(GlobalProperty.originalRoughKn);
-		new AtFileWriter(interceptRough.getIntercept(boundaryMinX, boundaryMaxX, boundaryMinY, boundaryMaxY) , GlobalProperty.mergeSaveFolder);
 
 	}
 

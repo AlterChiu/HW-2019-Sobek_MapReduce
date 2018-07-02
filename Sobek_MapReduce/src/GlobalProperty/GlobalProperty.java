@@ -81,8 +81,8 @@ public class GlobalProperty {
 	
 	//=================================================
 	//                                             temptSaveName
-	public static String splitDemTempSaveName = "\\temptLevelDem.asc";
-	public static String splitDemTempSaveNameKn = "\\temptLevelDemKn.asc";
+	public static String demTempSaveName = "\\temptLevelDem.asc";
+	public static String demTempSaveNameKn = "\\temptLevelDemKn.asc";
 	public static String mergeDelicateDem = "\\delicateDem.asc";
 	public static String mergerDelicateDemKn = "\\delicateDem(kn).asc";
 	public static String mergeRoughDem = "\\roughDem.asc";
