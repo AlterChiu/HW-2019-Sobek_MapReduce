@@ -1,17 +1,24 @@
 package Ascii.TimeControl;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSyntaxException;
 
 import SOBEK.Runtimes;
 import asciiFunction.AsciiBasicControl;
 import asciiFunction.AsciiMerge;
 import asciiFunction.AsciiSplit;
+import usualTool.AtCommonMath;
 import usualTool.AtFileReader;
 import usualTool.AtFileWriter;
 import GlobalProperty.GlobalProperty;
@@ -20,8 +27,8 @@ public class SplitTimeCount {
 
 	private ArrayList<String[][]> splitAsciiFile = null;
 	private ArrayList<String[][]> splitAsciiFileKn = null;
-	private String originalDemNullFile = null;
-	
+	private AsciiBasicControl temptAscii;
+	private String analysisPropertyKey;
 
 	// straight in default
 	private String saveOutFolderAdd = GlobalProperty.splitDelicateSaveFolder_Straight;
@@ -37,7 +44,7 @@ public class SplitTimeCount {
 		this.splitAsciiFileKn = new AsciiSplit(GlobalProperty.originalDelicateKn).horizontalSplit()
 				.getSplitAsciiByEqualCut(GlobalProperty.splitSize);
 		this.saveOutFolderAdd = GlobalProperty.splitDelicateSaveFolder_Horizontal;
-		this.originalDemNullFile = GlobalProperty.originalDelicateNull;
+		this.analysisPropertyKey = GlobalProperty.horizontalSplit;
 		startRuntimes();
 	}
 
@@ -47,32 +54,9 @@ public class SplitTimeCount {
 		this.splitAsciiFileKn = new AsciiSplit(GlobalProperty.originalDelicateKn).straightSplit()
 				.getSplitAsciiByEqualCut(GlobalProperty.splitSize);
 		this.saveOutFolderAdd = GlobalProperty.splitDelicateSaveFolder_Straight;
-		this.originalDemNullFile = GlobalProperty.originalDelicateNull;
+		this.analysisPropertyKey = GlobalProperty.straightSplit;
 		startRuntimes();
 	}
-
-	public void setRoughHorizantal() throws IOException {
-		this.splitAsciiFile = new AsciiSplit(GlobalProperty.originalRough).horizontalSplit()
-				.getSplitAsciiByEqualCut(GlobalProperty.splitSize);
-		this.splitAsciiFileKn = new AsciiSplit(GlobalProperty.originalRoughKn).horizontalSplit()
-				.getSplitAsciiByEqualCut(GlobalProperty.splitSize);
-		this.saveOutFolderAdd = GlobalProperty.splitRoughSaveFolder_Horizontal;
-		this.originalDemNullFile = GlobalProperty.originalRoughNull;
-		
-		startRuntimes();
-	}
-
-	public void setRoughStraight() throws IOException {
-		this.splitAsciiFile = new AsciiSplit(GlobalProperty.originalRough).straightSplit()
-				.getSplitAsciiByEqualCut(GlobalProperty.splitSize);
-		this.splitAsciiFileKn = new AsciiSplit(GlobalProperty.originalRoughKn).straightSplit()
-				.getSplitAsciiByEqualCut(GlobalProperty.splitSize);
-		this.saveOutFolderAdd = GlobalProperty.splitRoughSaveFolder_Straight;
-		this.originalDemNullFile = GlobalProperty.originalRoughNull;
-		startRuntimes();
-	}
-
-	// <==========================================================>
 
 	// <=====================>
 	// < start to cal >
@@ -82,55 +66,77 @@ public class SplitTimeCount {
 
 		// start split
 		// ==========================================================
-		for (int times = 0; times < GlobalProperty.splitSize; times++) {
-			
-			// dem property
-			AsciiBasicControl ascii = new AsciiBasicControl(this.splitAsciiFile.get(times));
-			TreeMap<String, String> asciiProperty = ascii.getProperty();
-			
-			new AtFileWriter(this.splitAsciiFile.get(times), GlobalProperty.sobekDelicateDem).textWriter("    ");
-			new AtFileWriter(this.splitAsciiFileKn.get(times), GlobalProperty.sobekDelicateDemKn).textWriter("    ");
+		for (int index = 0; index < GlobalProperty.splitSize; index++) {
+			String splitFolder = saveOutFolderAdd + index + "\\";
+
+			// if the property file of this split dem isn't exit , create a new one
+			if (!new File(splitFolder + GlobalProperty.propertyFileName).exists()) {
+				propertyCreater(index);
+			}
+
+			// change the sobek operation dem to the split dem
+			new AtFileWriter(this.splitAsciiFile.get(index), GlobalProperty.sobekDelicateDem).textWriter("    ");
+			new AtFileWriter(this.splitAsciiFileKn.get(index), GlobalProperty.sobekDelicateDemKn).textWriter("    ");
+
+			// save the split dem at this split folder
+			new AtFileWriter(this.splitAsciiFile.get(index), splitFolder + GlobalProperty.splitDemTempSaveName)
+					.textWriter("    ");
+			new AtFileWriter(this.splitAsciiFileKn.get(index), splitFolder + GlobalProperty.splitDemTempSaveNameKn)
+					.textWriter("    ");
 
 			// run sobek model and calculate the time
 			long startTime = System.currentTimeMillis();
 			new Runtimes();
 			long endTime = System.currentTimeMillis();
-			System.out.println(endTime - startTime);
 
-			// Adding some property to outPutFile
-			JsonObject json;
-			
-			// if the file is exist
-			try {
-				json = new AtFileReader(saveOutFolderAdd + times + "\\" + GlobalProperty.sobekResultPropertyFileName)
-						.getJsonObject();
-				json.get("spendTime").getAsJsonArray().add(new JsonPrimitive((endTime - startTime) + ""));
-				new AtFileWriter(this.splitAsciiFile.get(times), saveOutFolderAdd + times + "\\" + GlobalProperty.splitDemTempSaveName)
-				.textWriter("    ");
-				
-				
-			// if the file is't exist
-			} catch (Exception e) {
-				json = new JsonObject();
-				json.addProperty("maxX", asciiProperty.get("topX"));
-				json.addProperty("maxY", asciiProperty.get("topY"));
-				json.addProperty("minX", asciiProperty.get("bottomX"));
-				json.addProperty("minY", asciiProperty.get("bottomT"));
-				json.addProperty("cellSize", asciiProperty.get("cellSize"));
-				
-				JsonArray jsonArray = new JsonArray();
-				jsonArray.add(new JsonPrimitive((endTime - startTime) + ""));
-				json.add("spendTime", jsonArray);
+			// adding the spend time to property file
+			JsonObject json = new AtFileReader(splitFolder + GlobalProperty.propertyFileName).getJsonObject();
+			json.get("spendTime").getAsJsonArray().add(new JsonParser().parse(endTime - startTime + ""));
+			new AtFileWriter(json, splitFolder + GlobalProperty.propertyFileName).textWriter("");
 
-				new AtFileWriter(this.splitAsciiFile.get(times), saveOutFolderAdd + times + "\\" + GlobalProperty.splitDemTempSaveName)
-						.textWriter("    ");
-			}
-			
-			new AtFileWriter(json, saveOutFolderAdd + times + "\\" + GlobalProperty.sobekResultPropertyFileName).textWriter(" ");
-
+			// adding the average of spend time to the analysis property file
+			propertyAnalysis(splitFolder);
 		}
 	}
 
-	// <================================================================>
+	private void propertyAnalysis(String splitFolder)
+			throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
+		List<Double> spendTimeList = new ArrayList<Double>();
 
+		// get the analysis property file
+		String analysisFile = GlobalProperty.workSpace + GlobalProperty.propertyFileName;
+		JsonObject analysisJson = new AtFileReader(analysisFile).getJsonObject();
+		JsonArray analysisArray = analysisJson.get(analysisPropertyKey).getAsJsonArray();
+
+		// get the split property file
+		JsonObject splitJson = new AtFileReader(splitFolder + GlobalProperty.propertyFileName).getJsonObject();
+
+		// get the average of the spend time in split property
+		splitJson.get("spendTime").getAsJsonArray().forEach(e -> spendTimeList.add(e.getAsDouble()));
+		double mean = new AtCommonMath(spendTimeList).getMean();
+
+		// insert the average spend time to the analysis property file
+		analysisArray.add(new JsonParser().parse(mean + ""));
+		analysisJson.add(analysisPropertyKey, analysisArray);
+		new AtFileWriter(analysisJson, analysisFile).textWriter("");
+	}
+
+	private void propertyCreater(int index) throws IOException {
+		// dem property
+		this.temptAscii = new AsciiBasicControl(this.splitAsciiFile.get(index));
+		TreeMap<String, String> asciiProperty = this.temptAscii.getProperty();
+
+		// create new jsonProperty to the split dem folder
+		JsonObject json = new JsonObject();
+		json.addProperty("maxX", asciiProperty.get("topX"));
+		json.addProperty("maxY", asciiProperty.get("topY"));
+		json.addProperty("minX", asciiProperty.get("bottomX"));
+		json.addProperty("minY", asciiProperty.get("bottomT"));
+		json.addProperty("cellSize", asciiProperty.get("cellSize"));
+
+		JsonArray jsonArray = new JsonArray();
+		json.add("spendTime", jsonArray);
+
+		new AtFileWriter(json, saveOutFolderAdd + index + "\\" + GlobalProperty.propertyFileName).textWriter("");
+	}
 }

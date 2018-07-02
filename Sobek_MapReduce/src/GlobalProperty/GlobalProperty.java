@@ -12,73 +12,96 @@ public class GlobalProperty {
 	public static double totalAllowTime = 1*3600*1000;
 	
 	
+	// 											userSetting
+	//=================================================
+	public static String workSpace = "S:\\HomeWork\\mapReduce\\";
+	public static String sobekWorkSpace = "C:\\Sobek213\\";
+	
+	
+	
+	//                                            timeCount Property
+	//=================================================
+	public static String propertyFileName = "\\property.json";
+	public static String delicateTotal = "delicateTotal";
+	public static String roughTotal = "roughTotal";
+	public static String straightSplit = "straightSplit";
+	public static String horizontalSplit = "horizontalSplit";
+	
+	
+	
+	
+	
 	//											SOBEK Runtimes folder
 	//=======================================================
-	public static String sobekRuntimesFolder = "C:\\Sobek213";
+	public static String sobekRuntimesFolder = "C:\\Sobek213";//--------user setting
 	public static String sobekRuntimesForecastBat = sobekRuntimesFolder + "\\Sobek_Forecast.bat";
 	public static  String sobekResultFolder = sobekRuntimesFolder + "Output\\";
-	public static String sobekResultPropertyFileName = "\\unitProperty.txt";
+
 	
 	
 	
 
 	//
-	//                                          Original DELICATE
+	//                                          Original DELICATE    user setting
 	// original demFile ==============> level and kn including
-	public static  String originalDelicate = "S:\\HomeWork\\mapReduce\\OriginalDEM\\ZoneU1_20m.asc";
-	public static  String originalDelicateKn = "S:\\HomeWork\\mapReduce\\OriginalDEM\\ZoneU1_20m(kn).asc";
-	public static  String originalDelicateNull = "S:\\HomeWork\\mapReduce\\OriginalDEM\\ZoneU1_20mNULL.asc";
+	public static  String originalDelicate = workSpace + "OriginalDEM\\ZoneU1_20m.asc";
+	public static  String originalDelicateKn = workSpace + "OriginalDEM\\ZoneU1_20m(kn).asc";
+	public static  String originalDelicateNull = workSpace + "OriginalDEM\\ZoneU1_20mNULL.asc";
 	
 	
 	//
-	//                                        Original  ROUGH
+	//                                        Original  ROUGH       user setting
 	// original demFile ==============> level and kn including
-	public static  String originalRough = "S:\\HomeWork\\mapReduce\\OriginalDEM\\ZoneU1_40m.asc";
-	public static  String originalRoughKn = "S:\\HomeWork\\mapReduce\\OriginalDEM\\ZoneU1_40m(kn).asc";
-	public static  String originalRoughNull = "S:\\HomeWork\\mapReduce\\OriginalDEM\\ZoneU1_40mNULL.asc";
+	public static  String originalRough = workSpace + "OriginalDEM\\ZoneU1_40m.asc";
+	public static  String originalRoughKn = workSpace + "OriginalDEM\\ZoneU1_40m(kn).asc";
+	public static  String originalRoughNull = workSpace + "OriginalDEM\\ZoneU1_40mNULL.asc";
 	
 	
 
 	// SOBEK model demFile Folder 
-	public static  String sobekDelicateDem = "C:\\code\\javaWorkspace\\Fews\\SOBEK_Ascii\\Active12.lit\\DEM\\HomeWork\\mapReduce\\firstDem.asc";
-	public static  String sobekDelicateDemKn = "C:\\code\\javaWorkspace\\Fews\\SOBEK_Ascii\\Active12.lit\\DEM\\HomeWork\\mapReduce\\firstDem(kn).asc";
-	public static  String sobekRoughDem = "C:\\code\\javaWorkspace\\Fews\\SOBEK_Ascii\\Active12.lit\\DEM\\HomeWork\\mapReduce\\secondDem.asc";
-	public static  String sobekRoughDemKn = "C:\\code\\javaWorkspace\\Fews\\SOBEK_Ascii\\Active12.lit\\DEM\\HomeWork\\mapReduce\\secondDem(kn).asc";
+	public static  String sobekDelicateDem = sobekWorkSpace + "Active12.lit\\DEM\\HomeWork\\mapReduce\\firstDem.asc";
+	public static  String sobekDelicateDemKn =  sobekWorkSpace + "Active12.lit\\DEM\\HomeWork\\mapReduce\\firstDem(kn).asc";
+	public static  String sobekRoughDem = sobekWorkSpace + "Active12.lit\\DEM\\HomeWork\\mapReduce\\secondDem.asc";
+	public static  String sobekRoughDemKn = sobekWorkSpace + "Active12.lit\\DEM\\HomeWork\\mapReduce\\secondDem(kn).asc";
 	
 	
 	
 	
 	// 
 	//                                      SAVE Folder
-	public static String saveFolder = "S:\\HomeWork\\mapReduce\\";
+	//================================================
+	//                                               total    
+	public static  String totalFolder = workSpace + "total\\";
 	//================================================
 	//                                               total    Delicate
-	public static  String totalDelicateSaveFolder = saveFolder + "total\\delicate\\";
+	public static  String totalDelicateSaveFolder = totalFolder + "\\delicate\\";
 	//================================================
 	//                                               total    Rough
-	public static String totalRoughSaveFolder = saveFolder + "total\\rough\\";
+	public static String totalRoughSaveFolder = totalFolder + "\\rough\\";
 	
 	//=================================================
 	//                                             temptSaveName
 	public static String splitDemTempSaveName = "\\temptLevelDem.asc";
+	public static String splitDemTempSaveNameKn = "\\temptLevelDemKn.asc";
+	public static String mergeDelicateDem = "\\delicateDem.asc";
+	public static String mergerDelicateDemKn = "\\delicateDem(kn).asc";
+	public static String mergeRoughDem = "\\roughDem.asc";
+	public static String mergeRoughDemKn = "\\roughDem(kn).asc";
 	
 	//================================================
 	//                                               split   Delicate
-	public static  String  splitDelicateSaveFolder_Horizontal = saveFolder + "split\\horizontal\\delicate\\";
-	public static  String  splitDelicateSaveFolder_Straight = saveFolder + "split\\straight\\delicate\\";
-	
-	//================================================
-	//                                             	split   Rough
-	public static  String  splitRoughSaveFolder_Horizontal =  saveFolder + "split\\horizontal\\rough\\";
-	public static  String  splitRoughSaveFolder_Straight =  saveFolder + "split\\straight\\rough\\";	
-	
+	public static String splitDelicateSaveFolder = workSpace + "split\\";
+	public static  String  splitDelicateSaveFolder_Horizontal = splitDelicateSaveFolder + "horizontal\\";
+	public static  String  splitDelicateSaveFolder_Straight = splitDelicateSaveFolder + "straight\\";
+
 	//================================================
 	//                                                    split analysis
-	public static String splitAnalysis_Horizontal_Delicate = saveFolder + "split\\Delicate_Horizontal_Analysis.txt";
-	public static String splitAnalysis_Horizontal_Rough = saveFolder + "split\\Rough_Horizontal_Analysis.txt";
-	public static String splitAnalysis_Straight_Delicate = saveFolder + "split\\Delicate_Straight_Analysis.txt";
-	public static String splitAnalysis_Straight_Rough = saveFolder + "split\\Rough_Straight_Analysis.txt";
+	public static String splitAnalysis_Horizontal_Delicate = workSpace + "split\\Delicate_Horizontal_Analysis.txt";
+	public static String splitAnalysis_Straight_Delicate = workSpace + "split\\Delicate_Straight_Analysis.txt";
 	
+	//===============================================
+	//														merge  folder
+	public static String mergeSaveFolder = workSpace + "merge\\";
 	
 	
 	//===============================================
@@ -89,9 +112,9 @@ public class GlobalProperty {
 	
 	
 	
-//	===============================
-//	==============TEST==============
-//	===============================
+	//	===============================
+	//	==============TEST==============
+	//	===============================
 	public static String testFolder = "S:\\HomeWork\\mapReduce\\testFolder\\";
 	
 	

@@ -15,87 +15,72 @@ import usualTool.AtFileWriter;
 import usualTool.FileFunction;
 
 public class TotalTimeCount {
+	private String originalDem;
+	private String originalKnDem;
+
+	private String sobekResultFolder;
+	private String saveFolder;
+
+	private String sobekOperateDem;
+	private String sobelOperateKnDem;
+
+	private String jsonKeyName;
 
 	public void RoughTotalTimeCount() throws IOException {
+		this.originalDem = GlobalProperty.originalRough;
+		this.originalKnDem = GlobalProperty.originalRoughKn;
 
-		String originalDem = GlobalProperty.originalRough;
-		String originalKnDem = GlobalProperty.originalRoughKn;
+		this.sobekResultFolder = GlobalProperty.sobekResultFolder;
+		this.saveFolder = GlobalProperty.totalRoughSaveFolder;
 
-		String sobekResultFolder = GlobalProperty.sobekResultFolder;
-		String saveFolder = GlobalProperty.totalRoughSaveFolder;
-
-		String sobekOperateDem = GlobalProperty.sobekRoughDem;
-		String sobelOperateKnDem = GlobalProperty.sobekRoughDemKn;
-
-		FileFunction ff = new FileFunction();
-
-		ff.copyFile(originalDem, sobekOperateDem);
-		ff.copyFile(originalKnDem, sobelOperateKnDem);
-
-		long startTime = System.currentTimeMillis();
-		new Runtimes();
-		long endTime = System.currentTimeMillis();
-		System.out.println(endTime - startTime);
-
+		this.sobekOperateDem = GlobalProperty.sobekRoughDem;
+		this.sobelOperateKnDem = GlobalProperty.sobekRoughDemKn;
 		
-		//if the file is exist
-		//===========================================
-		try {
-			ArrayList<String> spendTimeList = new ArrayList<String>(
-					Arrays.asList(new AtFileReader(saveFolder + GlobalProperty.sobekResultPropertyFileName).getContain()));
-			
-			JsonArray jsonArray = new JsonArray();
-			spendTimeList.forEach(element -> jsonArray.add(new JsonPrimitive(element)));
-			jsonArray.add(new JsonPrimitive((endTime - startTime) + ""));
-			JsonObject jsonObject = new JsonObject();
-			jsonObject.add("spendTime", jsonArray); 
-			
-			ff.moveFolder(sobekResultFolder, saveFolder);
-			new AtFileWriter(jsonObject ,  saveFolder + GlobalProperty.sobekResultPropertyFileName).textWriter("");
-			
-			//if the file isn't exist
-			//===========================================
-		} catch (Exception e) {
-			JsonArray jsonArray = new JsonArray();
-			jsonArray.add(new JsonPrimitive((endTime - startTime) + ""));
-			JsonObject jsonObject = new JsonObject();
-			jsonObject.add("spendTime", jsonArray); 
-			
-			ff.moveFolder(sobekResultFolder, saveFolder);
-			new AtFileWriter(jsonObject ,  saveFolder + GlobalProperty.sobekResultPropertyFileName).textWriter("");
-		}
+		this.sobekResultFolder = GlobalProperty.sobekResultFolder;
+		this.saveFolder = GlobalProperty.totalRoughSaveFolder;
 		
-
-		new AtFileWriter(String.valueOf(endTime - startTime), saveFolder + GlobalProperty.sobekResultPropertyFileName)
-				.textWriter("  ");
-		;
+		this.jsonKeyName = GlobalProperty.roughTotal;
+		
+		startRuntimes();
 	}
 
 	public void DelicateTotalTimeCount() throws IOException {
 
-		String originalDem = GlobalProperty.originalDelicate;
-		String originalKnDem = GlobalProperty.originalDelicateKn;
+		this.originalDem = GlobalProperty.originalDelicate;
+		this.originalKnDem = GlobalProperty.originalDelicateKn;
 
-		String sobekResultFolder = GlobalProperty.sobekResultFolder;
-		String saveFolder = GlobalProperty.totalDelicateSaveFolder;
+		this.sobekResultFolder = GlobalProperty.sobekResultFolder;
+		this.saveFolder = GlobalProperty.totalDelicateSaveFolder;
 
-		String sobekOperateDem = GlobalProperty.sobekDelicateDem;
-		String sobelOperateKnDem = GlobalProperty.sobekDelicateDemKn;
+		this.sobekOperateDem = GlobalProperty.sobekDelicateDem;
+		this.sobelOperateKnDem = GlobalProperty.sobekDelicateDemKn;
+		
+		this.sobekResultFolder = GlobalProperty.sobekResultFolder;
+		this.saveFolder = GlobalProperty.totalDelicateSaveFolder;
 
+		this.jsonKeyName = GlobalProperty.delicateTotal;
+		
+		startRuntimes();
+	}
+
+	private void startRuntimes() throws IOException {
+		// copy file from the original folder to sobek operation folder
 		FileFunction ff = new FileFunction();
+		ff.copyFile(originalDem, sobekOperateDem);
+		ff.copyFile(originalKnDem, sobelOperateKnDem);
 
-		new AtFileWriter(new AtFileReader(originalDem).getContain(), sobekOperateDem).textWriter("");
-		new AtFileWriter(new AtFileReader(originalKnDem).getContain(), sobelOperateKnDem).textWriter("");
-
+		// run sobek model
 		long startTime = System.currentTimeMillis();
 		new Runtimes();
 		long endTime = System.currentTimeMillis();
-		System.out.println(endTime - startTime);
 
-		ff.moveFolder(sobekResultFolder, saveFolder);
-
-		new AtFileWriter(String.valueOf(endTime - startTime), saveFolder + GlobalProperty.sobekResultPropertyFileName)
-				.textWriter("  ");
+		// output the property file
+		JsonObject readJson = new AtFileReader(GlobalProperty.workSpace + GlobalProperty.propertyFileName)
+				.getJsonObject();
+		readJson.addProperty(this.jsonKeyName, endTime - startTime);
+		
+		// copy the result file to folder
+		ff.copyFolder(this.sobekResultFolder, this.saveFolder);
 	}
 
 }

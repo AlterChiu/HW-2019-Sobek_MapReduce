@@ -18,18 +18,13 @@ import usualTool.AtFileReader;
 
 public class ComposeUnitAscii {
 
-	private static ComposeProperty compose = new ComposeProperty();
-
 
 	// merge model setting
 	// ===================================================
 	public ComposeUnitAscii setStraightMerge()
 			throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
 		compose.setDelicateFolder(GlobalProperty.splitDelicateSaveFolder_Straight);
-		compose.setRoughFolder(GlobalProperty.splitRoughSaveFolder_Straight);
-
 		compose.setDelicateAnalysisProperty(GlobalProperty.splitAnalysis_Straight_Delicate);
-		compose.setRoughAnalysisProperty(GlobalProperty.splitAnalysis_Straight_Rough);
 
 		return this;
 	}
@@ -42,6 +37,7 @@ public class ComposeUnitAscii {
 		compose.setDelicateAnalysisProperty(GlobalProperty.splitAnalysis_Horizontal_Delicate);
 		compose.setRoughAnalysisProperty(GlobalProperty.splitAnalysis_Horizontal_Rough);
 
+		
 		return this;
 	}
 
@@ -71,6 +67,7 @@ public class ComposeUnitAscii {
 
 	}
 
+	// 					Get the index of start and end in Merge zone (Delicate)
 	//===================================================================
 	private ArrayList<Integer[]> getDelicateMergeZoneLimit(double splitUnitTime) {
 		double temptUnitTime = 0;
@@ -92,6 +89,8 @@ public class ComposeUnitAscii {
 		return mergeZone;
 	}
 
+	
+	//													Get the index of start and end in Merge zone (Rough)
 	//=======================================================================
 	private ArrayList<Integer[]> getBufferLimit(int start, int end, double spendTime) {
 		BufferDem buffer = new BufferDem(compose);
