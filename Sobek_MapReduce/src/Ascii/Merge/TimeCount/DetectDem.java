@@ -23,6 +23,7 @@ public class DetectDem {
 	private String splitModel;
 	private ArrayList<String> splitTimeSpend = new ArrayList<String>();
 	private ArrayList<String[]> selections = new ArrayList<String[]>();
+	private String saveFolder;
 
 	private double boundaryMinX;
 	private double boundaryMaxX;
@@ -73,7 +74,7 @@ public class DetectDem {
 		String splitDemAdd = GlobalProperty.splitDelicateSaveFolder + this.splitModel + "\\";
 
 		// clean the save folder
-		String saveFolder = GlobalProperty.mergeSaveFolder + this.splitModel + "\\";
+		this.saveFolder = GlobalProperty.mergeSaveFolder + this.splitModel + "\\";
 		new FileFunction().delFolder(GlobalProperty.mergeSaveFolder + this.splitModel);
 		new FileFunction().newFolder(GlobalProperty.mergeSaveFolder + this.splitModel);
 
@@ -117,9 +118,9 @@ public class DetectDem {
 			AsciiIntercept interceptRough = new AsciiIntercept(GlobalProperty.originalRough);
 			AsciiIntercept interceptRoughKn = new AsciiIntercept(GlobalProperty.originalRoughKn);
 			new AtFileWriter(interceptRough.getIntercept(boundaryMinX, boundaryMaxX, boundaryMinY, boundaryMaxY),
-					GlobalProperty.mergeSaveFolder + folder + GlobalProperty.demTempSaveName);
+					this.saveFolder + folder + GlobalProperty.demTempSaveName);
 			new AtFileWriter(interceptRoughKn.getIntercept(boundaryMinX, boundaryMaxX, boundaryMinY, boundaryMaxY),
-					GlobalProperty.mergeSaveFolder + folder + GlobalProperty.demTempSaveNameKn);
+					this.saveFolder + folder + GlobalProperty.demTempSaveNameKn);
 		}
 
 	}
