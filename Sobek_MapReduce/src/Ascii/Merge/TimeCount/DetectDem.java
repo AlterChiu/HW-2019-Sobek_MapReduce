@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
@@ -11,6 +12,7 @@ import com.google.gson.JsonSyntaxException;
 
 import GlobalProperty.GlobalProperty;
 import asciiFunction.AsciiBasicControl;
+import asciiFunction.AsciiIntercept;
 import asciiFunction.AsciiMerge;
 import usualTool.AtFileReader;
 import usualTool.AtFileWriter;
@@ -97,18 +99,57 @@ public class DetectDem {
 	}
 
 	private void createRoughDem() throws IOException {
-		// get the ratio of spend time between delicate one and rough one
-		// rough / delicate (spend time)
-		double ratio = property.get(GlobalProperty.roughTotal).getAsDouble()
-				/ property.get(GlobalProperty.delicateTotal).getAsDouble();
-
 		// get the list of the merge folder
 		String folderList[] = new File(GlobalProperty.mergeSaveFolder).list();
 		for (String folder : folderList) {
 			AsciiBasicControl delicateAscii = new AsciiBasicControl(
 					GlobalProperty.mergeSaveFolder + folder + GlobalProperty.mergeDelicateDem);
-			
+
 		}
+
+	}
+
+	private void getBufferBoundary(AsciiBasicControl splitAscii) throws IOException {
+		Map<String, String> originalAsciiProperty = new AsciiBasicControl(GlobalProperty.originalDelicate)
+				.getProperty();
+		double originalMinX = Double.parseDouble(originalAsciiProperty.get("bottomX"));
+		double originalMinY = Double.parseDouble(originalAsciiProperty.get("bottomY"));
+
+		// get the ratio of spend time between delicate one and rough one
+		// rough / delicate (spend time)
+		double ratio = property.get(GlobalProperty.roughTotal).getAsDouble()
+				/ property.get(GlobalProperty.delicateTotal).getAsDouble();
+
+		// get the original boundary
+		Map<String, String> asciiProperty = splitAscii.getProperty();
+		double splitMinX = Double.parseDouble(asciiProperty.get("bottomX"));
+		double splitMaxX = Double.parseDouble(asciiProperty.get("topX"));
+		double splitMaxY = Double.parseDouble(asciiProperty.get("topY"));
+		double splitMinY = Double.parseDouble(asciiProperty.get("bottomY"));
+
+		// get the length should be extend
+		double xLength = (splitMaxX - splitMinX) * ratio;
+		double yLength = (splitMaxY - splitMinY) * ratio;
+
+		// get the output boundary
+		double boundaryMinX = splitMinX - xLength * 0.5;
+		double boundaryMaxX = splitMaxX + xLength * 0.5;
+		double boundaryMinY = splitMinY - yLength * 0.5;
+		double boundaryMaxY = splitMaxY + yLength * 0.5;
+
+		// revise the output boundary, to center the original total ascii
+		if (boundaryMinX < originalMinX) {
+			boundaryMinX = originalMinX;
+			boundaryMaxX = boundaryMaxX + originalMinX - boundaryMinX;
+		}
+		if (boundaryMinY < originalMinY) {
+			boundaryMinY = originalMinY;
+			boundaryMaxY = boundaryMaxY + originalMinY - boundaryMinY;
+		}
+
+		AsciiIntercept interceptRough = new AsciiIntercept(GlobalProperty.originalRough);
+		AsciiIntercept interceptRoughKn = new AsciiIntercept(GlobalProperty.originalRoughKn);
+		new AtFileWriter(interceptRough.getIntercept(boundaryMinX, boundaryMaxX, boundaryMinY, boundaryMaxY) , GlobalProperty.mergeSaveFolder);
 
 	}
 
