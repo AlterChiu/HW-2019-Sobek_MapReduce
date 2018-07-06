@@ -6,26 +6,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 import GlobalProperty.GlobalProperty;
+import usualTool.AtFileWriter;
 
 public class Runtimes {
 
-	public Runtimes() throws IOException {
+	public Runtimes(String sobekRuntimesForecastBat) throws IOException {
 
 		// run the sobek modle
 		// and the model.exe should be under this index
+
+		// bat file creater
+		String batFile = ("sbkBatch.exe sbkbatch.ini /batch ");
+		batFile = batFile + sobekRuntimesForecastBat + "\r\nexit";
+		new AtFileWriter(batFile, GlobalProperty.sobekRuntimesBatFile).textWriter("");
+		
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		List<String> command = new ArrayList<String>();
 		command.add("cmd");
 		command.add("/c");
 		command.add("start");
 		command.add("/wait");
-//		command.add("sbkbatch.ini");
-//		command.add("/batch");
-		command.add(GlobalProperty.sobekRuntimesForecastBat);
-	
+		command.add(GlobalProperty.sobekRuntimesBatFile);
+		command.add("exit");
+
 		ProcessBuilder builder = new ProcessBuilder();
-		builder.directory(new File(GlobalProperty.sobekRuntimesFolder));
-		builder.command(command.parallelStream().toArray(String[]::new));
-		builder.start();
+		builder.directory(new File(GlobalProperty.sobekWorkSpace));
+		builder.command(command);
+		Process process = builder.start();
+		try {
+			process.waitFor();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 }
