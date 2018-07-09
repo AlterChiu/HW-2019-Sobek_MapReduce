@@ -32,7 +32,7 @@ public class SplitTimeCount {
 	private String analysisPropertyKey;
 
 	// straight in default
-	private String saveOutFolderAdd = GlobalProperty.splitDelicateSaveFolder_Straight;
+	private String saveOutFolderAdd = GlobalProperty.splitSaveFolder_Straight;
 
 	//
 	// <=====================>
@@ -44,7 +44,7 @@ public class SplitTimeCount {
 				.getSplitAsciiByEqualSizeBuffer(GlobalProperty.splitSize);
 		this.splitAsciiFileKn = new AsciiSplit(GlobalProperty.originalDelicateKn).horizontalSplit()
 				.getSplitAsciiByEqualSizeBuffer(GlobalProperty.splitSize);
-		this.saveOutFolderAdd = GlobalProperty.splitDelicateSaveFolder_Horizontal;
+		this.saveOutFolderAdd = GlobalProperty.splitSaveFolder_Horizontal;
 		this.analysisPropertyKey = GlobalProperty.horizontalSplit;
 		startRuntimes();
 	}
@@ -54,7 +54,7 @@ public class SplitTimeCount {
 				.getSplitAsciiByEqualSizeBuffer(GlobalProperty.splitSize);
 		this.splitAsciiFileKn = new AsciiSplit(GlobalProperty.originalDelicateKn).straightSplit()
 				.getSplitAsciiByEqualSizeBuffer(GlobalProperty.splitSize);
-		this.saveOutFolderAdd = GlobalProperty.splitDelicateSaveFolder_Straight;
+		this.saveOutFolderAdd = GlobalProperty.splitSaveFolder_Straight;
 		this.analysisPropertyKey = GlobalProperty.straightSplit;
 		startRuntimes();
 	}

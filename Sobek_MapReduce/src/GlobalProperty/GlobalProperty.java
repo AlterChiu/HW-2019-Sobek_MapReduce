@@ -79,9 +79,9 @@ public class GlobalProperty {
 
 	// ================================================
 	// split Delicate
-	public static String splitDelicateSaveFolder = workSpace + "\\split\\";
-	public static String splitDelicateSaveFolder_Horizontal = splitDelicateSaveFolder + "\\horizontal\\";
-	public static String splitDelicateSaveFolder_Straight = splitDelicateSaveFolder + "\\straight\\";
+	public static String splitSaveFolder = workSpace + "\\split\\";
+	public static String splitSaveFolder_Horizontal = splitSaveFolder + "\\horizontal\\";
+	public static String splitSaveFolder_Straight = splitSaveFolder + "\\straight\\";
 
 	// ================================================
 	// split analysis

@@ -1,4 +1,4 @@
-package Ascii.Merge.TimeCount;
+package Ascii.Merge.TimeControl;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,7 +34,7 @@ public class DetermineMergeDem {
 	}
 
 	public void setStraighSplit() throws IOException {
-		this.workFolder = GlobalProperty.splitDelicateSaveFolder_Straight;
+		this.workFolder = GlobalProperty.splitSaveFolder_Straight;
 		this.splitType = GlobalProperty.straightSplit;
 
 		// determine the section by the maximum time
@@ -42,7 +42,7 @@ public class DetermineMergeDem {
 	}
 
 	public void setHorizontalSplit() throws IOException {
-		this.workFolder = GlobalProperty.splitDelicateSaveFolder_Horizontal;
+		this.workFolder = GlobalProperty.splitSaveFolder_Horizontal;
 		this.splitType = GlobalProperty.horizontalSplit;
 
 		// determine the section by the maximum time
