@@ -19,13 +19,6 @@ public class Runtimes {
 		String batFile = ("sbkBatch.exe sbkbatch.ini /batch ");
 		batFile = batFile + sobekRuntimesForecastBat + "\r\nexit";
 		new AtFileWriter(batFile, GlobalProperty.sobekRuntimesBatFile).textWriter("");
-		
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 
 		List<String> command = new ArrayList<String>();
 		command.add("cmd");

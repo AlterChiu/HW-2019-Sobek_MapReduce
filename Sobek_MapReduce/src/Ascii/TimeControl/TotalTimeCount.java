@@ -1,6 +1,9 @@
 package Ascii.TimeControl;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -43,26 +46,20 @@ public class TotalTimeCount {
 		FileFunction ff = new FileFunction();
 		ff.copyFile(GlobalProperty.originalDelicate, GlobalProperty.sobekDelicateDem);
 		ff.copyFile(GlobalProperty.originalDelicateKn, GlobalProperty.sobekDelicateDemKn);
-
 		ff.copyFile(GlobalProperty.originalRough, GlobalProperty.sobekRoughDem);
 		ff.copyFile(GlobalProperty.originalRoughKn, GlobalProperty.sobekRoughDemKn);
 		
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 		// run sobek model
 		long startTime = System.currentTimeMillis();
 		new Runtimes(sobekRuntimesForecastBat);
 		long endTime = System.currentTimeMillis();
+		System.out.println(endTime - startTime);
 
 		// output the property file
 		JsonObject readJson = new AtFileReader(GlobalProperty.workSpace + GlobalProperty.propertyFileName)
 				.getJsonObject();
 		readJson.addProperty(this.jsonKeyName, endTime - startTime);
+		new AtFileWriter(readJson , GlobalProperty.workSpace + GlobalProperty.propertyFileName).textWriter("");
 
 		// copy the result file to folder
 		ff.copyFolder(this.sobekResultFolder, this.saveFolder);

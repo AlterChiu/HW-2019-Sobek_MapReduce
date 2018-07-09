@@ -8,6 +8,7 @@ import java.util.List;
 import GlobalProperty.GlobalProperty;
 import SOBEK.Runtimes;
 import asciiFunction.AsciiMerge;
+import asciiFunction.AsciiSplit;
 import main.InitializeFolder;
 import usualTool.AtFileWriter;
 
@@ -15,28 +16,15 @@ public class testMain {
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-//	
+		//
+		String fileAdd = "S:\\HomeWork\\mapReduce\\OriginalDEM\\ZoneU1_20m.asc";
+		String saveAdd = "S:\\HomeWork\\mapReduce\\test\\";
 
-		List<String> command = new ArrayList<String>();
-		command.add("cmd");
-		command.add("/c");
-		command.add("start");
-		command.add("/wait");
-		command.add(GlobalProperty.sobekRuntimesBatFile);
-		command.add("exit");
-
-		ProcessBuilder builder = new ProcessBuilder();
-		builder.directory(new File(GlobalProperty.sobekWorkSpace));
-		builder.command(command);
-		Process process = builder.start();
-		try {
-			process.waitFor();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		ArrayList<String[][]> splitAscii = new AsciiSplit(fileAdd).getSplitAsciiByEqualSizeBuffer(2);
+		for (int index = 0; index < splitAscii.size(); index++) {
+			new AtFileWriter(splitAscii.get(index) , saveAdd + index + ".asc").textWriter("    ");;
 		}
-		
-		
+
 	}
 
 }

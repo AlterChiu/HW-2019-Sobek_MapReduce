@@ -41,10 +41,9 @@ public class SplitTimeCount {
 	// <=======================================================>
 	public void setDelicateHorizantal() throws IOException {
 		this.splitAsciiFile = new AsciiSplit(GlobalProperty.originalDelicate).horizontalSplit()
-				.getSplitAsciiByEqualCut(GlobalProperty.splitSize);
+				.getSplitAsciiByEqualSizeBuffer(GlobalProperty.splitSize);
 		this.splitAsciiFileKn = new AsciiSplit(GlobalProperty.originalDelicateKn).horizontalSplit()
-				.getSplitAsciiByEqualCut(GlobalProperty.splitSize);
-		System.out.println("finished split");
+				.getSplitAsciiByEqualSizeBuffer(GlobalProperty.splitSize);
 		this.saveOutFolderAdd = GlobalProperty.splitDelicateSaveFolder_Horizontal;
 		this.analysisPropertyKey = GlobalProperty.horizontalSplit;
 		startRuntimes();
@@ -52,9 +51,9 @@ public class SplitTimeCount {
 
 	public void setDelicateStraight() throws IOException {
 		this.splitAsciiFile = new AsciiSplit(GlobalProperty.originalDelicate).straightSplit()
-				.getSplitAsciiByEqualCut(GlobalProperty.splitSize);
+				.getSplitAsciiByEqualSizeBuffer(GlobalProperty.splitSize);
 		this.splitAsciiFileKn = new AsciiSplit(GlobalProperty.originalDelicateKn).straightSplit()
-				.getSplitAsciiByEqualCut(GlobalProperty.splitSize);
+				.getSplitAsciiByEqualSizeBuffer(GlobalProperty.splitSize);
 		this.saveOutFolderAdd = GlobalProperty.splitDelicateSaveFolder_Straight;
 		this.analysisPropertyKey = GlobalProperty.straightSplit;
 		startRuntimes();
@@ -95,11 +94,13 @@ public class SplitTimeCount {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 
 			// run sobek model and calculate the time
 			long startTime = System.currentTimeMillis();
 			new Runtimes(GlobalProperty.sobekRuntimesForecastBar_Delicate);
 			long endTime = System.currentTimeMillis();
+			System.out.println(index + "\t" + (endTime - startTime));
 
 			// adding the spend time to property file
 			JsonObject json = new AtFileReader(splitFolder + GlobalProperty.propertyFileName).getJsonObject();
