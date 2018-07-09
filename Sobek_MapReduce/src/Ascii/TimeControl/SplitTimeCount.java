@@ -76,25 +76,26 @@ public class SplitTimeCount {
 			}
 
 			// change the sobek operation dem to the split dem
-			String[][] outAscii = new AsciiMerge(this.splitAsciiFile.get(index) , GlobalProperty.originalDelicateNull).getMergedAscii();
-			String[][] outAsciiKn = new AsciiMerge(this.splitAsciiFileKn.get(index) , GlobalProperty.originalDelicateNull).getMergedAscii();
-			
+			String[][] outAscii = new AsciiMerge(this.splitAsciiFile.get(index), GlobalProperty.originalDelicateNull)
+					.getMergedAscii();
+			String[][] outAsciiKn = new AsciiMerge(this.splitAsciiFileKn.get(index),
+					GlobalProperty.originalDelicateNull).getMergedAscii();
+
 			new AtFileWriter(outAscii, GlobalProperty.sobekDelicateDem).textWriter("    ");
 			new AtFileWriter(outAsciiKn, GlobalProperty.sobekDelicateDemKn).textWriter("    ");
-			
+
 			// save the split dem at this split folder
-			new AtFileWriter(outAscii, splitFolder + GlobalProperty.demTempSaveName)
+			new AtFileWriter(this.splitAsciiFile.get(index), splitFolder + GlobalProperty.temptDelicateDem)
 					.textWriter("    ");
-			new AtFileWriter(outAsciiKn, splitFolder + GlobalProperty.demTempSaveNameKn)
+			new AtFileWriter(this.splitAsciiFileKn.get(index), splitFolder + GlobalProperty.temptDelicateDemKn)
 					.textWriter("    ");
-			
+
 			try {
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 
 			// run sobek model and calculate the time
 			long startTime = System.currentTimeMillis();
@@ -131,12 +132,12 @@ public class SplitTimeCount {
 
 		// insert the average spend time to the analysis property file
 		ArrayList<String> temptList = new ArrayList<String>();
-		analysisArray.forEach(e->temptList.add(e.getAsString()));
+		analysisArray.forEach(e -> temptList.add(e.getAsString()));
 		temptList.remove(Integer.parseInt(folderIndex));
-		temptList.add(Integer.parseInt(folderIndex), mean+"");
+		temptList.add(Integer.parseInt(folderIndex), mean + "");
 		JsonArray newArray = new JsonArray();
 		temptList.forEach(e -> newArray.add(new JsonParser().parse(e + "")));
-		
+
 		analysisJson.add(analysisPropertyKey, newArray);
 		new AtFileWriter(analysisJson, analysisFile).textWriter("");
 	}

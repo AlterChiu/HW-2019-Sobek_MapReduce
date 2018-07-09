@@ -4,12 +4,12 @@ public class GlobalProperty {
 	// DEM split size =======> 5%
 	// ==========================================
 	public static int splitSize = 1;
-	// DEM split time ========> 0.8 hour
+	// DEM split time ========> 0.7 hour
 	// ==========================================
 	public static double splitTime = 0.7 * 3600000;
 	// Total allow time
 	// ==========================================
-	public static double totalAllowTime = 1 * 3600 * 1000;
+	public static double totalAllowTime = 0.9 * 3600 * 1000;
 
 	// userSetting
 	// =================================================
@@ -72,12 +72,10 @@ public class GlobalProperty {
 
 	// =================================================
 	// temptSaveName
-	public static String demTempSaveName = "\\temptLevelDem.asc";
-	public static String demTempSaveNameKn = "\\temptLevelDemKn.asc";
-	public static String mergeDelicateDem = "\\delicateDem.asc";
-	public static String mergerDelicateDemKn = "\\delicateDem(kn).asc";
-	public static String mergeRoughDem = "\\roughDem.asc";
-	public static String mergeRoughDemKn = "\\roughDem(kn).asc";
+	public static String temptDelicateDem = "\\delicateDem.asc";
+	public static String temptDelicateDemKn = "\\delicateDem(kn).asc";
+	public static String temptRoughDem = "\\roughDem.asc";
+	public static String temptRoughDemKn = "\\roughDem(kn).asc";
 
 	// ================================================
 	// split Delicate
