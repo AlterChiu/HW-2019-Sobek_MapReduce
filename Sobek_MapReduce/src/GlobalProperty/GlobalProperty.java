@@ -20,11 +20,13 @@ public class GlobalProperty {
 	// timeCount Property
 	// ================================================
 	public static String propertyFileName = "\\property.json";
-	public static String overviewProperty = workSpace + propertyFileName;
+	public static String overViewPropertyFile = workSpace + propertyFileName;
 	public static String delicateTotal = "delicateTotal";
 	public static String roughTotal = "roughTotal";
 	public static String straightSplit = "straightSplit";
 	public static String horizontalSplit = "horizontalSplit";
+	public static String straightMerge = "straightMerge";
+	public static String horizontalMerge = "horizontalMerge";
 
 	// SOBEK Runtimes folder
 	// =======================================================
@@ -63,6 +65,8 @@ public class GlobalProperty {
 	// ================================================
 	// total
 	public static String totalFolder = workSpace + "\\total\\";
+	public static String totalFolder_Delicate = totalFolder + "Delicate\\";
+	public static String totalFolder_Rough = totalFolder + "Rough\\";
 	// ================================================
 	// total Delicate
 	public static String totalDelicateSaveFolder = totalFolder + "\\delicate\\";
@@ -91,6 +95,8 @@ public class GlobalProperty {
 	// ===============================================
 	// merge folder
 	public static String mergeSaveFolder = workSpace + "\\merge\\";
+	public static String mergeSaveFolder_Horizontal = mergeSaveFolder + "\\horizontal\\";
+	public static String mergeSaveFolder_Straight = mergeSaveFolder + "\\straight\\";
 
 	// ===============================================
 	// NULL DEM VALUE

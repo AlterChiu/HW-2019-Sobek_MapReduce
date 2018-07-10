@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -51,8 +52,10 @@ public class DetermineMergeDem {
 
 	private void determineSection() throws IOException {
 		// read the split time spend
-		property.get(splitType).getAsJsonArray().forEach(e -> splitTimeSpend.add(e.getAsString()));
-
+		JsonObject spendTimeArray = property.get(splitType).getAsJsonObject();
+		for (int index = 0; index < GlobalProperty.splitSize; index++) {
+			splitTimeSpend.add(spendTimeArray.get(index+"").getAsString());
+		}
 		// if summary time bigger than the limit or it's the end
 		for (int index = 0; index < splitTimeSpend.size(); index++) {
 			double restTime = GlobalProperty.totalAllowTime - Double.parseDouble(splitTimeSpend.get(index));

@@ -119,9 +119,8 @@ public class SplitTimeCount {
 		List<Double> spendTimeList = new ArrayList<Double>();
 
 		// get the analysis property file
-		String analysisFile = GlobalProperty.workSpace + GlobalProperty.propertyFileName;
-		JsonObject analysisJson = new AtFileReader(analysisFile).getJsonObject();
-		JsonArray analysisArray = analysisJson.get(analysisPropertyKey).getAsJsonArray();
+		JsonObject analysisJson = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		JsonObject analysisArray = analysisJson.get(analysisPropertyKey).getAsJsonObject();
 
 		// get the split property file
 		JsonObject splitJson = new AtFileReader(splitFolder + GlobalProperty.propertyFileName).getJsonObject();
@@ -131,15 +130,8 @@ public class SplitTimeCount {
 		double mean = new AtCommonMath(spendTimeList).getMean();
 
 		// insert the average spend time to the analysis property file
-		ArrayList<String> temptList = new ArrayList<String>();
-		analysisArray.forEach(e -> temptList.add(e.getAsString()));
-		temptList.remove(Integer.parseInt(folderIndex));
-		temptList.add(Integer.parseInt(folderIndex), mean + "");
-		JsonArray newArray = new JsonArray();
-		temptList.forEach(e -> newArray.add(new JsonParser().parse(e + "")));
-
-		analysisJson.add(analysisPropertyKey, newArray);
-		new AtFileWriter(analysisJson, analysisFile).textWriter("");
+		analysisArray.addProperty(folderIndex, mean);
+		new AtFileWriter(analysisJson, GlobalProperty.overViewPropertyFile).textWriter("");
 	}
 
 	private void propertyCreater(int index) throws IOException {
