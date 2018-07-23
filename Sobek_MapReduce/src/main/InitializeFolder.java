@@ -36,6 +36,8 @@ public class InitializeFolder {
 
 		// ====================merge================
 		ff.newFolder(GlobalProperty.mergeSaveFolder);
+		ff.newFolder(GlobalProperty.mergeSaveFolder_Horizontal);
+		ff.newFolder(GlobalProperty.mergeSaveFolder_Straight);
 
 		// ==================total===================
 		ff.newFolder(GlobalProperty.totalFolder);

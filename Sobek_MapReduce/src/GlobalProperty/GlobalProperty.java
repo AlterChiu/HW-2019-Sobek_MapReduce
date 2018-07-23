@@ -15,8 +15,15 @@ public class GlobalProperty {
 	// =================================================
 	public static String workSpace = "S:\\HomeWork\\mapReduce\\";
 	public static String sobekWorkSpace = "C:\\Sobek213\\";
-	public static String sobekCaseName = "\\Active12.lit\\";
-	
+	public static String sobekProjectName = sobekWorkSpace + "Active12.lit\\";
+
+	// modelSetting
+	// =================================================
+	public static String caseFolder = sobekProjectName + "5\\";
+	public static String caseNetWork_NTW = caseFolder + "NETWORK.NTW";
+	public static String caseFrictionDescription = caseFolder + "FRICTION.DAT";
+	public static String caseNetWork_D12 = caseFolder + "NETWORK.D12";
+
 	// timeCount Property
 	// ================================================
 	public static String propertyFileName = "\\property.json";
@@ -34,10 +41,7 @@ public class GlobalProperty {
 	public static String sobekRuntimesForecastBar_Delicate = "MapReduce_Delicate.xml";
 	public static String sobekRuntimesForecastBar_Rough = "MapReduce_Rough.xml";
 	public static String sobekRuntimesForecastBar_Merge = "MapReduce_Merge.xml";
-	
-	
-	
-	
+
 	public static String sobekResultFolder = sobekWorkSpace + "\\Output\\";
 
 	//
@@ -54,11 +58,7 @@ public class GlobalProperty {
 	public static String originalRoughKn = workSpace + "\\OriginalDEM\\ZoneU1_40m(kn).asc";
 	public static String originalRoughNull = workSpace + "\\OriginalDEM\\ZoneU1_40mNULL.asc";
 
-	// SOBEK model demFile Folder
-	public static String sobekDelicateDem = sobekWorkSpace + sobekCaseName + "\\DEM\\mapReduce\\firstDem.asc";
-	public static String sobekDelicateDemKn = sobekWorkSpace + sobekCaseName + "\\DEM\\mapReduce\\firstDem(kn).asc";
-	public static String sobekRoughDem = sobekWorkSpace + sobekCaseName + "\\DEM\\mapReduce\\secondDem.asc";
-	public static String sobekRoughDemKn = sobekWorkSpace + sobekCaseName + "\\DEM\\mapReduce\\secondDem(kn).asc";
+
 
 	//
 	// SAVE Folder

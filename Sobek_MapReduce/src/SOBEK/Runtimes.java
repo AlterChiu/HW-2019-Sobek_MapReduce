@@ -10,16 +10,12 @@ import usualTool.AtFileWriter;
 
 public class Runtimes {
 
-	public Runtimes(String sobekRuntimesForecastBat) throws IOException {
+	public Runtimes() throws IOException {
 
 		// run the sobek modle
 		// and the model.exe should be under this index
 
 		// bat file creater
-		String batFile = ("sbkBatch.exe sbkbatch.ini /batch ");
-		batFile = batFile + sobekRuntimesForecastBat + "\r\nexit";
-		new AtFileWriter(batFile, GlobalProperty.sobekRuntimesBatFile).textWriter("");
-
 		List<String> command = new ArrayList<String>();
 		command.add("cmd");
 		command.add("/c");

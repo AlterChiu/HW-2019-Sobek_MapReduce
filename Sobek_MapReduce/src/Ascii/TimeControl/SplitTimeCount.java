@@ -15,6 +15,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 
 import SOBEK.Runtimes;
+import SOBEK.SobekDem;
 import asciiFunction.AsciiBasicControl;
 import asciiFunction.AsciiMerge;
 import asciiFunction.AsciiSplit;
@@ -26,8 +27,8 @@ import GlobalProperty.GlobalProperty;
 
 public class SplitTimeCount {
 
-	private ArrayList<String[][]> splitAsciiFile = null;
-	private ArrayList<String[][]> splitAsciiFileKn = null;
+	private List<String[][]> splitAsciiFile = null;
+	private List<String[][]> splitAsciiFileKn = null;
 	private AsciiBasicControl temptAscii;
 	private String analysisPropertyKey;
 
@@ -40,20 +41,18 @@ public class SplitTimeCount {
 	// <=====================>
 	// <=======================================================>
 	public void setDelicateHorizantal() throws IOException {
-		this.splitAsciiFile = new AsciiSplit(GlobalProperty.originalDelicate).horizontalSplit()
-				.getSplitAsciiByEqualSizeBuffer(GlobalProperty.splitSize);
-		this.splitAsciiFileKn = new AsciiSplit(GlobalProperty.originalDelicateKn).horizontalSplit()
-				.getSplitAsciiByEqualSizeBuffer(GlobalProperty.splitSize);
+		this.splitAsciiFile = new AsciiSplit(GlobalProperty.originalDelicate).horizontalSplit(GlobalProperty.splitSize);
+		this.splitAsciiFileKn = new AsciiSplit(GlobalProperty.originalDelicateKn)
+				.horizontalSplit(GlobalProperty.splitSize);
 		this.saveOutFolderAdd = GlobalProperty.splitSaveFolder_Horizontal;
 		this.analysisPropertyKey = GlobalProperty.horizontalSplit;
 		startRuntimes();
 	}
 
 	public void setDelicateStraight() throws IOException {
-		this.splitAsciiFile = new AsciiSplit(GlobalProperty.originalDelicate).straightSplit()
-				.getSplitAsciiByEqualSizeBuffer(GlobalProperty.splitSize);
-		this.splitAsciiFileKn = new AsciiSplit(GlobalProperty.originalDelicateKn).straightSplit()
-				.getSplitAsciiByEqualSizeBuffer(GlobalProperty.splitSize);
+		this.splitAsciiFile = new AsciiSplit(GlobalProperty.originalDelicate).straightSplit(GlobalProperty.splitSize);
+		this.splitAsciiFileKn = new AsciiSplit(GlobalProperty.originalDelicateKn)
+				.straightSplit(GlobalProperty.splitSize);
 		this.saveOutFolderAdd = GlobalProperty.splitSaveFolder_Straight;
 		this.analysisPropertyKey = GlobalProperty.straightSplit;
 		startRuntimes();
@@ -75,32 +74,23 @@ public class SplitTimeCount {
 				propertyCreater(index);
 			}
 
-			// change the sobek operation dem to the split dem
-			String[][] outAscii = new AsciiMerge(this.splitAsciiFile.get(index), GlobalProperty.originalDelicateNull)
-					.getMergedAscii();
-			String[][] outAsciiKn = new AsciiMerge(this.splitAsciiFileKn.get(index),
-					GlobalProperty.originalDelicateNull).getMergedAscii();
-
-			new AtFileWriter(outAscii, GlobalProperty.sobekDelicateDem).textWriter("    ");
-			new AtFileWriter(outAsciiKn, GlobalProperty.sobekDelicateDemKn).textWriter("    ");
-
 			// save the split dem at this split folder
 			new AtFileWriter(this.splitAsciiFile.get(index), splitFolder + GlobalProperty.temptDelicateDem)
 					.textWriter("    ");
 			new AtFileWriter(this.splitAsciiFileKn.get(index), splitFolder + GlobalProperty.temptDelicateDemKn)
 					.textWriter("    ");
 
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			// setting the dem for sobek runTimes
+			SobekDem sobekDem = new SobekDem();
+			sobekDem.addNewDem(splitFolder + GlobalProperty.temptDelicateDem,
+					splitFolder + GlobalProperty.temptDelicateDemKn);
+			sobekDem.start();
 
 			// run sobek model and calculate the time
 			long startTime = System.currentTimeMillis();
-			new Runtimes(GlobalProperty.sobekRuntimesForecastBar_Delicate);
+			new Runtimes();
 			long endTime = System.currentTimeMillis();
+
 			System.out.println(index + "\t" + (endTime - startTime));
 
 			// adding the spend time to property file
@@ -144,7 +134,7 @@ public class SplitTimeCount {
 		json.addProperty("maxX", asciiProperty.get("topX"));
 		json.addProperty("maxY", asciiProperty.get("topY"));
 		json.addProperty("minX", asciiProperty.get("bottomX"));
-		json.addProperty("minY", asciiProperty.get("bottomT"));
+		json.addProperty("minY", asciiProperty.get("bottomY"));
 		json.addProperty("cellSize", asciiProperty.get("cellSize"));
 
 		JsonArray jsonArray = new JsonArray();

@@ -3,6 +3,7 @@ package main;
 import java.io.IOException;
 
 import Ascii.Merge.TimeControl.DetermineMergeDem;
+import Ascii.Merge.TimeControl.MergeTimeCount;
 import Ascii.TimeControl.SplitTimeCount;
 import Ascii.TimeControl.TotalTimeCount;
 
@@ -10,10 +11,12 @@ public class MapReduceMainPage {
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		SplitTimeCount splitTimeCount = new SplitTimeCount();
-		TotalTimeCount totalTimeCount = new TotalTimeCount();
-		DetermineMergeDem determineMerge = new DetermineMergeDem();
 		InitializeFolder initialize = new InitializeFolder();
+		TotalTimeCount totalTimeCount = new TotalTimeCount();
+		SplitTimeCount splitTimeCount = new SplitTimeCount();
+		DetermineMergeDem determineMerge = new DetermineMergeDem();
+		MergeTimeCount mergeTimeCount = new MergeTimeCount();
+		
 		
 		System.out.println("========= Initialize Folder =================");
 		initialize.createBeforeSplitCount();
@@ -40,10 +43,11 @@ public class MapReduceMainPage {
 		System.out.println("================== determine the ascii section =========");
 		System.out.println("Merge Horizantal");
 		determineMerge.setHorizontalSplit();
+		mergeTimeCount.setHorizontalTimeCount();
 
-		
 		System.out.println("Merge Straight");
 		determineMerge.setHorizontalSplit();
+		mergeTimeCount.setStraightTimeCount();
 	}
 
 }

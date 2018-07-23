@@ -13,7 +13,7 @@ import com.google.gson.JsonSyntaxException;
 
 import GlobalProperty.GlobalProperty;
 import asciiFunction.AsciiBasicControl;
-import asciiFunction.AsciiIntercept;
+import asciiFunction.AsciiBoundary;
 import asciiFunction.AsciiMerge;
 import usualTool.AtFileReader;
 import usualTool.AtFileWriter;
@@ -64,8 +64,8 @@ public class DetermineMergeDem {
 			getBufferBoundary(delicateAscii, restTime);
 
 			// get the rough dem by giving boundary
-			AsciiIntercept interceptRough = new AsciiIntercept(GlobalProperty.originalRough);
-			AsciiIntercept interceptRoughKn = new AsciiIntercept(GlobalProperty.originalRoughKn);
+			AsciiBoundary interceptRough = new AsciiBoundary(GlobalProperty.originalRough);
+			AsciiBoundary interceptRoughKn = new AsciiBoundary(GlobalProperty.originalRoughKn);
 			new AtFileWriter(
 					new AsciiMerge(interceptRough.getIntercept(boundaryMinX, boundaryMaxX, boundaryMinY, boundaryMaxY),
 							GlobalProperty.originalRoughNull).getMergedAscii(),
