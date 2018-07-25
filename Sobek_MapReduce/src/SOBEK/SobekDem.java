@@ -14,6 +14,7 @@ import java.util.TreeMap;
 
 import GlobalProperty.GlobalProperty;
 import asciiFunction.AsciiBasicControl;
+import asciiFunction.AsciiBoundary;
 import usualTool.AtFileWriter;
 
 public class SobekDem {
@@ -22,7 +23,9 @@ public class SobekDem {
 	List<String> networkFile = new ArrayList<String>();
 	List<String> frictionFile = new ArrayList<String>();
 	List<String[]> ptList = new ArrayList<String[]>();
-	Map<String, List<String>> domnList = new TreeMap<String, List<String>>();
+	Map<Integer, List<String>> domnList = new TreeMap<Integer, List<String>>();
+	AsciiBasicControl currentAscii;
+	Map<String, String> currentAsciiProperty;
 
 	public void addNewDem(String demFile, String knFile) {
 		demList.add(demFile);
@@ -36,6 +39,18 @@ public class SobekDem {
 		setNetwork();
 	}
 
+	/*
+	 * 
+	 * 
+	 */
+	// <======================================>
+	// <NetWork D12>
+	// <======================================>
+	// <==============================================================>
+
+	// <=========================>
+	// <Read PT2 temptLate>
+	// <=========================>
 	private void getD12Template() throws IOException {
 		BufferedReader br = new BufferedReader(
 				new InputStreamReader(new FileInputStream(GlobalProperty.caseNetWork_D12)));
@@ -55,6 +70,9 @@ public class SobekDem {
 		br.close();
 	}
 
+	// <=========================>
+	// <Read PT2 temptLate>
+	// <=========================>
 	private void getPT12List() {
 		List<String[]> pt12List = new ArrayList<String[]>();
 		for (String[] node : this.ptList) {
@@ -65,19 +83,21 @@ public class SobekDem {
 		this.ptList = pt12List;
 	}
 
+	// <=========================>
+	// <Set order of the domn>
+	// <=========================>
 	private void setDomnList() throws IOException {
 		for (int index = 0; index < this.demList.size(); index++) {
-			AsciiBasicControl ascii = new AsciiBasicControl(this.demList.get(index));
-			Map<String,String> property = ascii.getProperty();
-			
-			
+			currentAscii = new AsciiBasicControl(this.demList.get(index));
+			Map<String, String> property = currentAscii.getProperty();
+
 			List<String> domLine = new ArrayList<String>();
 			StringBuilder sb_domn = new StringBuilder();
 			sb_domn.append("DOMN id \'D2_");
-			sb_domn.append((index+1) + "1' nm 'D2_");
-			sb_domn.append((index+1));
+			sb_domn.append((index + 1) + "1' nm 'D2_");
+			sb_domn.append((index + 1));
 			domLine.add(sb_domn.toString());
-			
+
 			StringBuilder sb_Gfls = new StringBuilder();
 			sb_Gfls.append("  GFLS nc " + property.get("column"));
 			sb_Gfls.append(" nr " + property.get("row"));
@@ -88,10 +108,78 @@ public class SobekDem {
 			sb_Gfls.append(" cp 0 fnm '");
 			sb_Gfls.append(this.knList.get(index) + "\' gfls");
 			domLine.add(sb_Gfls.toString());
-			
-			domnList.put(index+"", domLine);		
+
+			domnList.put(index, domLine);
+
 		}
-		
+	}
+
+	// <=========================>
+	// <Set the relation of the domn>
+	// <=========================>
+	private void setDomnRelation(int index) throws IOException {
+		for (int target = index + 1; target < this.demList.size(); target++) {
+			AsciiBasicControl targetAscii = new AsciiBasicControl(this.demList.get(target));
+			Map<String, String> targetProperty = targetAscii.getProperty();
+
+			// check the target ascii is contain of not
+			double boundaryMaxX = Double.parseDouble(targetProperty.get("topX"));
+			double boundaryMaxY = Double.parseDouble(targetProperty.get("topY"));
+			double boundaryMinX = Double.parseDouble(targetProperty.get("bottomX"));
+			double boundaryMinY = Double.parseDouble(targetProperty.get("bottomY"));
+			if (currentAscii.isContain(boundaryMaxX, boundaryMinX, boundaryMaxY, boundaryMinY)) {
+				List<String> domContent = this.domnList.get(index);
+
+				// if is content get the interceptArea
+				Map<String, String> intercept = new AsciiBoundary(this.currentAscii).getBoundary(targetAscii);
+				double interceptMaxX = Double.parseDouble(intercept.get("maxX"));
+				double interceptMaxY = Double.parseDouble(intercept.get("maxY"));
+				double interceptMinX = Double.parseDouble(intercept.get("minX"));
+				double interceptMinY = Double.parseDouble(intercept.get("minY"));
+
+				// get the isChild tag
+				StringBuilder isChild = new StringBuilder();
+				isChild.append("  ISCHILDOF ci 'D2_");
+				isChild.append((index + 1) + "\'");
+				domContent.add(isChild.toString());
+
+				// get the childBlock tag
+				StringBuilder childBlock = new StringBuilder();
+				int[] topPosition = targetAscii.getPosition(interceptMaxX, interceptMaxY);
+				int[] bottomPosition = targetAscii.getPosition(interceptMinX, interceptMinY);
+				childBlock.append("    CHILDBLOCK");
+				childBlock.append(" ltx " + targetProperty.get("bottomX"));
+				childBlock.append(" lty " + targetProperty.get("topY"));
+				childBlock.append(" rbx " + targetProperty.get("topX"));
+				childBlock.append(" rby " + targetProperty.get("bottomY"));
+				childBlock.append(" ltC " + (bottomPosition[0] + 1));
+				childBlock.append(" ltR " + (topPosition[1] + 1));
+				childBlock.append(" rbC " + (topPosition[0] + 1));
+				childBlock.append(" rbR" + (bottomPosition[1] + 1));
+				childBlock.append(" childblock");
+				domContent.add(childBlock.toString());
+				
+				// get the parentBlock tag
+				StringBuilder parentBlock = new StringBuilder();
+				topPosition = currentAscii.getPosition(interceptMaxX, interceptMaxY);
+				bottomPosition = currentAscii.getPosition(interceptMinX, interceptMinY);
+				parentBlock.append("    PARENTBLOCK");
+				parentBlock.append(" ltC " + (bottomPosition[0] + 1));
+				parentBlock.append(" ltR " + (topPosition[1] + 1));
+				parentBlock.append(" rbC " + (topPosition[0] + 1));
+				parentBlock.append(" rbR" + (bottomPosition[1] + 1));
+				parentBlock.append(" parentblock");
+				domContent.add(parentBlock.toString());
+				domContent.add("  ischildof");
+				
+				// put the new domn to the original one
+				this.domnList.put(index, domContent);
+			}
+		}
+	}
+
+	private void setDomnPt(int index) {
+
 	}
 
 	// <================================================================>
