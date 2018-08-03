@@ -20,6 +20,7 @@ public class MapReduceMainPage {
 		
 		System.out.println("========= Initialize Folder =================");
 		initialize.createBeforeSplitCount();
+		initialize.setNetWork_Pt2File();
 
 		System.out.println("======= Delicate Time Count ================");
 		System.out.print("total\t");

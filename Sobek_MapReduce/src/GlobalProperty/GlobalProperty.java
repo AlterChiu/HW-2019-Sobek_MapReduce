@@ -23,6 +23,7 @@ public class GlobalProperty {
 	public static String caseNetWork_NTW = caseFolder + "NETWORK.NTW";
 	public static String caseFrictionDescription = caseFolder + "FRICTION.DAT";
 	public static String caseNetWork_D12 = caseFolder + "NETWORK.D12";
+	public static String caseNetWork_D12_Template = workSpace + "NETWORK_Pt2.D12";
 
 	// timeCount Property
 	// ================================================
@@ -47,18 +48,23 @@ public class GlobalProperty {
 	//
 	// Original DELICATE user setting
 	// original demFile ==============> level and kn including
-	public static String originalDelicate = workSpace + "\\OriginalDEM\\ZoneU1_20m.asc";
-	public static String originalDelicateKn = workSpace + "\\OriginalDEM\\ZoneU1_20m(kn).asc";
-	public static String originalDelicateNull = workSpace + "\\OriginalDEM\\ZoneU1_20mNULL.asc";
+	public static String originalDelicate = workSpace + "OriginalDEM\\ZoneU1_20m.asc";
+	public static String originalDelicateKn = workSpace + "OriginalDEM\\ZoneU1_20m(kn).asc";
+	public static String originalDelicateNull = workSpace + "OriginalDEM\\ZoneU1_20mNULL.asc";
 
 	//
 	// Original ROUGH user setting
 	// original demFile ==============> level and kn including
-	public static String originalRough = workSpace + "\\OriginalDEM\\ZoneU1_40m.asc";
-	public static String originalRoughKn = workSpace + "\\OriginalDEM\\ZoneU1_40m(kn).asc";
-	public static String originalRoughNull = workSpace + "\\OriginalDEM\\ZoneU1_40mNULL.asc";
+	public static String originalRough = workSpace + "OriginalDEM\\ZoneU1_40m.asc";
+	public static String originalRoughKn = workSpace + "OriginalDEM\\ZoneU1_40m(kn).asc";
+	public static String originalRoughNull = workSpace + "OriginalDEM\\ZoneU1_40mNULL.asc";
 
-
+	//
+	// Revise DemFolder
+	// dem boundary by maxD0 of the total delicate result
+	public static String reviceDemFolder = workSpace + "\\ReviseDem\\";
+	public static String reviceDem_MaxFloodArea = reviceDemFolder + "maxFloodBoundary.asc";
+	public static String reviceDem_InitailFloodArea = reviceDemFolder + "initialFloodArea.asc";
 
 	//
 	// SAVE Folder
@@ -67,12 +73,18 @@ public class GlobalProperty {
 	public static String totalFolder = workSpace + "\\total\\";
 	public static String totalFolder_Delicate = totalFolder + "Delicate\\";
 	public static String totalFolder_Rough = totalFolder + "Rough\\";
+
 	// ================================================
 	// total Delicate
 	public static String totalDelicateSaveFolder = totalFolder + "\\delicate\\";
+
 	// ================================================
 	// total Rough
 	public static String totalRoughSaveFolder = totalFolder + "\\rough\\";
+
+	// ================================================
+	// total analysis
+	public static String totalDelicateMaxFloodArea = totalDelicateSaveFolder + "dm1maxd0.asc";
 
 	// =================================================
 	// temptSaveName

@@ -1,9 +1,15 @@
 package main;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -78,6 +84,39 @@ public class InitializeFolder {
 
 		// ====================merge======================
 
+	}
+
+	public void setNetWork_Pt2File() throws IOException {
+		BufferedReader br = new BufferedReader(
+				new InputStreamReader(new FileInputStream(GlobalProperty.caseNetWork_D12)));
+		String tempt;
+		List<String[]> totalList = new ArrayList<String[]>();
+
+		// tempt line
+		List<String> temptList = new ArrayList<String>();
+		while ((tempt = br.readLine()) != null) {
+			if (tempt.trim().length() > 2 && !tempt.contains("D121.0") && !tempt.contains("DOMN")
+					&& !tempt.contains("domn")) {
+
+				// split line by space and check the first element is equal to last one or not
+				Arrays.asList(tempt.trim().split(" +")).forEach(e -> temptList.add(e));
+
+				if (temptList.get(0).toLowerCase().equals(temptList.get(temptList.size() - 1))) {
+					totalList.add(temptList.parallelStream().toArray(String[]::new));
+					temptList.clear();
+				}
+			}
+		}
+		br.close();
+
+		// filter pt12 from total
+		List<String[]> pt12List = new ArrayList<String[]>();
+		totalList.stream().forEach(e -> {
+			if (e[0].equals("PT12"))
+				pt12List.add(e);
+		});
+		new AtFileWriter(pt12List.parallelStream().toArray(String[][]::new), GlobalProperty.caseNetWork_D12_Template)
+				.textWriter(" ");
 	}
 
 	public void setSplitSize() throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
