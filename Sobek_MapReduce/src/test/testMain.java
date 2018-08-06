@@ -34,14 +34,12 @@ public class testMain {
 //		
 //
 		SobekDem sobekDem = new SobekDem();
-		sobekDem.addNewDem(GlobalProperty.originalDelicate, GlobalProperty.originalDelicateKn);
+		sobekDem.addNewDem(GlobalProperty.originalRough, GlobalProperty.originalRoughKn);
 		sobekDem.start();
 //		System.out.print("test runtimes ");
 //		getTimes();
 //		System.out.println();
 		
-		InitailFloodTime point = new InitailFloodTime("C:\\Sobek213\\Output\\");
-		point.outPutFile("S:\\HomeWork\\mapReduce\\test\\initailPoint.asc");
 	
 	}
 

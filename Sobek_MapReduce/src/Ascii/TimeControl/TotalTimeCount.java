@@ -29,18 +29,18 @@ public class TotalTimeCount {
 	private String knFile;
 
 	public void RoughTotalTimeCount() throws IOException {
-		this.saveFolder = GlobalProperty.totalRoughSaveFolder;
+		this.saveFolder = GlobalProperty.saveFolder_Total_Rough;
 
-		this.jsonKeyName = GlobalProperty.roughTotal;
+		this.jsonKeyName = GlobalProperty.overviewProperty_roughTotal;
 		this.demFile = GlobalProperty.originalRough;
 		this.knFile = GlobalProperty.originalRoughKn;
 		startRuntimes();
 	}
 
 	public void DelicateTotalTimeCount() throws IOException {
-		this.saveFolder = GlobalProperty.totalDelicateSaveFolder;
+		this.saveFolder = GlobalProperty.saveFolder_Total_Delicate;
 
-		this.jsonKeyName = GlobalProperty.delicateTotal;
+		this.jsonKeyName = GlobalProperty.overviewProperty_delicateTotal;
 		this.demFile = GlobalProperty.originalDelicate;
 		this.knFile = GlobalProperty.originalDelicateKn;
 		startRuntimes();
@@ -53,15 +53,13 @@ public class TotalTimeCount {
 		sobekDem.addNewDem(demFile, knFile);
 
 		// run sobek model
-		long startTime = System.currentTimeMillis();
-		new Runtimes();
-		long endTime = System.currentTimeMillis();
-		System.out.println(endTime - startTime);
+		Runtimes sobekRuntimes = new Runtimes();
+		System.out.println(sobekRuntimes.getSimulateTime());
 
 		// output the property file
 		JsonObject readJson = new AtFileReader(GlobalProperty.workSpace + GlobalProperty.propertyFileName)
 				.getJsonObject();
-		readJson.addProperty(this.jsonKeyName, endTime - startTime);
+		readJson.addProperty(this.jsonKeyName, sobekRuntimes.getSimulateTime());
 		new AtFileWriter(readJson, GlobalProperty.workSpace + GlobalProperty.propertyFileName).textWriter("");
 
 		// copy the result file to folder

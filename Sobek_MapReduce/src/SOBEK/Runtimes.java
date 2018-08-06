@@ -9,13 +9,11 @@ import GlobalProperty.GlobalProperty;
 import usualTool.AtFileWriter;
 
 public class Runtimes {
+	private long simulateTime = 0;
 
 	public Runtimes() throws IOException {
 
-		// run the sobek modle
-		// and the model.exe should be under this index
-
-		// bat file creater
+		long startTime = System.currentTimeMillis();
 		List<String> command = new ArrayList<String>();
 		command.add("cmd");
 		command.add("/c");
@@ -34,7 +32,13 @@ public class Runtimes {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
+		long endTime = System.currentTimeMillis();
+		this.simulateTime = endTime - startTime;
+	}
+	
+	public double getSimulateTime() {
+		return this.simulateTime;
 	}
 
 }

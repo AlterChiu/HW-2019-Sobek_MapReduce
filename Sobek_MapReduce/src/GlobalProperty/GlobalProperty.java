@@ -29,20 +29,16 @@ public class GlobalProperty {
 	// ================================================
 	public static String propertyFileName = "\\property.json";
 	public static String overViewPropertyFile = workSpace + propertyFileName;
-	public static String delicateTotal = "delicateTotal";
-	public static String roughTotal = "roughTotal";
-	public static String straightSplit = "straightSplit";
-	public static String horizontalSplit = "horizontalSplit";
-	public static String straightMerge = "straightMerge";
-	public static String horizontalMerge = "horizontalMerge";
+	public static String overviewProperty_delicateTotal = "SpendTime_delicateTotal";
+	public static String overviewProperty_roughTotal = "SpendTime_roughTotal";
+	public static String overviewProperty_merge = "mergeSplit";
+	public static String overviewProperty_mergeDelicateBoundary = "DelicateBoundary";
+	public static String overviewProperty_mergeRoughBoundary = "RoughBoundary";
 
 	// SOBEK Runtimes folder
 	// =======================================================
 	public static String sobekRuntimesBatFile = sobekWorkSpace + "\\MapReduce.bat";
-	public static String sobekRuntimesForecastBar_Delicate = "MapReduce_Delicate.xml";
-	public static String sobekRuntimesForecastBar_Rough = "MapReduce_Rough.xml";
-	public static String sobekRuntimesForecastBar_Merge = "MapReduce_Merge.xml";
-
+	public static String sobekRuntimesForecastXml = sobekWorkSpace + "MapReduce_Delicate.xml";
 	public static String sobekResultFolder = sobekWorkSpace + "\\Output\\";
 
 	//
@@ -62,53 +58,29 @@ public class GlobalProperty {
 	//
 	// Revise DemFolder
 	// dem boundary by maxD0 of the total delicate result
-	public static String reviceDemFolder = workSpace + "\\ReviseDem\\";
-	public static String reviceDem_MaxFloodArea = reviceDemFolder + "maxFloodBoundary.asc";
-	public static String reviceDem_InitailFloodArea = reviceDemFolder + "initialFloodArea.asc";
+	public static String analysisDemFolder = workSpace + "\\Analysis\\";
+	public static String analysisDem_InitailFloodTimes = analysisDemFolder + "initialFloodTimes.asc";
 
 	//
 	// SAVE Folder
 	// ================================================
 	// total
-	public static String totalFolder = workSpace + "\\total\\";
-	public static String totalFolder_Delicate = totalFolder + "Delicate\\";
-	public static String totalFolder_Rough = totalFolder + "Rough\\";
+	public static String saveFolder_Total = workSpace + "\\total\\";
+	public static String saveFolder_Total_Delicate = saveFolder_Total + "\\delicate\\";
+	public static String saveFolder_Total_Rough = saveFolder_Total + "\\rough\\";
 
-	// ================================================
-	// total Delicate
-	public static String totalDelicateSaveFolder = totalFolder + "\\delicate\\";
-
-	// ================================================
-	// total Rough
-	public static String totalRoughSaveFolder = totalFolder + "\\rough\\";
-
-	// ================================================
-	// total analysis
-	public static String totalDelicateMaxFloodArea = totalDelicateSaveFolder + "dm1maxd0.asc";
+	
+	//=================================================
+	//merge folder
+	public static String saveFolder_Merge = workSpace + "\\merge\\";
 
 	// =================================================
 	// temptSaveName
-	public static String temptDelicateDem = "\\delicateDem.asc";
-	public static String temptDelicateDemKn = "\\delicateDem(kn).asc";
-	public static String temptRoughDem = "\\roughDem.asc";
-	public static String temptRoughDemKn = "\\roughDem(kn).asc";
+	public static String saveFile_DelicateDem = "\\delicateDem.asc";
+	public static String saveFile_DelicateDemKn = "\\delicateDem(kn).asc";
+	public static String saveFile_RoughDem = "\\roughDem.asc";
+	public static String saveFile_RoughDemKn = "\\roughDem(kn).asc";
 
-	// ================================================
-	// split Delicate
-	public static String splitSaveFolder = workSpace + "\\split\\";
-	public static String splitSaveFolder_Horizontal = splitSaveFolder + "\\horizontal\\";
-	public static String splitSaveFolder_Straight = splitSaveFolder + "\\straight\\";
-
-	// ================================================
-	// split analysis
-	public static String splitAnalysis_Horizontal_Delicate = workSpace + "\\split\\Delicate_Horizontal_Analysis.txt";
-	public static String splitAnalysis_Straight_Delicate = workSpace + "\\split\\Delicate_Straight_Analysis.txt";
-
-	// ===============================================
-	// merge folder
-	public static String mergeSaveFolder = workSpace + "\\merge\\";
-	public static String mergeSaveFolder_Horizontal = mergeSaveFolder + "\\horizontal\\";
-	public static String mergeSaveFolder_Straight = mergeSaveFolder + "\\straight\\";
 
 	// ===============================================
 	// NULL DEM VALUE

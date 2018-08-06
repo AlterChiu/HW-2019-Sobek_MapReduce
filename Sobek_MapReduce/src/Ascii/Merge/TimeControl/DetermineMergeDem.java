@@ -13,7 +13,7 @@ import com.google.gson.JsonSyntaxException;
 
 import GlobalProperty.GlobalProperty;
 import asciiFunction.AsciiBasicControl;
-import asciiFunction.AsciiBoundary;
+import asciiFunction.AsciiIntercept;
 import asciiFunction.AsciiMerge;
 import usualTool.AtFileReader;
 import usualTool.AtFileWriter;
@@ -34,22 +34,6 @@ public class DetermineMergeDem {
 		this.property = new AtFileReader(GlobalProperty.workSpace + GlobalProperty.propertyFileName).getJsonObject();
 	}
 
-	public void setStraighSplit() throws IOException {
-		this.workFolder = GlobalProperty.splitSaveFolder_Straight;
-		this.splitType = GlobalProperty.straightSplit;
-
-		// determine the section by the maximum time
-		determineSection();
-	}
-
-	public void setHorizontalSplit() throws IOException {
-		this.workFolder = GlobalProperty.splitSaveFolder_Horizontal;
-		this.splitType = GlobalProperty.horizontalSplit;
-
-		// determine the section by the maximum time
-		determineSection();
-	}
-
 	private void determineSection() throws IOException {
 		// read the split time spend
 		JsonObject spendTimeArray = property.get(splitType).getAsJsonObject();
@@ -64,8 +48,8 @@ public class DetermineMergeDem {
 			getBufferBoundary(delicateAscii, restTime);
 
 			// get the rough dem by giving boundary
-			AsciiBoundary interceptRough = new AsciiBoundary(GlobalProperty.originalRough);
-			AsciiBoundary interceptRoughKn = new AsciiBoundary(GlobalProperty.originalRoughKn);
+			AsciiIntercept interceptRough = new AsciiIntercept(GlobalProperty.originalRough);
+			AsciiIntercept interceptRoughKn = new AsciiIntercept(GlobalProperty.originalRoughKn);
 			new AtFileWriter(
 					new AsciiMerge(interceptRough.getIntercept(boundaryMinX, boundaryMaxX, boundaryMinY, boundaryMaxY),
 							GlobalProperty.originalRoughNull).getMergedAscii(),

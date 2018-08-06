@@ -17,9 +17,11 @@ public class InitailFloodTime {
 	private AsciiBasicControl outAscii;
 	private List<AsciiBasicControl> analysisAscii = new ArrayList<AsciiBasicControl>();
 
+	//<================>
+	//<construct>
+	//<================>
 	public InitailFloodTime(String selectedFolder) throws IOException {
 		this.outAscii = new AsciiBasicControl(selectedFolder + "dm1d0000.asc");
-
 		// get the list of dm1d
 		for (int index = 1; index < index + 1; index++) {
 			try {
@@ -35,7 +37,11 @@ public class InitailFloodTime {
 		}
 		setTheInitailTime();
 	}
+	//<=======================================>
 
+	//<=======================================>
+	//<setting the initial time from first hour to the last one>
+	//<and the times set 0 to the area never flood>
 	private void setTheInitailTime() {
 		int totalRow = Integer.parseInt(this.outAscii.getProperty().get("row"));
 		int totalColumn = Integer.parseInt(this.outAscii.getProperty().get("column"));
