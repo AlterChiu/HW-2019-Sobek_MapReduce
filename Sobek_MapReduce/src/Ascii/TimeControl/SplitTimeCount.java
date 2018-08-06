@@ -1,32 +1,23 @@
 package Ascii.TimeControl;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSyntaxException;
-
 import SOBEK.Runtimes;
 import SOBEK.SobekDem;
 import asciiFunction.AsciiBasicControl;
 import asciiFunction.AsciiIntercept;
-import asciiFunction.AsciiMerge;
-import asciiFunction.AsciiSplit;
+
 import main.MapReduceMainPage;
 import usualTool.AtCommonMath;
 import usualTool.AtFileReader;
 import usualTool.AtFileWriter;
 import usualTool.AtKmeans;
-import usualTool.FileFunction;
+
 import GlobalProperty.GlobalProperty;
 
 public class SplitTimeCount {
@@ -37,7 +28,7 @@ public class SplitTimeCount {
 	private AsciiBasicControl originalRoughAsciiKn;
 	private List<List<Double[]>> kmeansClassified;
 	private JsonObject overviewPorperty;
-	private double restTimeCofficience = 0.6;
+	private double restTimeCoefficient = 0.6;
 
 	//
 	// <=====================>
@@ -57,17 +48,21 @@ public class SplitTimeCount {
 	// main operation in this class
 	// <=======================================================>
 	public void runSplitDem() throws IOException {
+		Boolean reStart = false;
+
+		// classified function
 		this.kmeansClassified = getKmeansClassified(GlobalProperty.splitSize);
 		double restTime = GlobalProperty.totalAllowTime
 				- this.overviewPorperty.get(GlobalProperty.overviewProperty_delicateTotal).getAsDouble()
-						* restTimeCofficience;
+						* restTimeCoefficient;
 
-		for (int index = 0; index < this.kmeansClassified.size(); index++) {
+		// loop for the classified
+		classifiedLoop: for (int index = 0; index < this.kmeansClassified.size(); index++) {
+
 			// check the simulation time through Sobek;
 			Boolean simulationTimeCheck = true;
-
 			while (simulationTimeCheck) {
-				// determine the unit dem
+				// determine the unitDem
 				determineUnitDem(index, restTime);
 
 				// run sobek model
@@ -78,55 +73,74 @@ public class SplitTimeCount {
 						GlobalProperty.saveFolder_Merge + index + GlobalProperty.saveFile_RoughDemKn);
 				sobekDem.start();
 
+				// check for the simulation time is over limit or not
 				Runtimes sobekRuntimes = new Runtimes();
 				if (sobekRuntimes.getSimulateTime() > GlobalProperty.totalAllowTime) {
-					this.restTimeCofficience = overLimitSimulation(sobekRuntimes.getSimulateTime());
+					// resetting some variable
+					// if the restTime coefficient is over 1, restart the whole process
+					reStart = reStartJudgement(sobekRuntimes.getSimulateTime());
+					if (reStart) {
+						break classifiedLoop;
+					}
 				} else {
 					simulationTimeCheck = false;
 					// outPut result to the overview property file
-					outPutResult(index);
+					outPutResult(index, sobekRuntimes.getSimulateTime());
 					restTime = GlobalProperty.totalAllowTime
 							- this.overviewPorperty.get(GlobalProperty.overviewProperty_delicateTotal).getAsDouble()
 									* 0.6;
 				}
 			}
 		}
+		// if need to reStart and run this function again
+		if (reStart) {
+			runSplitDem();
+		} else {
+			System.out.println("split unitDem timeControl done");
+		}
 	}
 	// <==========================================================>
 
 	// recreate the roughDem in unitDem, cause simulation time is over limit
-	private double overLimitSimulation(double simulationTime) throws IOException {
-		if (this.restTimeCofficience >= 1) {
+	private Boolean reStartJudgement(double simulationTime) throws IOException {
+		Boolean restart = false;
+		if (this.restTimeCoefficient >= 1) {
 			System.out.println("simulation time of the delicate dem is over limit");
 			System.out.println("resetting the split number of the unitDem");
-			
+
 			// resetting the split number of the unitDem
 			// and also set the variable to default
 			GlobalProperty.splitSize++;
 			MapReduceMainPage.initialize.createAfterTotalRun();
 			this.kmeansClassified = getKmeansClassified(GlobalProperty.splitSize);
-			this.restTimeCofficience = 0.6;
+			this.restTimeCoefficient = 0.6;
+			restart = true;
 		} else {
-			this.restTimeCofficience = this.restTimeCofficience * 1.1;
+			this.restTimeCoefficient = this.restTimeCoefficient * 1.1;
 		}
-		return this.restTimeCofficience;
+		return restart;
 	}
 
 	// output the boundary of the unitDem
-	private void outPutResult(int index) throws IOException {
+	private void outPutResult(int index, double simulationTime) throws IOException {
 		JsonObject outJsonObject = new JsonObject();
 
+		// delicate
 		Map<String, String> delicateProperty = new AsciiBasicControl(
 				GlobalProperty.saveFolder_Merge + index + GlobalProperty.saveFile_DelicateDem).getProperty();
 		JsonObject delicateJson = getBoundaryJson(delicateProperty);
 
+		// rough
 		Map<String, String> roughProperty = new AsciiBasicControl(
 				GlobalProperty.saveFolder_Merge + index + GlobalProperty.saveFile_RoughDem).getProperty();
 		JsonObject roughJson = getBoundaryJson(roughProperty);
 
+		// add the property to the overview jsonFile
+		// spend time of the unit simulation the boundary of unitDem(delicate and rough)
+		outJsonObject.addProperty(GlobalProperty.overviewProperty_mergeSpendTime, simulationTime);
 		outJsonObject.add(GlobalProperty.overviewProperty_mergeDelicateBoundary, delicateJson);
 		outJsonObject.add(GlobalProperty.overviewProperty_mergeRoughBoundary, roughJson);
-		this.overviewPorperty.add(GlobalProperty.overviewProperty_merge + "_" + index, outJsonObject);
+		this.overviewPorperty.add(GlobalProperty.overviewProperty_merge + index, outJsonObject);
 		new AtFileWriter(this.overviewPorperty, GlobalProperty.overViewPropertyFile).textWriter("");
 	}
 

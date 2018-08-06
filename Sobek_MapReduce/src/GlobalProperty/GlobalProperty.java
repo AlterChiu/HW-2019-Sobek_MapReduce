@@ -31,7 +31,8 @@ public class GlobalProperty {
 	public static String overViewPropertyFile = workSpace + propertyFileName;
 	public static String overviewProperty_delicateTotal = "SpendTime_delicateTotal";
 	public static String overviewProperty_roughTotal = "SpendTime_roughTotal";
-	public static String overviewProperty_merge = "mergeSplit";
+	public static String overviewProperty_merge = "mergeSplit_";
+	public static String overviewProperty_mergeSpendTime = "spendTime";
 	public static String overviewProperty_mergeDelicateBoundary = "DelicateBoundary";
 	public static String overviewProperty_mergeRoughBoundary = "RoughBoundary";
 
