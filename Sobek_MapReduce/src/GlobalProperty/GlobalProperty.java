@@ -22,6 +22,7 @@ public class GlobalProperty {
 	public static String caseFolder = sobekProjectName + "5\\";
 	public static String caseNetWork_NTW = caseFolder + "NETWORK.NTW";
 	public static String caseFrictionDescription = caseFolder + "FRICTION.DAT";
+	public static String caseNodeDescription = caseFolder + "NODES.DAT";
 	public static String caseNetWork_D12 = caseFolder + "NETWORK.D12";
 	public static String caseNetWork_D12_Template = workSpace + "NETWORK_Pt2.D12";
 

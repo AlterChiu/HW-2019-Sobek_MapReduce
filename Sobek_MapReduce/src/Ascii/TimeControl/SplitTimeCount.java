@@ -75,6 +75,7 @@ public class SplitTimeCount {
 
 				// check for the simulation time is over limit or not
 				Runtimes sobekRuntimes = new Runtimes();
+				System.out.println("simulation time unitDem " + index + " : " + sobekRuntimes.getSimulateTime());
 				if (sobekRuntimes.getSimulateTime() > GlobalProperty.totalAllowTime) {
 					// resetting some variable
 					// if the restTime coefficient is over 1, restart the whole process

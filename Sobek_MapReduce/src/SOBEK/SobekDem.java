@@ -25,6 +25,7 @@ public class SobekDem {
 	private List<String> networkFile = new ArrayList<String>();
 	private List<String> frictionFile = new ArrayList<String>();
 	private List<String[]> ptList;
+	private Map<String, Double[]> nodeList = new TreeMap<String, Double[]>();
 	private Map<Integer, List<String>> domnList = new TreeMap<Integer, List<String>>();
 	private AsciiBasicControl currentAscii;
 
@@ -41,6 +42,7 @@ public class SobekDem {
 		//
 		clearNetWork();
 		setNetwork();
+		setNode();
 		//
 		netWorkD12Creater();
 	}
@@ -195,7 +197,7 @@ public class SobekDem {
 				// remove the pt12 and make the index back
 				this.ptList.remove(ptIndex);
 				ptIndex = ptIndex - 1;
-			}else{
+			} else {
 				System.out.println(this.ptList.get(ptIndex)[2]);
 			}
 		}
@@ -255,6 +257,7 @@ public class SobekDem {
 
 		String temptLine;
 		Boolean D2CheckPoint = true;
+		Boolean nodeCheck = false;
 
 		while ((temptLine = br.readLine()) != null) {
 			if (!temptLine.contains("\"\",\"\",0,0,\"\",\"\",0,0,0,0,0,0,0,0,\"D2_")) {
@@ -262,6 +265,7 @@ public class SobekDem {
 				// checking save or not => total length
 				if (temptLine.contains("[")) {
 					D2CheckPoint = true;
+					nodeCheck = false;
 				}
 				if (temptLine.contains("[D2Grid description]")) {
 					D2CheckPoint = false;
@@ -269,20 +273,33 @@ public class SobekDem {
 				if (D2CheckPoint) {
 					this.networkFile.add(temptLine);
 				}
+				if (temptLine.contains("[Reach description]")) {
+					nodeCheck = true;
+				}
+
+				// create the nodeMap
+				if (nodeCheck) {
+					try {
+						String[] values = temptLine.split(",");
+						this.nodeList.put(values[2].split("\"")[1],
+								new Double[] { Double.parseDouble(values[6]), Double.parseDouble(values[7]) });
+					} catch (Exception e) {
+					}
+				}
 			}
 		}
 		br.close();
 	}
 
 	private void setNetwork() throws IOException {
-		
+
 		// D2_Description function
 		int d2_Description = this.networkFile.size();
 		List<String> d2_DescriptionList = new ArrayList<String>();
 		// get the D2Frid Description index
 		for (int index = 0; index < this.networkFile.size(); index++) {
 			if (this.networkFile.get(index).contains("[Model connection node]")) {
-				d2_Description = index-1;
+				d2_Description = index - 1;
 			}
 		}
 		d2_DescriptionList.add("");
@@ -346,6 +363,45 @@ public class SobekDem {
 		new AtFileWriter(this.networkFile.parallelStream().toArray(String[]::new), GlobalProperty.caseNetWork_NTW)
 				.setEncoding(AtFileWriter.ANSI).textWriter("");
 	}
-	// <====================================================================>
 
+	// <====================================================================>
+	//
+	/*
+	 * 
+	 * 
+	 */
+	// <===================>
+	// <Node.DAT>
+	// <===================>
+	// <====================================================================>
+	private void setNode() throws IOException {
+		String[][] nodeContent = new AtFileReader(GlobalProperty.caseNodeDescription).getStr();
+
+		// make the street level of nodes to the upper demLevel
+		for (int index = demList.size() - 1; index >= 0; index--) {
+			AsciiBasicControl ascii = new AsciiBasicControl(this.demList.get(index));
+
+			// check for the nodes.DAT
+			for (int line = 0; line < nodeContent.length; line++) {
+				try {
+					if (nodeContent[line][4].equals("3")) {
+						String nodeName = nodeContent[line][2].split("\'")[1];
+						Double[] coordinate = nodeList.get(nodeName);
+						String value = ascii.getValue(coordinate[0], coordinate[1]);
+						try {
+							Double.parseDouble(value);
+							if (!value.equals(ascii.getProperty().get("noData"))) {
+								nodeContent[line][12] =value; 
+							}
+						} catch (Exception e) {
+						}
+					}
+				} catch (Exception e) {
+				}
+			}
+		}
+
+		// output the nodes.DAT
+		new AtFileWriter(nodeContent, GlobalProperty.caseNodeDescription).textWriter(" ");
+	}
 }

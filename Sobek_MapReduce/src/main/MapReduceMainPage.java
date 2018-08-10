@@ -20,7 +20,6 @@ public class MapReduceMainPage {
 		initialize.setNetWork_Pt2File();
 
 		System.out.println("======= Delicate Time Count ================");
-		System.out.print("total\t");
 		totalTimeCount.DelicateTotalTimeCount();
 		initialize.createAfterTotalRun();
 
@@ -28,16 +27,17 @@ public class MapReduceMainPage {
 		InitailFloodTime initialFlood = new InitailFloodTime(GlobalProperty.saveFolder_Total_Delicate);
 		initialFlood.outPutFile(GlobalProperty.analysisDem_InitailFloodTimes);
 
-		System.out.println("======== Rough Time Count ================");
-		System.out.print("total\t");
+		System.out.println("========= Rough Time Count ===============");
 		totalTimeCount.RoughTotalTimeCount();
 
-		System.out.println("========== Set Split Size ==================");
+		System.out.println("========= Set Split Size ===================");
 		initialize.setSplitSize();
 		initialize.createAfterTotalRun();
 
 		System.out.println("========= Classified the dem ===============");
 		splitTimeCount.runSplitDem();
+		
+		System.out.println("========= Flood Result Analysis =============");
 
 	}
 

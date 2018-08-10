@@ -24,15 +24,6 @@ public class testMain {
 		// TODO Auto-generated method stub
 		FileFunction ff = new FileFunction();
 		
-//		String originalFileAdd = "S:\\Users\\alter\\Desktop\\tempt\\";
-//		for(String fileName : new File(originalFileAdd).list()) {
-//			ff.copyFile(originalFileAdd +fileName , "C:\\Sobek213\\Active12.lit\\5\\" + fileName);
-//		}
-//		System.out.print("original runtimes ");
-//		getTimes();
-//		System.out.println();
-//		
-//
 		SobekDem sobekDem = new SobekDem();
 		sobekDem.addNewDem(GlobalProperty.originalRough, GlobalProperty.originalRoughKn);
 		sobekDem.start();
