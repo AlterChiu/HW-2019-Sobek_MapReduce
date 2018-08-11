@@ -1,5 +1,6 @@
 package Ascii.TimeControl;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import usualTool.AtCommonMath;
 import usualTool.AtFileReader;
 import usualTool.AtFileWriter;
 import usualTool.AtKmeans;
-
+import usualTool.FileFunction;
 import GlobalProperty.GlobalProperty;
 
 public class SplitTimeCount {
@@ -26,7 +27,7 @@ public class SplitTimeCount {
 	private AsciiBasicControl originalDelicateAsciiKn;
 	private AsciiBasicControl originalRoughAscii;
 	private AsciiBasicControl originalRoughAsciiKn;
-	private List<List<Double[]>> kmeansClassified;
+	private List<List<Double[]>> classified;
 	private JsonObject overviewPorperty;
 	private double restTimeCoefficient = 0.6;
 
@@ -51,13 +52,15 @@ public class SplitTimeCount {
 		Boolean reStart = false;
 
 		// classified function
-		this.kmeansClassified = getKmeansClassified(GlobalProperty.splitSize);
+		// < K-means Method >
+		this.classified = getKmeansClassified(GlobalProperty.splitSize);
 		double restTime = GlobalProperty.totalAllowTime
 				- this.overviewPorperty.get(GlobalProperty.overviewProperty_delicateTotal).getAsDouble()
 						* restTimeCoefficient;
 
 		// loop for the classified
-		classifiedLoop: for (int index = 0; index < this.kmeansClassified.size(); index++) {
+		classifiedLoop: for (int index = 0; index < this.classified.size(); index++) {
+			String classifiedSaveFolder = GlobalProperty.saveFolder_Split + index + "\\";
 
 			// check the simulation time through Sobek;
 			Boolean simulationTimeCheck = true;
@@ -67,15 +70,15 @@ public class SplitTimeCount {
 
 				// run sobek model
 				SobekDem sobekDem = new SobekDem();
-				sobekDem.addNewDem(GlobalProperty.saveFolder_Merge + index + GlobalProperty.saveFile_DelicateDem,
-						GlobalProperty.saveFolder_Merge + index + GlobalProperty.saveFile_DelicateDemKn);
-				sobekDem.addNewDem(GlobalProperty.saveFolder_Merge + index + GlobalProperty.saveFile_RoughDem,
-						GlobalProperty.saveFolder_Merge + index + GlobalProperty.saveFile_RoughDemKn);
+				sobekDem.addNewDem(classifiedSaveFolder + GlobalProperty.saveFile_DelicateDem,
+						classifiedSaveFolder + GlobalProperty.saveFile_DelicateDemKn);
+				sobekDem.addNewDem(classifiedSaveFolder + GlobalProperty.saveFile_RoughDem,
+						classifiedSaveFolder + GlobalProperty.saveFile_RoughDemKn);
 				sobekDem.start();
 
 				// check for the simulation time is over limit or not
 				Runtimes sobekRuntimes = new Runtimes();
-				System.out.println("simulation time unitDem " + index + " : " + sobekRuntimes.getSimulateTime());
+				System.out.println("simulation time unitDem_" + index + " : " + sobekRuntimes.getSimulateTime());
 				if (sobekRuntimes.getSimulateTime() > GlobalProperty.totalAllowTime) {
 					// resetting some variable
 					// if the restTime coefficient is over 1, restart the whole process
@@ -87,11 +90,11 @@ public class SplitTimeCount {
 					simulationTimeCheck = false;
 					// outPut result to the overview property file
 					outPutResult(index, sobekRuntimes.getSimulateTime());
-					restTime = GlobalProperty.totalAllowTime
-							- this.overviewPorperty.get(GlobalProperty.overviewProperty_delicateTotal).getAsDouble()
-									* 0.6;
 				}
 			}
+
+			// copy the result of delicate demFile to the temptSave folder
+			moveRsult(classifiedSaveFolder);
 		}
 		// if need to reStart and run this function again
 		if (reStart) {
@@ -101,6 +104,14 @@ public class SplitTimeCount {
 		}
 	}
 	// <==========================================================>
+
+	private void moveRsult(String classfiedFolder) {
+		FileFunction ff = new FileFunction();
+		String[] outPutList = new File(GlobalProperty.sobekResultFolder).list();
+		for (String result : outPutList) {
+			ff.moveFile(GlobalProperty.sobekResultFolder + result, classfiedFolder + result);
+		}
+	}
 
 	// recreate the roughDem in unitDem, cause simulation time is over limit
 	private Boolean reStartJudgement(double simulationTime) throws IOException {
@@ -113,7 +124,7 @@ public class SplitTimeCount {
 			// and also set the variable to default
 			GlobalProperty.splitSize++;
 			MapReduceMainPage.initialize.createAfterTotalRun();
-			this.kmeansClassified = getKmeansClassified(GlobalProperty.splitSize);
+			this.classified = getKmeansClassified(GlobalProperty.splitSize);
 			this.restTimeCoefficient = 0.6;
 			restart = true;
 		} else {
@@ -128,20 +139,20 @@ public class SplitTimeCount {
 
 		// delicate
 		Map<String, String> delicateProperty = new AsciiBasicControl(
-				GlobalProperty.saveFolder_Merge + index + GlobalProperty.saveFile_DelicateDem).getProperty();
+				GlobalProperty.saveFolder_Split + index + GlobalProperty.saveFile_DelicateDem).getProperty();
 		JsonObject delicateJson = getBoundaryJson(delicateProperty);
 
 		// rough
 		Map<String, String> roughProperty = new AsciiBasicControl(
-				GlobalProperty.saveFolder_Merge + index + GlobalProperty.saveFile_RoughDem).getProperty();
+				GlobalProperty.saveFolder_Split + index + GlobalProperty.saveFile_RoughDem).getProperty();
 		JsonObject roughJson = getBoundaryJson(roughProperty);
 
 		// add the property to the overview jsonFile
 		// spend time of the unit simulation the boundary of unitDem(delicate and rough)
-		outJsonObject.addProperty(GlobalProperty.overviewProperty_mergeSpendTime, simulationTime);
-		outJsonObject.add(GlobalProperty.overviewProperty_mergeDelicateBoundary, delicateJson);
-		outJsonObject.add(GlobalProperty.overviewProperty_mergeRoughBoundary, roughJson);
-		this.overviewPorperty.add(GlobalProperty.overviewProperty_merge + index, outJsonObject);
+		outJsonObject.addProperty(GlobalProperty.overviewProperty_SplitSpendTime, simulationTime);
+		outJsonObject.add(GlobalProperty.overviewProperty_SplitDelicateBoundary, delicateJson);
+		outJsonObject.add(GlobalProperty.overviewProperty_SplitRoughBoundary, roughJson);
+		this.overviewPorperty.add(GlobalProperty.overviewProperty_Split + index, outJsonObject);
 		new AtFileWriter(this.overviewPorperty, GlobalProperty.overViewPropertyFile).textWriter("");
 	}
 
@@ -160,17 +171,17 @@ public class SplitTimeCount {
 	private void determineUnitDem(int index, double restTime) throws IOException {
 		// determine the delicate ascii and kn file
 		double delicateCellSize = Double.parseDouble(this.originalDelicateAscii.getProperty().get("cellSize"));
-		Map<String, Double> classifiedBoundary = getListStatics(this.kmeansClassified.get(index));
+		Map<String, Double> classifiedBoundary = getListStatics(this.classified.get(index));
 		String[][] delicateAscii = new AsciiIntercept(this.originalDelicateAscii).getIntercept(
 				classifiedBoundary.get("minX") - delicateCellSize, classifiedBoundary.get("maxX") + delicateCellSize,
 				classifiedBoundary.get("minY") - delicateCellSize, classifiedBoundary.get("maxY") + delicateCellSize);
 		String[][] delicateAsciiKn = new AsciiIntercept(this.originalDelicateAsciiKn).getIntercept(
 				classifiedBoundary.get("minX") - delicateCellSize, classifiedBoundary.get("maxX") + delicateCellSize,
 				classifiedBoundary.get("minY") - delicateCellSize, classifiedBoundary.get("maxY") + delicateCellSize);
-		new AtFileWriter(delicateAscii, GlobalProperty.saveFolder_Merge + index + GlobalProperty.saveFile_DelicateDem)
+		new AtFileWriter(delicateAscii, GlobalProperty.saveFolder_Split + index + GlobalProperty.saveFile_DelicateDem)
 				.textWriter("    ");
 		new AtFileWriter(delicateAsciiKn,
-				GlobalProperty.saveFolder_Merge + index + GlobalProperty.saveFile_DelicateDemKn).textWriter("    ");
+				GlobalProperty.saveFolder_Split + index + GlobalProperty.saveFile_DelicateDemKn).textWriter("    ");
 
 		// determine the rough ascii and kn file
 		double roughCellSize = Double.parseDouble(this.originalRoughAscii.getProperty().get("cellSize"));
@@ -181,9 +192,9 @@ public class SplitTimeCount {
 		String[][] roughAsciiKn = new AsciiIntercept(this.originalRoughAsciiKn).getIntercept(
 				roughBoundary.get("minX") - roughCellSize, roughBoundary.get("maxX") + roughCellSize,
 				roughBoundary.get("minY") - roughCellSize, roughBoundary.get("maxY") + roughCellSize);
-		new AtFileWriter(roughAscii, GlobalProperty.saveFolder_Merge + index + GlobalProperty.saveFile_RoughDem)
+		new AtFileWriter(roughAscii, GlobalProperty.saveFolder_Split + index + GlobalProperty.saveFile_RoughDem)
 				.textWriter("    ");
-		new AtFileWriter(roughAsciiKn, GlobalProperty.saveFolder_Merge + index + GlobalProperty.saveFile_RoughDemKn)
+		new AtFileWriter(roughAsciiKn, GlobalProperty.saveFolder_Split + index + GlobalProperty.saveFile_RoughDemKn)
 				.textWriter("    ");
 	}
 
@@ -207,7 +218,7 @@ public class SplitTimeCount {
 
 	// get the kmeans classified
 	private List<List<Double[]>> getKmeansClassified(int floodInitialTimes) throws IOException {
-		AsciiBasicControl ascii = new AsciiBasicControl(GlobalProperty.analysisDem_InitailFloodTimes);
+		AsciiBasicControl ascii = new AsciiBasicControl(GlobalProperty.saveFile_Analysis_InitailFlood);
 		List<Double[]> analysisData = new ArrayList<Double[]>();
 
 		// read the ascii content which value is under limit

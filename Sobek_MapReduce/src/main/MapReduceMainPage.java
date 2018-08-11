@@ -3,6 +3,7 @@ package main;
 import java.io.IOException;
 
 import Analysis.DelicateTotal.FloodInitail.InitailFloodTime;
+import Analysis.Result.MergeSplit.MergeSplitResult;
 import Ascii.TimeControl.SplitTimeCount;
 import Ascii.TimeControl.TotalTimeCount;
 import GlobalProperty.GlobalProperty;
@@ -24,8 +25,9 @@ public class MapReduceMainPage {
 		initialize.createAfterTotalRun();
 
 		// prepare for splitting unitDem
+		System.out.println("======== Get The InitailFlood Time ===========");
 		InitailFloodTime initialFlood = new InitailFloodTime(GlobalProperty.saveFolder_Total_Delicate);
-		initialFlood.outPutFile(GlobalProperty.analysisDem_InitailFloodTimes);
+		initialFlood.outPutFile(GlobalProperty.saveFile_Analysis_InitailFlood);
 
 		System.out.println("========= Rough Time Count ===============");
 		totalTimeCount.RoughTotalTimeCount();
@@ -36,8 +38,9 @@ public class MapReduceMainPage {
 
 		System.out.println("========= Classified the dem ===============");
 		splitTimeCount.runSplitDem();
-		
+
 		System.out.println("========= Flood Result Analysis =============");
+		new MergeSplitResult();
 
 	}
 

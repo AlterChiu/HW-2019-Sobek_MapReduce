@@ -16,6 +16,7 @@ import java.util.TreeMap;
 import GlobalProperty.GlobalProperty;
 import asciiFunction.AsciiBasicControl;
 import asciiFunction.AsciiIntercept;
+import usualTool.AtCommonMath;
 import usualTool.AtFileReader;
 import usualTool.AtFileWriter;
 
@@ -36,7 +37,7 @@ public class SobekDem {
 
 	public void start() throws IOException {
 		this.ptList = new ArrayList<String[]>(
-				Arrays.asList(new AtFileReader(GlobalProperty.caseNetWork_D12_Template).getStr()));
+				Arrays.asList(new AtFileReader(GlobalProperty.saveFile_SobekNetWorkD12_Pt2).getStr()));
 		clearFriction();
 		setFriction();
 		//
@@ -380,6 +381,7 @@ public class SobekDem {
 		// make the street level of nodes to the upper demLevel
 		for (int index = demList.size() - 1; index >= 0; index--) {
 			AsciiBasicControl ascii = new AsciiBasicControl(this.demList.get(index));
+			String nullValue = ascii.getProperty().get("noData");
 
 			// check for the nodes.DAT
 			for (int line = 0; line < nodeContent.length; line++) {
@@ -388,17 +390,48 @@ public class SobekDem {
 						String nodeName = nodeContent[line][2].split("\'")[1];
 						Double[] coordinate = nodeList.get(nodeName);
 						String value = ascii.getValue(coordinate[0], coordinate[1]);
-						try {
-							Double.parseDouble(value);
-							if (!value.equals(ascii.getProperty().get("noData"))) {
-								nodeContent[line][12] =value; 
+
+						// check for the demFile is contain this node or not
+						if (!value.equals(nullValue)) {
+
+							// check for the streetLevel of mainHole, it must higher than bottomLevel
+							double bottomLevel = Double.parseDouble(nodeContent[line][10]);
+							if (Double.parseDouble(value) <= bottomLevel) {
+								nodeContent[line][12] = value;
+							} else {
+
+								// if streetLevel is lower than bottomLevel
+								// select the mean level which is higher than bottomLevel
+								// than renew the demFile and streetLevel
+								int position[] = ascii.getPosition(coordinate[0], coordinate[1]);
+								List<Double> meanList = new ArrayList<Double>();
+								for (int row = -1; row <= 1; row++) {
+									for (int column = -1; column <= 1; column++) {
+										try {
+											String temptValue = ascii.getValue(position[0] + column, position[1] + row);
+											if (!temptValue.equals(nullValue)
+													&& Double.parseDouble(temptValue) > bottomLevel) {
+												meanList.add(Double.parseDouble(temptValue));
+											}
+										} catch (Exception e) {
+										}
+									}
+								}
+								String meanValue;
+								try {
+									meanValue = new AtCommonMath(meanList).getMean() + "";
+								} catch (Exception e) {
+									meanValue = nullValue;
+								}
+								ascii.setValue(coordinate[0], coordinate[1], meanValue);
+								nodeContent[line][12] = meanValue;
 							}
-						} catch (Exception e) {
 						}
 					}
 				} catch (Exception e) {
 				}
 			}
+			new AtFileWriter(ascii.getAsciiFile(), this.demList.get(index)).textWriter("    ");
 		}
 
 		// output the nodes.DAT

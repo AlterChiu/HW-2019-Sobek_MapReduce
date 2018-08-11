@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import Analysis.DelicateTotal.FloodInitail.InitailFloodTime;
-import Analysis.DelicateTotal.maxd0.GetMaxFloodArea;
+
 import GlobalProperty.GlobalProperty;
 import SOBEK.Runtimes;
 import SOBEK.SobekDem;
@@ -24,12 +24,15 @@ public class testMain {
 		// TODO Auto-generated method stub
 		FileFunction ff = new FileFunction();
 		
-		SobekDem sobekDem = new SobekDem();
-		sobekDem.addNewDem(GlobalProperty.originalRough, GlobalProperty.originalRoughKn);
-		sobekDem.start();
+//		SobekDem sobekDem = new SobekDem();
+//		sobekDem.addNewDem(GlobalProperty.originalRough, GlobalProperty.originalRoughKn);
+//		sobekDem.start();
 //		System.out.print("test runtimes ");
 //		getTimes();
 //		System.out.println();
+		
+		InitializeFolder initial = new InitializeFolder();
+		initial.createBeforeTotalRun();
 		
 	
 	}

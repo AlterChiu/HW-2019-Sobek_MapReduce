@@ -24,7 +24,6 @@ public class GlobalProperty {
 	public static String caseFrictionDescription = caseFolder + "FRICTION.DAT";
 	public static String caseNodeDescription = caseFolder + "NODES.DAT";
 	public static String caseNetWork_D12 = caseFolder + "NETWORK.D12";
-	public static String caseNetWork_D12_Template = workSpace + "NETWORK_Pt2.D12";
 
 	// timeCount Property
 	// ================================================
@@ -32,10 +31,10 @@ public class GlobalProperty {
 	public static String overViewPropertyFile = workSpace + propertyFileName;
 	public static String overviewProperty_delicateTotal = "SpendTime_delicateTotal";
 	public static String overviewProperty_roughTotal = "SpendTime_roughTotal";
-	public static String overviewProperty_merge = "mergeSplit_";
-	public static String overviewProperty_mergeSpendTime = "spendTime";
-	public static String overviewProperty_mergeDelicateBoundary = "DelicateBoundary";
-	public static String overviewProperty_mergeRoughBoundary = "RoughBoundary";
+	public static String overviewProperty_Split = "mergeSplit_";
+	public static String overviewProperty_SplitSpendTime = "spendTime";
+	public static String overviewProperty_SplitDelicateBoundary = "DelicateBoundary";
+	public static String overviewProperty_SplitRoughBoundary = "RoughBoundary";
 
 	// SOBEK Runtimes folder
 	// =======================================================
@@ -58,12 +57,6 @@ public class GlobalProperty {
 	public static String originalRoughNull = workSpace + "OriginalDEM\\ZoneU1_40mNULL.asc";
 
 	//
-	// Revise DemFolder
-	// dem boundary by maxD0 of the total delicate result
-	public static String analysisDemFolder = workSpace + "\\Analysis\\";
-	public static String analysisDem_InitailFloodTimes = analysisDemFolder + "initialFloodTimes.asc";
-
-	//
 	// SAVE Folder
 	// ================================================
 	// total
@@ -71,9 +64,20 @@ public class GlobalProperty {
 	public static String saveFolder_Total_Delicate = saveFolder_Total + "\\delicate\\";
 	public static String saveFolder_Total_Rough = saveFolder_Total + "\\rough\\";
 
-	
-	//=================================================
-	//merge folder
+	// =================================================
+	// split folder
+	public static String saveFolder_Split = workSpace + "\\split\\";
+
+	// ================================================
+	// Analysis
+	//
+	// Revise DemFolder
+	// dem boundary by maxD0 of the total delicate result
+	public static String saveFolder_Analysis = workSpace + "\\Analysis\\";
+	public static String saveFile_Analysis_InitailFlood = saveFolder_Analysis + "initialFloodTimes.asc";
+
+	// =================================================
+	// merge folder
 	public static String saveFolder_Merge = workSpace + "\\merge\\";
 
 	// =================================================
@@ -83,6 +87,13 @@ public class GlobalProperty {
 	public static String saveFile_RoughDem = "\\roughDem.asc";
 	public static String saveFile_RoughDemKn = "\\roughDem(kn).asc";
 
+	// =================================================
+	// Sobek model file
+	public static String saveFile_Sobek = workSpace + "\\sobekModel\\";
+	public static String saveFile_SobekNetWorkNtw = saveFile_Sobek + "NETWORK.NTW";
+	public static String saveFile_SobekNetWorkD12 = saveFile_Sobek + "NETWORK.D12";
+	public static String saveFile_SobekFriction = saveFile_Sobek + "FRICTION.DAT";
+	public static String saveFile_SobekNetWorkD12_Pt2 = workSpace + "NETWORK_Pt2.D12";
 
 	// ===============================================
 	// NULL DEM VALUE

@@ -37,14 +37,26 @@ public class InitializeFolder {
 		ff.newFolder(GlobalProperty.saveFolder_Total);
 		ff.newFolder(GlobalProperty.saveFolder_Total_Delicate);
 		ff.newFolder(GlobalProperty.saveFolder_Total_Rough);
+
+		// =============== Sobek Model ================
+		ff.newFolder(GlobalProperty.saveFile_Sobek);
+		ff.copyFile(GlobalProperty.caseFrictionDescription, GlobalProperty.saveFile_SobekFriction);
+		ff.copyFile(GlobalProperty.caseNetWork_D12, GlobalProperty.saveFile_SobekNetWorkD12);
+		ff.copyFile(GlobalProperty.caseNetWork_NTW, GlobalProperty.saveFile_SobekNetWorkNtw);
+
+		// =============== Merge Save Folder =============
+		ff.newFolder(GlobalProperty.saveFolder_Merge);
+
+		// =============== Analysis Folder ===============
+		ff.newFolder(GlobalProperty.saveFolder_Analysis);
 	}
 
 	public void createAfterTotalRun() throws IOException {
-		// ====================merge==================
-		ff.delFolder(GlobalProperty.saveFolder_Merge);
-		ff.newFolder(GlobalProperty.saveFolder_Merge);
+		// ====================Split==================
+		ff.delFolder(GlobalProperty.saveFolder_Split);
+		ff.newFolder(GlobalProperty.saveFolder_Split);
 		for (int i = 0; i < GlobalProperty.splitSize; i++) {
-			ff.newFolder(GlobalProperty.saveFolder_Merge + i);
+			ff.newFolder(GlobalProperty.saveFolder_Split + i);
 		}
 	}
 
@@ -77,8 +89,8 @@ public class InitializeFolder {
 			if (e[0].equals("PT12"))
 				pt12List.add(e);
 		});
-		new AtFileWriter(pt12List.parallelStream().toArray(String[][]::new), GlobalProperty.caseNetWork_D12_Template)
-				.textWriter(" ");
+		new AtFileWriter(pt12List.parallelStream().toArray(String[][]::new),
+				GlobalProperty.saveFile_SobekNetWorkD12_Pt2).textWriter(" ");
 	}
 
 	public void setSplitSize() throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
