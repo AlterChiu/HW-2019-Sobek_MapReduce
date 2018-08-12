@@ -396,7 +396,7 @@ public class SobekDem {
 
 							// check for the streetLevel of mainHole, it must higher than bottomLevel
 							double bottomLevel = Double.parseDouble(nodeContent[line][10]);
-							if (Double.parseDouble(value) <= bottomLevel) {
+							if (Double.parseDouble(value)  >=bottomLevel) {
 								nodeContent[line][12] = value;
 							} else {
 

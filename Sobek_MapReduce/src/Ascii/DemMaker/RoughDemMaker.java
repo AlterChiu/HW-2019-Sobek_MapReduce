@@ -12,92 +12,65 @@ import usualTool.AtFileWriter;
 import usualTool.AtListFunction;
 
 public class RoughDemMaker {
-	private String delicateDem = GlobalProperty.originalDelicate;
-	private String delicateKnDem = GlobalProperty.originalDelicateKn;
-	private String roughDem = GlobalProperty.originalRough;
-	private String roughKnDem = GlobalProperty.originalRoughKn;
-	private String roughNullDem = GlobalProperty.originalRoughNull;
-	
 
-	// double grid size to the delicate one
-	public RoughDemMaker() throws IOException {
+	public void setRoughDem(String roughTemplate) throws IOException {
+		AsciiBasicControl roughAscii = new AsciiBasicControl(roughTemplate);
+		AsciiBasicControl delicateAscii = new AsciiBasicControl(GlobalProperty.originalDelicate);
+		double cellSize = Double.parseDouble(delicateAscii.getProperty().get("cellSize"));
 
-		// ====================ChangeGridDem============================
-		new AtFileWriter(new AsciiGridChange(this.delicateDem).getChangedContent(2), this.roughDem).textWriter("    ");
-		
-		
-		// =============GetRoughDem     &&       GetDelicateKnDem================
-		AsciiBasicControl delicateKnAscii = new AsciiBasicControl(this.delicateKnDem);
-		AsciiBasicControl roughAscii = new AsciiBasicControl(this.roughDem);
-		
-		TreeMap<String,String> delicateProperty = delicateKnAscii.getProperty();
-		TreeMap<String,String> roughProperty = roughAscii.getProperty();
-		
-		double roughStartX = Double.parseDouble(roughProperty.get("bottomX"));
-		double roughStartY = Double.parseDouble(roughProperty.get("topY"));
-		
-		double roughCellSize = Double.parseDouble(roughProperty.get("cellSize"));
-		double delicateCellSize = Double.parseDouble(delicateProperty.get("cellSize"));
-		
-		String roughNoData = roughProperty.get("noData");
-		String delicateNoData = delicateProperty.get("noData");
-		
-		String roughAsciiGird[][] = roughAscii.getAsciiGrid();
-		
-		
-		//=====================temptSave of the output Kn dem    &&    the   null  File================
-		ArrayList<String[]> temptOutKn = new ArrayList<String[]>();
-		ArrayList<String[]> temptOutNull = new ArrayList<String[]>();
-		
-		//===================== add the rough dem property==================
-		Arrays.asList(roughAscii.getPropertyText()).forEach(line -> temptOutKn.add(line));
-		Arrays.asList(roughAscii.getPropertyText()).forEach(line -> temptOutNull.add(line));
-		
-		
-	
-		
-//		====================================================
-//		===============read the rough dem file=====================
-//		====================================================
-		for (int row = 0; row < roughAsciiGird.length; row++) {
-			double temptRoughY  = roughStartY -row*roughCellSize;
-			ArrayList<String> temptKnLine = new ArrayList<String>();
-			ArrayList<String> temptNullArray = new ArrayList<String>();
-			
-			for (int column = 0; column < roughAsciiGird[row].length; column++) {
-				double temptRoughX = roughStartX + column*roughCellSize;
-				
-				
-//				===================== get the kn value==================
-				ArrayList<String> knList = new ArrayList<String>();
-				for(int differY = -1 ; differY <=1 ; differY = differY+2) {
-					for(int differX = -1 ; differX <=1 ; differX = differX +2) {
-						String temptValue = delicateKnAscii.getValue(temptRoughX + differX*0.5*delicateCellSize, temptRoughY + differY*0.5*delicateCellSize);
-						if(!temptValue.equals(delicateNoData) && !temptValue.equals("")) {
-							knList.add(temptValue);
-						}
-					}
+		String roughNull = roughAscii.getProperty().get("noData");
+		String delicateNull = delicateAscii.getProperty().get("noData");
+
+		// clip the rough demFile by the boundary of the delicate one
+		double minX = Double.parseDouble(delicateAscii.getProperty().get("bottomX")) - 0.5 * cellSize;
+		double minY = Double.parseDouble(delicateAscii.getProperty().get("bottomY")) - 0.5 * cellSize;
+		double maxX = Double.parseDouble(delicateAscii.getProperty().get("topX")) + 0.5 * cellSize;
+		double maxY = Double.parseDouble(delicateAscii.getProperty().get("topY")) + 0.5 * cellSize;
+		roughAscii = new AsciiBasicControl(roughAscii.getClipAsciiFile(minX, minY, maxX, maxY));
+
+		String roughContent[][] = roughAscii.getAsciiGrid();
+		for (int row = 0; row < roughContent.length; row++) {
+			for (int column = 0; column < roughContent[0].length; column++) {
+				double[] coordinate = roughAscii.getCoordinate(column, row);
+				String temptValue = delicateAscii.getValue(coordinate[0], coordinate[1]);
+
+				// if the value in this position is null (delicate one)
+				// set the rough one to null
+				if (temptValue.equals(delicateNull)) {
+					roughAscii.setValue(column, row, roughNull);
 				}
-				
-//				============get the kn value while repeat in most times===============
-				try {
-					String knValue = new AtListFunction<String>(knList).getMaxReapt().get(0);
-					temptKnLine.add(knValue);
-				}catch(Exception e) {
-					temptKnLine.add(roughNoData);
-				}
-				
-				// Null asciiMaker
-				temptNullArray.add(roughNoData);
 			}
-			temptOutKn.add(temptKnLine.parallelStream().toArray(String[]::new));
-			temptOutNull.add(temptNullArray.parallelStream().toArray(String[]::new));
 		}
-		
-		
-//		==========================Out put the kn value grid    &&  the null File =====================
-		new AtFileWriter(temptOutKn.parallelStream().toArray(String[][]::new) , this.roughKnDem).textWriter("    ");
-		new AtFileWriter(temptOutNull.parallelStream().toArray(String[][]::new) , this.roughNullDem).textWriter("    ");
+
+		new AtFileWriter(roughAscii.getAsciiFile(), GlobalProperty.originalRough).textWriter("    ");
+		setRoughDem();
 	}
 
+	public void setRoughDem() throws IOException {
+		new AtFileWriter(new AsciiGridChange(GlobalProperty.originalDelicate).getChangedContent(2),
+				GlobalProperty.originalRough).textWriter("    ");
+		setRoughKn();
+	}
+
+	private void setRoughKn() throws IOException {
+		AsciiBasicControl delicateKn = new AsciiBasicControl(GlobalProperty.originalDelicateKn);
+		AsciiBasicControl roughKn = new AsciiBasicControl(GlobalProperty.originalRough);
+		String roughNull = roughKn.getProperty().get("noData");
+		String delicateNull = delicateKn.getProperty().get("noData");
+		String[][] roughContent = roughKn.getAsciiGrid();
+
+		for (int row = 0; row < roughContent.length; row++) {
+			for (int column = 0; column < roughContent[0].length; column++) {
+				double[] coordinate = roughKn.getCoordinate(column, row);
+				String temptValue = delicateKn.getValue(coordinate[0], coordinate[1]);
+				if (!temptValue.equals(delicateNull)) {
+					roughKn.setValue(column, row, temptValue);
+				} else {
+					roughKn.setValue(column, row, roughNull);
+				}
+			}
+		}
+
+		new AtFileWriter(roughKn.getAsciiFile(), GlobalProperty.originalRoughKn).textWriter("    ");
+	}
 }

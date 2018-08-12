@@ -51,6 +51,7 @@ public class TotalTimeCount {
 		FileFunction ff = new FileFunction();
 		SobekDem sobekDem = new SobekDem();
 		sobekDem.addNewDem(demFile, knFile);
+		sobekDem.start();
 
 		// run sobek model
 		Runtimes sobekRuntimes = new Runtimes();
