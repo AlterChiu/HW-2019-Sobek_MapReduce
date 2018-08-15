@@ -29,7 +29,7 @@ public class SplitTimeCount {
 	private AsciiBasicControl originalRoughAsciiKn;
 	private List<List<Double[]>> classified;
 	private JsonObject overviewPorperty;
-	private double restTimeCoefficient = 0.6;
+	private double restTimeCoefficient = 1.2;
 
 	//
 	// <=====================>
@@ -53,13 +53,13 @@ public class SplitTimeCount {
 
 		// classified function
 		// < K-means Method >
-		this.classified = getKmeansClassified(GlobalProperty.splitSize);
+		this.classified = getKmeansClassified(GlobalProperty.K_meansInitialTime);
 		double restTime = GlobalProperty.totalAllowTime
 				- this.overviewPorperty.get(GlobalProperty.overviewProperty_delicateTotal).getAsDouble()
-						* restTimeCoefficient;
+						* restTimeCoefficient / GlobalProperty.splitSize;
 
 		// loop for the classified
-		classifiedLoop: for (int index = 0; index < this.classified.size(); index++) {
+		classifiedLoop: for (int index = 0; index < GlobalProperty.splitSize; index++) {
 			String classifiedSaveFolder = GlobalProperty.saveFolder_Split + index + "\\";
 
 			// check the simulation time through Sobek;
@@ -70,9 +70,9 @@ public class SplitTimeCount {
 
 				// run sobek model
 				SobekDem sobekDem = new SobekDem();
-				sobekDem.addNewDem(classifiedSaveFolder + GlobalProperty.saveFile_DelicateDem,
+				sobekDem.addDelicateDem(classifiedSaveFolder + GlobalProperty.saveFile_DelicateDem,
 						classifiedSaveFolder + GlobalProperty.saveFile_DelicateDemKn);
-				sobekDem.addNewDem(classifiedSaveFolder + GlobalProperty.saveFile_RoughDem,
+				sobekDem.addRoughDem(classifiedSaveFolder + GlobalProperty.saveFile_RoughDem,
 						classifiedSaveFolder + GlobalProperty.saveFile_RoughDemKn);
 				sobekDem.start();
 
@@ -116,7 +116,7 @@ public class SplitTimeCount {
 	// recreate the roughDem in unitDem, cause simulation time is over limit
 	private Boolean reStartJudgement(double simulationTime) throws IOException {
 		Boolean restart = false;
-		if (this.restTimeCoefficient >= 1) {
+		if (this.restTimeCoefficient >= 1.2) {
 			System.out.println("simulation time of the delicate dem is over limit");
 			System.out.println("resetting the split number of the unitDem");
 
@@ -125,7 +125,7 @@ public class SplitTimeCount {
 			GlobalProperty.splitSize++;
 			MapReduceMainPage.initialize.createAfterTotalRun();
 			this.classified = getKmeansClassified(GlobalProperty.splitSize);
-			this.restTimeCoefficient = 0.6;
+			this.restTimeCoefficient = 1.2;
 			restart = true;
 		} else {
 			this.restTimeCoefficient = this.restTimeCoefficient * 1.1;
@@ -198,6 +198,7 @@ public class SplitTimeCount {
 				.textWriter("    ");
 	}
 
+	// get the boundary of xyList in K-means
 	private Map<String, Double> getListStatics(List<Double[]> staticsList) {
 		Map<String, Double> outMap = new TreeMap<String, Double>();
 		List<Double> xList = new ArrayList<Double>();

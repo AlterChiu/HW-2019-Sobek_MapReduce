@@ -1,9 +1,9 @@
 package GlobalProperty;
 
 public class GlobalProperty {
-	// DEM split size =======> 5%
 	// ==========================================
 	public static int splitSize = 1;
+	public static int K_meansInitialTime = 4;
 	// DEM split time ========> 0.7 hour
 	// ==========================================
 	public static double splitTime = 0.7 * 3600000;
@@ -89,11 +89,12 @@ public class GlobalProperty {
 
 	// =================================================
 	// Sobek model file
-	public static String saveFile_Sobek = workSpace + "\\sobekModel\\";
-	public static String saveFile_SobekNetWorkNtw = saveFile_Sobek + "NETWORK.NTW";
-	public static String saveFile_SobekNetWorkD12 = saveFile_Sobek + "NETWORK.D12";
-	public static String saveFile_SobekFriction = saveFile_Sobek + "FRICTION.DAT";
-	public static String saveFile_SobekNetWorkD12_Pt2 = workSpace + "NETWORK_Pt2.D12";
+	public static String saveFolder_Sobek = workSpace + "\\sobekModel\\";
+	public static String saveFile_SobekNetWorkNtw = saveFolder_Sobek + "NETWORK.NTW";
+	public static String saveFile_SobekNetWorkD12 = saveFolder_Sobek + "NETWORK.D12";
+	public static String saveFile_SobekFriction = saveFolder_Sobek + "FRICTION.DAT";
+	public static String saveFile_SobekNetWorkD12_Pt2 = saveFolder_Sobek + "NETWORK_Pt2.D12";
+	public static String saveFile_SobekNodes = saveFolder_Sobek + "NODES.DAT";
 
 	// ===============================================
 	// NULL DEM VALUE

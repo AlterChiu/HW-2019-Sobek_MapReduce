@@ -13,33 +13,33 @@ public class MapReduceMainPage {
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		TotalTimeCount totalTimeCount = new TotalTimeCount();
-		SplitTimeCount splitTimeCount = new SplitTimeCount();
-
 		System.out.println("========= Initialize Folder =================");
+		initialize.resetWorkSpace();
 		initialize.createBeforeTotalRun();
 		initialize.setNetWork_Pt2File();
 
 		System.out.println("======= Delicate Time Count ================");
+		TotalTimeCount totalTimeCount = new TotalTimeCount();
 		totalTimeCount.DelicateTotalTimeCount();
 		initialize.createAfterTotalRun();
 
 		// prepare for splitting unitDem
-		System.out.println("======== Get The InitailFlood Time ===========");
+		System.out.println("====== Get The InitailFlood Time ==============");
 		InitailFloodTime initialFlood = new InitailFloodTime(GlobalProperty.saveFolder_Total_Delicate);
 		initialFlood.outPutFile(GlobalProperty.saveFile_Analysis_InitailFlood);
 
-		System.out.println("========= Rough Time Count ===============");
+		System.out.println("======== Rough Time Count ================");
 		totalTimeCount.RoughTotalTimeCount();
 
 		System.out.println("========= Set Split Size ===================");
 		initialize.setSplitSize();
 		initialize.createAfterTotalRun();
 
-		System.out.println("========= Classified the dem ===============");
+		System.out.println("======== Classified the dem ================");
+		SplitTimeCount splitTimeCount = new SplitTimeCount();
 		splitTimeCount.runSplitDem();
 
-		System.out.println("========= Flood Result Analysis =============");
+		System.out.println("======= Flood Result Analysis ===============");
 		new MergeSplitResult();
 
 	}

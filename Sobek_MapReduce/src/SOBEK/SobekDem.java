@@ -2,13 +2,11 @@ package SOBEK;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -19,6 +17,7 @@ import asciiFunction.AsciiIntercept;
 import usualTool.AtCommonMath;
 import usualTool.AtFileReader;
 import usualTool.AtFileWriter;
+import usualTool.FileFunction;
 
 public class SobekDem {
 	private List<String> demList = new ArrayList<String>();
@@ -30,22 +29,54 @@ public class SobekDem {
 	private Map<Integer, List<String>> domnList = new TreeMap<Integer, List<String>>();
 	private AsciiBasicControl currentAscii;
 
-	public void addNewDem(String demFile, String knFile) {
-		demList.add(demFile);
-		knList.add(knFile.toUpperCase());
+	private String delicateDem = null;
+	private String delicateDemKn = null;
+	private String roughDem = null;
+	private String roughDemKn = null;
+
+	public void addDelicateDem(String demFile, String knFile) {
+		this.delicateDem = demFile;
+		this.delicateDemKn = knFile;
+	}
+
+	public void addRoughDem(String demFile, String knFile) {
+		this.roughDem = demFile;
+		this.roughDemKn = knFile;
 	}
 
 	public void start() throws IOException {
+		// reset
+		resetSobekFile();
+		clearFriction();
+		clearNetWork();
 		this.ptList = new ArrayList<String[]>(
 				Arrays.asList(new AtFileReader(GlobalProperty.saveFile_SobekNetWorkD12_Pt2).getStr()));
-		clearFriction();
+
+		// setting the demFile
+		if (this.delicateDem != null) {
+			this.demList.add(this.delicateDem);
+			this.knList.add(this.delicateDemKn);
+		}
+		if (this.roughDem != null) {
+			this.demList.add(this.roughDem);
+			this.knList.add(this.roughDemKn);
+			setNode();
+		}
 		setFriction();
-		//
-		clearNetWork();
 		setNetwork();
-		setNode();
-		//
+
 		netWorkD12Creater();
+	}
+
+	// <=============================>
+	// <reset sobek file>
+	// <=============================>
+	private void resetSobekFile() {
+		FileFunction ff = new FileFunction();
+		ff.copyFile(GlobalProperty.saveFile_SobekFriction, GlobalProperty.caseFrictionDescription);
+		ff.copyFile(GlobalProperty.saveFile_SobekNetWorkD12, GlobalProperty.caseNetWork_D12);
+		ff.copyFile(GlobalProperty.saveFile_SobekNetWorkNtw, GlobalProperty.caseNetWork_NTW);
+		ff.copyFile(GlobalProperty.saveFile_SobekNodes, GlobalProperty.caseNodeDescription);
 	}
 
 	/*
@@ -199,7 +230,6 @@ public class SobekDem {
 				this.ptList.remove(ptIndex);
 				ptIndex = ptIndex - 1;
 			} else {
-				System.out.println(this.ptList.get(ptIndex)[2]);
 			}
 		}
 		// end the domn
@@ -217,7 +247,7 @@ public class SobekDem {
 	// <================================================================>
 	private void clearFriction() throws IOException {
 		BufferedReader br = new BufferedReader(
-				new InputStreamReader(new FileInputStream(GlobalProperty.caseFrictionDescription), AtFileReader.ANSI));
+				new InputStreamReader(new FileInputStream(GlobalProperty.saveFile_SobekFriction), AtFileReader.ANSI));
 		String tempt;
 		while ((tempt = br.readLine()) != null) {
 			if (!tempt.contains("\'D2_")) {
@@ -254,7 +284,7 @@ public class SobekDem {
 	// <====================================================================>
 	private void clearNetWork() throws IOException {
 		BufferedReader br = new BufferedReader(
-				new InputStreamReader(new FileInputStream(GlobalProperty.caseNetWork_NTW), AtFileReader.ANSI));
+				new InputStreamReader(new FileInputStream(GlobalProperty.saveFile_SobekNetWorkNtw), AtFileReader.ANSI));
 
 		String temptLine;
 		Boolean D2CheckPoint = true;
@@ -376,65 +406,75 @@ public class SobekDem {
 	// <===================>
 	// <====================================================================>
 	private void setNode() throws IOException {
-		String[][] nodeContent = new AtFileReader(GlobalProperty.caseNodeDescription).getStr();
+		String[][] nodeContent = new AtFileReader(GlobalProperty.saveFile_SobekNodes).getStr();
 
 		// make the street level of nodes to the upper demLevel
-		for (int index = demList.size() - 1; index >= 0; index--) {
-			AsciiBasicControl ascii = new AsciiBasicControl(this.demList.get(index));
-			String nullValue = ascii.getProperty().get("noData");
 
-			// check for the nodes.DAT
-			for (int line = 0; line < nodeContent.length; line++) {
-				try {
-					if (nodeContent[line][4].equals("3")) {
-						String nodeName = nodeContent[line][2].split("\'")[1];
-						Double[] coordinate = nodeList.get(nodeName);
-						String value = ascii.getValue(coordinate[0], coordinate[1]);
+		this.currentAscii = new AsciiBasicControl(this.roughDem);
 
-						// check for the demFile is contain this node or not
-						if (!value.equals(nullValue)) {
-
-							// check for the streetLevel of mainHole, it must higher than bottomLevel
-							double bottomLevel = Double.parseDouble(nodeContent[line][10]);
-							if (Double.parseDouble(value)  >=bottomLevel) {
-								nodeContent[line][12] = value;
-							} else {
-
-								// if streetLevel is lower than bottomLevel
-								// select the mean level which is higher than bottomLevel
-								// than renew the demFile and streetLevel
-								int position[] = ascii.getPosition(coordinate[0], coordinate[1]);
-								List<Double> meanList = new ArrayList<Double>();
-								for (int row = -1; row <= 1; row++) {
-									for (int column = -1; column <= 1; column++) {
-										try {
-											String temptValue = ascii.getValue(position[0] + column, position[1] + row);
-											if (!temptValue.equals(nullValue)
-													&& Double.parseDouble(temptValue) > bottomLevel) {
-												meanList.add(Double.parseDouble(temptValue));
-											}
-										} catch (Exception e) {
-										}
-									}
-								}
-								String meanValue;
-								try {
-									meanValue = new AtCommonMath(meanList).getMean() + "";
-								} catch (Exception e) {
-									meanValue = nullValue;
-								}
-								ascii.setValue(coordinate[0], coordinate[1], meanValue);
-								nodeContent[line][12] = meanValue;
-							}
-						}
-					}
-				} catch (Exception e) {
-				}
-			}
-			new AtFileWriter(ascii.getAsciiFile(), this.demList.get(index)).textWriter("    ");
-		}
+		// set asciiDem to match node content => take the highest level
+		nodeContent = setNode_Level(currentAscii, nodeContent);
+		nodeContent = setNode_Level(currentAscii, nodeContent);
+		new AtFileWriter(this.currentAscii.getAsciiFile(), this.roughDem).textWriter("    ");
 
 		// output the nodes.DAT
 		new AtFileWriter(nodeContent, GlobalProperty.caseNodeDescription).textWriter(" ");
+	}
+
+	// make node.DAT to match the asciiDem
+	private String[][] setNode_Level(AsciiBasicControl ascii, String[][] nodeContent) throws IOException {
+
+		// make the street level of nodes to the upper demLevel
+		String nullValue = ascii.getProperty().get("noData");
+
+		// check for the nodes.DAT
+		for (int line = 0; line < nodeContent.length; line++) {
+			try {
+				if (nodeContent[line][4].equals("3")) {
+					String nodeName = nodeContent[line][2].split("\'")[1];
+					Double[] coordinate = nodeList.get(nodeName);
+					String value = ascii.getValue(coordinate[0], coordinate[1]);
+
+					// check for the demFile is contain this node or not
+					if (!value.equals(nullValue)) {
+
+						// check for the streetLevel of mainHole, it must higher than bottomLevel
+						double bottomLevel = Double.parseDouble(nodeContent[line][10]);
+						if (Double.parseDouble(value) >= bottomLevel) {
+							nodeContent[line][12] = value;
+						} else {
+
+							// if streetLevel is lower than bottomLevel
+							// select the mean level which is higher than bottomLevel
+							// than renew the demFile and streetLevel
+							int position[] = ascii.getPosition(coordinate[0], coordinate[1]);
+							List<Double> meanList = new ArrayList<Double>();
+							for (int row = -1; row <= 1; row++) {
+								for (int column = -1; column <= 1; column++) {
+									try {
+										String temptValue = ascii.getValue(position[0] + column, position[1] + row);
+										if (!temptValue.equals(nullValue)
+												&& Double.parseDouble(temptValue) > bottomLevel) {
+											meanList.add(Double.parseDouble(temptValue));
+										}
+									} catch (Exception e) {
+									}
+								}
+							}
+							String meanValue;
+							try {
+								meanValue = new AtCommonMath(meanList).getMean() + "";
+								nodeContent[line][12] = meanValue;
+							} catch (Exception e) {
+								meanValue = nullValue;
+							}
+							ascii.setValue(coordinate[0], coordinate[1], meanValue);
+						}
+					}
+				}
+			} catch (Exception e) {
+			}
+		}
+		return nodeContent;
 	}
 }
