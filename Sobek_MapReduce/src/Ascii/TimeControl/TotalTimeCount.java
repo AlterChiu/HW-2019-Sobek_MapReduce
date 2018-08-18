@@ -20,32 +20,26 @@ import usualTool.FileFunction;
 
 public class TotalTimeCount {
 	private String saveFolder;
-
 	private String jsonKeyName;
-	private String demFile;
-	private String knFile;
 
 	public void RoughTotalTimeCount() throws IOException {
 		this.saveFolder = GlobalProperty.saveFolder_Total_Rough;
-
 		this.jsonKeyName = GlobalProperty.overviewProperty_roughTotal;
-		this.demFile = GlobalProperty.originalRough;
-		this.knFile = GlobalProperty.originalRoughKn;
+		
 		SobekDem sobekDem = new SobekDem();
-		sobekDem.addRoughDem(demFile, knFile);
+		sobekDem.addRoughDem(GlobalProperty.originalRough, GlobalProperty.originalRoughKn);
 		sobekDem.start();
+		sobekDem.setNode();
 
 		startRuntimes();
 	}
 
 	public void DelicateTotalTimeCount() throws IOException {
 		this.saveFolder = GlobalProperty.saveFolder_Total_Delicate;
-
 		this.jsonKeyName = GlobalProperty.overviewProperty_delicateTotal;
-		this.demFile = GlobalProperty.originalDelicate;
-		this.knFile = GlobalProperty.originalDelicateKn;
+		
 		SobekDem sobekDem = new SobekDem();
-		sobekDem.addDelicateDem(demFile, knFile);
+		sobekDem.addDelicateDem(GlobalProperty.originalDelicate, GlobalProperty.originalDelicateKn);
 		sobekDem.start();
 
 		startRuntimes();
@@ -65,7 +59,9 @@ public class TotalTimeCount {
 		String[] outPutList = new File(GlobalProperty.sobekResultFolder).list();
 		FileFunction ff = new FileFunction();
 		for (String result : outPutList) {
-			ff.moveFile(GlobalProperty.sobekResultFolder + result, this.saveFolder + result);
+			if (result.contains(".asc")) {
+				ff.moveFile(GlobalProperty.sobekResultFolder + result, this.saveFolder + result);
+			}
 		}
 	}
 

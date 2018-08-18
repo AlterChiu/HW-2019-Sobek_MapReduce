@@ -60,7 +60,6 @@ public class SobekDem {
 		if (this.roughDem != null) {
 			this.demList.add(this.roughDem);
 			this.knList.add(this.roughDemKn);
-			setNode();
 		}
 		setFriction();
 		setNetwork();
@@ -405,7 +404,7 @@ public class SobekDem {
 	// <Node.DAT>
 	// <===================>
 	// <====================================================================>
-	private void setNode() throws IOException {
+	public void setNode() throws IOException {
 		String[][] nodeContent = new AtFileReader(GlobalProperty.saveFile_SobekNodes).getStr();
 
 		// make the street level of nodes to the upper demLevel

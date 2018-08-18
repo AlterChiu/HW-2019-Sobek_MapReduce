@@ -6,20 +6,19 @@ public class GlobalProperty {
 	public static int K_meansInitialTime = 4;
 	// DEM split time ========> 0.7 hour
 	// ==========================================
-	public static double splitTime = 0.7 * 3600000;
+	public static double splitTime = 0.8 * 3600000;
 	// Total allow time
 	// ==========================================
-	public static double totalAllowTime = 0.9 * 3600 * 1000;
+	public static double totalAllowTime =  3600 * 1000;
 
 	// userSetting
 	// =================================================
 	public static String workSpace = "S:\\HomeWork\\mapReduce\\";
 	public static String sobekWorkSpace = "C:\\Sobek213\\";
-	public static String sobekProjectName = sobekWorkSpace + "Active12.lit\\";
 
 	// modelSetting
 	// =================================================
-	public static String caseFolder = sobekProjectName + "5\\";
+	public static String caseFolder = sobekWorkSpace  + "Active12.lit\\5\\";
 	public static String caseNetWork_NTW = caseFolder + "NETWORK.NTW";
 	public static String caseFrictionDescription = caseFolder + "FRICTION.DAT";
 	public static String caseNodeDescription = caseFolder + "NODES.DAT";
@@ -47,14 +46,12 @@ public class GlobalProperty {
 	// original demFile ==============> level and kn including
 	public static String originalDelicate = workSpace + "OriginalDEM\\ZoneU1_20m.asc";
 	public static String originalDelicateKn = workSpace + "OriginalDEM\\ZoneU1_20m(kn).asc";
-	public static String originalDelicateNull = workSpace + "OriginalDEM\\ZoneU1_20mNULL.asc";
-
+	
 	//
 	// Original ROUGH user setting
 	// original demFile ==============> level and kn including
 	public static String originalRough = workSpace + "OriginalDEM\\ZoneU1_40m.asc";
 	public static String originalRoughKn = workSpace + "OriginalDEM\\ZoneU1_40m(kn).asc";
-	public static String originalRoughNull = workSpace + "OriginalDEM\\ZoneU1_40mNULL.asc";
 
 	//
 	// SAVE Folder

@@ -5,4 +5,4 @@
  * @author alter
  *
  */
-package Analysis.Result.MergeSplit;
+package Analysis.Result.FloodCompare;

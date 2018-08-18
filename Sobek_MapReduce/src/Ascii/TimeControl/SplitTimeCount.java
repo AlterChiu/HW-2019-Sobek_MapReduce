@@ -2,6 +2,7 @@ package Ascii.TimeControl;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -109,7 +110,9 @@ public class SplitTimeCount {
 		FileFunction ff = new FileFunction();
 		String[] outPutList = new File(GlobalProperty.sobekResultFolder).list();
 		for (String result : outPutList) {
-			ff.moveFile(GlobalProperty.sobekResultFolder + result, classfiedFolder + result);
+			if (result.contains(".asc")) {
+				ff.moveFile(GlobalProperty.sobekResultFolder + result, classfiedFolder + result);
+			}
 		}
 	}
 
@@ -122,7 +125,7 @@ public class SplitTimeCount {
 
 			// resetting the split number of the unitDem
 			// and also set the variable to default
-			GlobalProperty.splitSize++;
+			GlobalProperty.splitSize = GlobalProperty.splitSize + 1;
 			MapReduceMainPage.initialize.createAfterTotalRun();
 			this.classified = getKmeansClassified(GlobalProperty.splitSize);
 			this.restTimeCoefficient = 1.2;
@@ -192,14 +195,39 @@ public class SplitTimeCount {
 		String[][] roughAsciiKn = new AsciiIntercept(this.originalRoughAsciiKn).getIntercept(
 				roughBoundary.get("minX") - roughCellSize, roughBoundary.get("maxX") + roughCellSize,
 				roughBoundary.get("minY") - roughCellSize, roughBoundary.get("maxY") + roughCellSize);
+
+		// set roughDem to null value if it is overlapping to delicateDem
+		roughAscii = setOverlappingNull(new AsciiBasicControl(delicateAscii), new AsciiBasicControl(roughAscii));
+		roughAsciiKn = setOverlappingNull(new AsciiBasicControl(delicateAscii), new AsciiBasicControl(roughAsciiKn));
+
 		new AtFileWriter(roughAscii, GlobalProperty.saveFolder_Split + index + GlobalProperty.saveFile_RoughDem)
 				.textWriter("    ");
 		new AtFileWriter(roughAsciiKn, GlobalProperty.saveFolder_Split + index + GlobalProperty.saveFile_RoughDemKn)
 				.textWriter("    ");
 	}
 
+	// set the roughDem to null if it is overlapping
+	private String[][] setOverlappingNull(AsciiBasicControl delicateAscii, AsciiBasicControl roughAscii) {
+		String[][] delicateContent = delicateAscii.getAsciiGrid();
+		String roughNull = roughAscii.getProperty().get("noData");
+
+		int bufferGrid = new BigDecimal(Double.parseDouble(roughAscii.getProperty().get("cellSize"))
+				- Double.parseDouble(delicateAscii.getProperty().get("cellSize"))).setScale(3, BigDecimal.ROUND_HALF_UP)
+						.intValue();
+
+		for (int row = bufferGrid; row < delicateContent.length - bufferGrid; row++) {
+			for (int column = bufferGrid; column < delicateContent[0].length - bufferGrid; column++) {
+
+				double coordinate[] = delicateAscii.getCoordinate(column, row);
+				roughAscii.setValue(coordinate[0], coordinate[1], roughNull);
+			}
+		}
+
+		return roughAscii.getAsciiFile();
+	}
+
 	// get the boundary of xyList in K-means
-	private Map<String, Double> getListStatics(List<Double[]> staticsList) {
+	private Map<String, Double> getListStatics(List<Double[]> staticsList) throws IOException {
 		Map<String, Double> outMap = new TreeMap<String, Double>();
 		List<Double> xList = new ArrayList<Double>();
 		List<Double> yList = new ArrayList<Double>();
@@ -210,10 +238,24 @@ public class SplitTimeCount {
 
 		AtCommonMath xListStatics = new AtCommonMath(xList);
 		AtCommonMath yListStatics = new AtCommonMath(yList);
-		outMap.put("minX", xListStatics.getMin());
-		outMap.put("maxX", xListStatics.getMax());
-		outMap.put("minY", yListStatics.getMin());
-		outMap.put("maxY", yListStatics.getMax());
+		double delicateCellSize = Double
+				.parseDouble(new AsciiBasicControl(GlobalProperty.originalDelicate).getProperty().get("cellSize"));
+
+		double minX = xListStatics.getMin() - delicateCellSize;
+		double maxX = xListStatics.getMax() + delicateCellSize;
+		double minY = yListStatics.getMin() - delicateCellSize;
+		double maxY = yListStatics.getMax() + delicateCellSize;
+
+		// make it match the grid of rough asciiDem
+		AsciiBasicControl roughAscii = new AsciiBasicControl(GlobalProperty.originalRough);
+
+		double[] bottomCoordinate = roughAscii.getClosestCoordinate(minX, minY);
+		double[] topCoordinate = roughAscii.getClosestCoordinate(maxX, maxY);
+
+		outMap.put("minX", bottomCoordinate[0]);
+		outMap.put("maxX", topCoordinate[0]);
+		outMap.put("minY", bottomCoordinate[1]);
+		outMap.put("maxY", topCoordinate[1]);
 		return outMap;
 	}
 
@@ -268,24 +310,6 @@ public class SplitTimeCount {
 		double boundaryMaxX = splitMaxX + bufferWidth * 0.5;
 		double boundaryMinY = splitMinY - bufferHeight * 0.5;
 		double boundaryMaxY = splitMaxY + bufferHeight * 0.5;
-
-		// revise the output boundary, to center the original total ascii
-		if (boundaryMinX < originalMinX) {
-			boundaryMinX = originalMinX;
-			boundaryMaxX = boundaryMaxX + originalMinX - boundaryMinX;
-		}
-		if (boundaryMinY < originalMinY) {
-			boundaryMinY = originalMinY;
-			boundaryMaxY = boundaryMaxY + originalMinY - boundaryMinY;
-		}
-		if (boundaryMaxX > originalMaxX) {
-			boundaryMaxX = originalMaxX;
-			boundaryMinX = boundaryMinX + originalMaxX - boundaryMinX;
-		}
-		if (boundaryMaxY > originalMaxY) {
-			boundaryMaxY = originalMaxY;
-			boundaryMinY = boundaryMinY + originalMaxY - boundaryMaxY;
-		}
 
 		Map<String, Double> outBoundary = new TreeMap<String, Double>();
 		outBoundary.put("minX", boundaryMinX);

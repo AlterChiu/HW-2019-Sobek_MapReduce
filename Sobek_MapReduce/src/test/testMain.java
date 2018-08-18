@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import Analysis.DelicateTotal.FloodInitail.InitailFloodTime;
+import Analysis.Result.FloodCompare.ResultCompare;
 import Ascii.DemMaker.RoughDemMaker;
+import Ascii.TimeControl.SplitTimeCount;
 import GlobalProperty.GlobalProperty;
 import SOBEK.Runtimes;
 import SOBEK.SobekDem;
@@ -17,26 +19,18 @@ import asciiFunction.AsciiMerge;
 import asciiFunction.AsciiSplit;
 import main.InitializeFolder;
 import usualTool.AtFileWriter;
+import usualTool.AtKmeans;
 import usualTool.FileFunction;
 
 public class testMain {
+	public static InitializeFolder initialize = new InitializeFolder();
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		FileFunction ff = new FileFunction();
-//
-//		 SobekDem sobekDem = new SobekDem();
-//		 sobekDem.addNewDem(GlobalProperty.originalDelicate,
-//				GlobalProperty.originalDelicateKn);
-//		sobekDem.start();
-////
-		
-		new File(GlobalProperty.overViewPropertyFile).delete();
-//		new RoughDemMaker().setRoughDem(
-//				"S:\\HomeWork\\mapReduce\\OriginalDEM\\97Tainan(40mDEM)_mod(BJ_JS_JJS_TW_Annan_Erren)(mhby10).asc");
-//		
 
-	
+		ResultCompare result = new ResultCompare();
+		List<Double> eachValues = result.getValueDifference();
+		System.out.println(result.getMeanValueDifference());
 	}
 
 	private static void getTimes() throws IOException {
