@@ -163,13 +163,13 @@ public class SobekDem {
 				// get the isChild tag
 				StringBuilder isChild = new StringBuilder();
 				isChild.append("  ISCHILDOF ci 'D2_");
-				isChild.append((index + 1) + "\'");
+				isChild.append((target+1) + "\'");
 				domContent.add(isChild.toString());
 
 				// get the childBlock tag
 				StringBuilder childBlock = new StringBuilder();
-				int[] topPosition = targetAscii.getPosition(interceptMaxX, interceptMaxY);
-				int[] bottomPosition = targetAscii.getPosition(interceptMinX, interceptMinY);
+				int[] topPosition = currentAscii.getPosition(interceptMaxX, interceptMaxY);
+				int[] bottomPosition = currentAscii.getPosition(interceptMinX, interceptMinY);
 				childBlock.append("    CHILDBLOCK");
 				childBlock.append(" ltx " + targetProperty.get("bottomX"));
 				childBlock.append(" lty " + targetProperty.get("topY"));
@@ -178,19 +178,19 @@ public class SobekDem {
 				childBlock.append(" ltC " + (bottomPosition[0] + 1));
 				childBlock.append(" ltR " + (topPosition[1] + 1));
 				childBlock.append(" rbC " + (topPosition[0] + 1));
-				childBlock.append(" rbR" + (bottomPosition[1] + 1));
+				childBlock.append(" rbR " + (bottomPosition[1] + 1));
 				childBlock.append(" childblock");
 				domContent.add(childBlock.toString());
 
 				// get the parentBlock tag
 				StringBuilder parentBlock = new StringBuilder();
-				topPosition = currentAscii.getPosition(interceptMaxX, interceptMaxY);
-				bottomPosition = currentAscii.getPosition(interceptMinX, interceptMinY);
+				topPosition = targetAscii.getPosition(interceptMaxX, interceptMaxY);
+				bottomPosition = targetAscii.getPosition(interceptMinX, interceptMinY);
 				parentBlock.append("    PARENTBLOCK");
 				parentBlock.append(" ltC " + (bottomPosition[0] + 1));
 				parentBlock.append(" ltR " + (topPosition[1] + 1));
 				parentBlock.append(" rbC " + (topPosition[0] + 1));
-				parentBlock.append(" rbR" + (bottomPosition[1] + 1));
+				parentBlock.append(" rbR " + (bottomPosition[1] + 1));
 				parentBlock.append(" parentblock");
 				domContent.add(parentBlock.toString());
 				domContent.add("  ischildof");

@@ -28,9 +28,17 @@ public class testMain {
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 
-		ResultCompare result = new ResultCompare();
-		List<Double> eachValues = result.getValueDifference();
-		System.out.println(result.getMeanValueDifference());
+		SobekDem sobekDem = new SobekDem();
+		sobekDem.addDelicateDem(GlobalProperty.originalDelicate, GlobalProperty.originalDelicateKn);
+		sobekDem.addRoughDem(GlobalProperty.originalRough, GlobalProperty.originalRoughKn);
+		sobekDem.start();
+		
+//		sobekDem.addDelicateDem("S:\\HomeWork\\mapReduce\\split\\0\\delicateDem.asc", "S:\\HomeWork\\mapReduce\\split\\0\\delicateDem(kn).asc");
+//		sobekDem.addRoughDem("S:\\HomeWork\\mapReduce\\split\\0\\roughDem.asc", "S:\\HomeWork\\mapReduce\\split\\0\\roughDem(kn).asc");
+//		sobekDem.start();
+
+//		Runtimes sobekRuntimes = new Runtimes();
+//		System.out.println(sobekRuntimes.getSimulateTime());
 	}
 
 	private static void getTimes() throws IOException {

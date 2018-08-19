@@ -73,10 +73,17 @@ public class InitializeFolder {
 	}
 
 	public void createAfterTotalRun() throws IOException {
+		ff.delete(GlobalProperty.saveFolder_Split);
 		// ====================Split==================
 		ff.newFolder(GlobalProperty.saveFolder_Split);
 		for (int i = 0; i < GlobalProperty.splitSize; i++) {
 			ff.newFolder(GlobalProperty.saveFolder_Split + i);
+		}
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
