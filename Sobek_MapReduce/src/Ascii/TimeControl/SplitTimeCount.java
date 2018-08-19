@@ -34,7 +34,7 @@ public class SplitTimeCount {
 
 	//
 	// <=====================>
-	// < setting the split way >
+	// < setting the split >
 	// <=====================>
 	// <=======================================================>
 	public SplitTimeCount() throws IOException {
@@ -45,8 +45,8 @@ public class SplitTimeCount {
 
 		this.overviewPorperty = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
 	}
-	// <=======================================================>
 
+	// <=======================================================>
 	// main operation in this class
 	// <=======================================================>
 	public void runSplitDem() throws IOException {
@@ -104,17 +104,6 @@ public class SplitTimeCount {
 			System.out.println("split unitDem timeControl done");
 		}
 	}
-	// <==========================================================>
-
-	private void moveRsult(String classfiedFolder) {
-		FileFunction ff = new FileFunction();
-		String[] outPutList = new File(GlobalProperty.sobekResultFolder).list();
-		for (String result : outPutList) {
-			if (result.contains(".asc")) {
-				ff.moveFile(GlobalProperty.sobekResultFolder + result, classfiedFolder + result);
-			}
-		}
-	}
 
 	// recreate the roughDem in unitDem, cause simulation time is over limit
 	private Boolean reStartJudgement(double simulationTime) throws IOException {
@@ -134,6 +123,28 @@ public class SplitTimeCount {
 			this.restTimeCoefficient = this.restTimeCoefficient * 1.1;
 		}
 		return restart;
+	}
+	// <==========================================================>
+
+	/*
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
+	// <==========================================================>
+	// < output Result Function>
+	// <==========================================================>
+	private void moveRsult(String classfiedFolder) {
+		FileFunction ff = new FileFunction();
+		String[] outPutList = new File(GlobalProperty.sobekResultFolder).list();
+		for (String result : outPutList) {
+			if (result.contains(".asc")) {
+				ff.moveFile(GlobalProperty.sobekResultFolder + result, classfiedFolder + result);
+			}
+		}
 	}
 
 	// output the boundary of the unitDem
@@ -169,36 +180,45 @@ public class SplitTimeCount {
 		json.addProperty("maxY", Double.parseDouble(asciiProperty.get("topY")) + 0.5 * cellSize);
 		return json;
 	}
+	// <==========================================================================>
 
+	/*
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
+	// <==================================================================>
+	// < Create DemFile Boundary>
+	// <==================================================================>
 	// determine the unitDem , roughDem is defined by the delicateDem
 	private void determineUnitDem(int index, double restTime) throws IOException {
-		// determine the delicate ascii and kn file
-		double delicateCellSize = Double.parseDouble(this.originalDelicateAscii.getProperty().get("cellSize"));
+
+		// determine the delicate asciiFile and knFile
+		// the boundary(classifiedBoundary) of the delicate demFile here is the most
+		// outer coordinate
 		Map<String, Double> classifiedBoundary = getListStatics(this.classified.get(index));
 		String[][] delicateAscii = new AsciiIntercept(this.originalDelicateAscii).getIntercept(
-				classifiedBoundary.get("minX") - delicateCellSize, classifiedBoundary.get("maxX") + delicateCellSize,
-				classifiedBoundary.get("minY") - delicateCellSize, classifiedBoundary.get("maxY") + delicateCellSize);
+				classifiedBoundary.get("minX"), classifiedBoundary.get("maxX"), classifiedBoundary.get("minY"),
+				classifiedBoundary.get("maxY"));
 		String[][] delicateAsciiKn = new AsciiIntercept(this.originalDelicateAsciiKn).getIntercept(
-				classifiedBoundary.get("minX") - delicateCellSize, classifiedBoundary.get("maxX") + delicateCellSize,
-				classifiedBoundary.get("minY") - delicateCellSize, classifiedBoundary.get("maxY") + delicateCellSize);
+				classifiedBoundary.get("minX"), classifiedBoundary.get("maxX"), classifiedBoundary.get("minY"),
+				classifiedBoundary.get("maxY"));
 		new AtFileWriter(delicateAscii, GlobalProperty.saveFolder_Split + index + GlobalProperty.saveFile_DelicateDem)
 				.textWriter("    ");
 		new AtFileWriter(delicateAsciiKn,
 				GlobalProperty.saveFolder_Split + index + GlobalProperty.saveFile_DelicateDemKn).textWriter("    ");
 
-		// determine the rough ascii and kn file
-		double roughCellSize = Double.parseDouble(this.originalRoughAscii.getProperty().get("cellSize"));
+		// determine the rough asciiFile and knFile
+		// the boundary of the rough demFile here is calculate by the rest time
+		// there is no necessary to point the boundary exact
 		Map<String, Double> roughBoundary = getBufferBoundary(new AsciiBasicControl(delicateAscii), restTime);
-		String[][] roughAscii = new AsciiIntercept(this.originalRoughAscii).getIntercept(
-				roughBoundary.get("minX") - roughCellSize, roughBoundary.get("maxX") + roughCellSize,
-				roughBoundary.get("minY") - roughCellSize, roughBoundary.get("maxY") + roughCellSize);
-		String[][] roughAsciiKn = new AsciiIntercept(this.originalRoughAsciiKn).getIntercept(
-				roughBoundary.get("minX") - roughCellSize, roughBoundary.get("maxX") + roughCellSize,
-				roughBoundary.get("minY") - roughCellSize, roughBoundary.get("maxY") + roughCellSize);
-
-		// set roughDem to null value if it is overlapping to delicateDem
-		roughAscii = setOverlappingNull(new AsciiBasicControl(delicateAscii), new AsciiBasicControl(roughAscii));
-		roughAsciiKn = setOverlappingNull(new AsciiBasicControl(delicateAscii), new AsciiBasicControl(roughAsciiKn));
+		String[][] roughAscii = new AsciiIntercept(this.originalRoughAscii).getIntercept(roughBoundary.get("minX"),
+				roughBoundary.get("maxX"), roughBoundary.get("minY"), roughBoundary.get("maxY"));
+		String[][] roughAsciiKn = new AsciiIntercept(this.originalRoughAsciiKn).getIntercept(roughBoundary.get("minX"),
+				roughBoundary.get("maxX"), roughBoundary.get("minY"), roughBoundary.get("maxY"));
 
 		new AtFileWriter(roughAscii, GlobalProperty.saveFolder_Split + index + GlobalProperty.saveFile_RoughDem)
 				.textWriter("    ");
@@ -206,26 +226,61 @@ public class SplitTimeCount {
 				.textWriter("    ");
 	}
 
-	// set the roughDem to null if it is overlapping
-	private String[][] setOverlappingNull(AsciiBasicControl delicateAscii, AsciiBasicControl roughAscii) {
-		String[][] delicateContent = delicateAscii.getAsciiGrid();
-		String roughNull = roughAscii.getProperty().get("noData");
+	// use for determine the rough ascii boundary
+	private Map<String, Double> getBufferBoundary(AsciiBasicControl splitAscii, double restTime) throws IOException {
+		Map<String, String> originalAsciiProperty = this.originalRoughAscii.getProperty();
 
-		int bufferGrid = new BigDecimal(Double.parseDouble(roughAscii.getProperty().get("cellSize"))
-				- Double.parseDouble(delicateAscii.getProperty().get("cellSize"))).setScale(3, BigDecimal.ROUND_HALF_UP)
-						.intValue();
+		double originalMaxX = Double.parseDouble(originalAsciiProperty.get("topX"));
+		double originalMaxY = Double.parseDouble(originalAsciiProperty.get("topY"));
+		double originalMinX = Double.parseDouble(originalAsciiProperty.get("bottomX"));
+		double originalMinY = Double.parseDouble(originalAsciiProperty.get("bottomY"));
+		double originalWidth = originalMaxX - originalMinX;
+		double originalHeight = originalMaxY - originalMinY;
 
-		for (int row = bufferGrid; row < delicateContent.length - bufferGrid; row++) {
-			for (int column = bufferGrid; column < delicateContent[0].length - bufferGrid; column++) {
+		// get the ratio of spend time between delicate one and rough one
+		// rough / delicate (spend time)
+		double ratio = restTime / overviewPorperty.get(GlobalProperty.overviewProperty_roughTotal).getAsDouble();
 
-				double coordinate[] = delicateAscii.getCoordinate(column, row);
-				roughAscii.setValue(coordinate[0], coordinate[1], roughNull);
-			}
-		}
+		// get the original boundary
+		Map<String, String> asciiProperty = splitAscii.getProperty();
+		double splitMinX = Double.parseDouble(asciiProperty.get("bottomX"));
+		double splitMaxX = Double.parseDouble(asciiProperty.get("topX"));
+		double splitMaxY = Double.parseDouble(asciiProperty.get("topY"));
+		double splitMinY = Double.parseDouble(asciiProperty.get("bottomY"));
 
-		return roughAscii.getAsciiFile();
+		// get the length should be extend
+		double bufferWidth = originalWidth * ratio;
+		double bufferHeight = originalHeight * ratio;
+
+		// get the output boundary
+		double boundaryMinX = splitMinX - bufferWidth * 0.5;
+		double boundaryMaxX = splitMaxX + bufferWidth * 0.5;
+		double boundaryMinY = splitMinY - bufferHeight * 0.5;
+		double boundaryMaxY = splitMaxY + bufferHeight * 0.5;
+
+		Map<String, Double> outBoundary = new TreeMap<String, Double>();
+		outBoundary.put("minX", boundaryMinX);
+		outBoundary.put("minY", boundaryMinY);
+		outBoundary.put("maxX", boundaryMaxX);
+		outBoundary.put("maxY", boundaryMaxY);
+
+		return outBoundary;
 	}
+	// <============================================================================>
 
+	/*
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
+	// <===========================================================>
+	// <K-Means function>
+	// <============================================================>
 	// get the boundary of xyList in K-means
 	private Map<String, Double> getListStatics(List<Double[]> staticsList) throws IOException {
 		Map<String, Double> outMap = new TreeMap<String, Double>();
@@ -278,45 +333,5 @@ public class SplitTimeCount {
 		AtKmeans kmeans = new AtKmeans(analysisData, GlobalProperty.splitSize);
 		return kmeans.getClassifier();
 	}
-
-	// use for determine the rough ascii boundary
-	private Map<String, Double> getBufferBoundary(AsciiBasicControl splitAscii, double restTime) throws IOException {
-		Map<String, String> originalAsciiProperty = this.originalRoughAscii.getProperty();
-
-		double originalMaxX = Double.parseDouble(originalAsciiProperty.get("topX"));
-		double originalMaxY = Double.parseDouble(originalAsciiProperty.get("topY"));
-		double originalMinX = Double.parseDouble(originalAsciiProperty.get("bottomX"));
-		double originalMinY = Double.parseDouble(originalAsciiProperty.get("bottomY"));
-		double originalWidth = originalMaxX - originalMinX;
-		double originalHeight = originalMaxY - originalMinY;
-
-		// get the ratio of spend time between delicate one and rough one
-		// rough / delicate (spend time)
-		double ratio = restTime / overviewPorperty.get(GlobalProperty.overviewProperty_roughTotal).getAsDouble();
-
-		// get the original boundary
-		Map<String, String> asciiProperty = splitAscii.getProperty();
-		double splitMinX = Double.parseDouble(asciiProperty.get("bottomX"));
-		double splitMaxX = Double.parseDouble(asciiProperty.get("topX"));
-		double splitMaxY = Double.parseDouble(asciiProperty.get("topY"));
-		double splitMinY = Double.parseDouble(asciiProperty.get("bottomY"));
-
-		// get the length should be extend
-		double bufferWidth = originalWidth * ratio;
-		double bufferHeight = originalHeight * ratio;
-
-		// get the output boundary
-		double boundaryMinX = splitMinX - bufferWidth * 0.5;
-		double boundaryMaxX = splitMaxX + bufferWidth * 0.5;
-		double boundaryMinY = splitMinY - bufferHeight * 0.5;
-		double boundaryMaxY = splitMaxY + bufferHeight * 0.5;
-
-		Map<String, Double> outBoundary = new TreeMap<String, Double>();
-		outBoundary.put("minX", boundaryMinX);
-		outBoundary.put("minY", boundaryMinY);
-		outBoundary.put("maxX", boundaryMaxX);
-		outBoundary.put("maxY", boundaryMaxY);
-
-		return outBoundary;
-	}
+	// <=================================================================>
 }
