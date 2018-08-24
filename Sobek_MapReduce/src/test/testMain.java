@@ -24,21 +24,33 @@ import usualTool.FileFunction;
 
 public class testMain {
 	public static InitializeFolder initialize = new InitializeFolder();
+	public static FileFunction ff = new FileFunction();
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-
-		SobekDem sobekDem = new SobekDem();
-		sobekDem.addDelicateDem(GlobalProperty.originalDelicate, GlobalProperty.originalDelicateKn);
-		sobekDem.addRoughDem(GlobalProperty.originalRough, GlobalProperty.originalRoughKn);
-		sobekDem.start();
+		String fileAdd = "S:\\HomeWork\\mapReduce\\test\\";
 		
-//		sobekDem.addDelicateDem("S:\\HomeWork\\mapReduce\\split\\0\\delicateDem.asc", "S:\\HomeWork\\mapReduce\\split\\0\\delicateDem(kn).asc");
-//		sobekDem.addRoughDem("S:\\HomeWork\\mapReduce\\split\\0\\roughDem.asc", "S:\\HomeWork\\mapReduce\\split\\0\\roughDem(kn).asc");
-//		sobekDem.start();
+		List<String[]> demList = new ArrayList<String[]>();
+		demList.add(new String[] { fileAdd + "Z1U1_20m.asc" , fileAdd + "Z1U1_40m.asc"});
+		demList.add(new String[] { fileAdd + "Z1U2_20m.asc" , fileAdd + "Z1U2_40m.asc"});
+		
+		List<String[]> knList = new ArrayList<String[]>();
+		knList.add(new String[] { fileAdd + "Z1U1_20m(kn).asc" , fileAdd + "Z1U1_40m(kn).asc"});
+		knList.add(new String[] { fileAdd + "Z1U2_20m(kn).asc" , fileAdd + "Z1U2_40m(kn).asc"});
 
-//		Runtimes sobekRuntimes = new Runtimes();
-//		System.out.println(sobekRuntimes.getSimulateTime());
+		for(int index = 0 ; index< demList.size() ; index++) {
+			SobekDem sobekDem = new SobekDem();
+			sobekDem.addDelicateDem(demList.get(index)[0], knList.get(index)[0]);
+			sobekDem.addRoughDem(demList.get(index)[1], knList.get(index)[1]);
+			sobekDem.start();
+			
+			Runtimes sobekRuntimes = new Runtimes();
+			System.out.println(sobekRuntimes.getSimulateTime());
+			ff.moveFolder(GlobalProperty.sobekResultFolder, fileAdd + index);
+		}
+		
+		
+	
 	}
 
 	private static void getTimes() throws IOException {

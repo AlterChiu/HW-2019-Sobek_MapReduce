@@ -13,17 +13,17 @@ import usualTool.AtFileWriter;
 
 public class ResultCompare {
 	private List<AsciiBasicControl> originalAsciiList = new ArrayList<AsciiBasicControl>();
-	private List<AsciiBasicControl> mergeAsciiList = new ArrayList<AsciiBasicControl>();
+	private List<AsciiBasicControl> compareAsciiList = new ArrayList<AsciiBasicControl>();
 	private List<Double> timesAnalysis = new ArrayList<Double>();
 	private List<Double> valueAnalysis = new ArrayList<Double>();
 
-	public ResultCompare() {
+	public ResultCompare(String compareFolder) {
 		for (int index = 0; index < index + 1; index++) {
 			try {
 				String fileName = "dm1d" + String.format("%04d", index) + ".asc";
 				if (new File(GlobalProperty.saveFolder_Total_Delicate + fileName).exists()) {
 					originalAsciiList.add(new AsciiBasicControl(GlobalProperty.saveFolder_Total_Delicate + fileName));
-					mergeAsciiList.add(new AsciiBasicControl(GlobalProperty.saveFolder_Merge + fileName));
+					compareAsciiList.add(new AsciiBasicControl(compareFolder+ fileName));
 				} else {
 					break;
 				}
@@ -69,7 +69,7 @@ public class ResultCompare {
 		for (int index = 0; index < this.originalAsciiList.size(); index++) {
 			String fileName = "dm1d" + String.format("%04d", index) + ".asc";
 
-			AsciiBasicControl simulationAscii = this.mergeAsciiList.get(index);
+			AsciiBasicControl simulationAscii = this.compareAsciiList.get(index);
 			String simulationContent[][] = simulationAscii.getAsciiGrid();
 			String simulationNull = simulationAscii.getProperty().get("noData");
 
@@ -98,8 +98,8 @@ public class ResultCompare {
 	// <================================================>
 	private void comparision() {
 		for (int index = 0; index < this.originalAsciiList.size(); index++) {
-			String simulationContent[][] = this.mergeAsciiList.get(index).getAsciiGrid();
-			String simulationNull = this.mergeAsciiList.get(index).getProperty().get("noData");
+			String simulationContent[][] = this.compareAsciiList.get(index).getAsciiGrid();
+			String simulationNull = this.compareAsciiList.get(index).getProperty().get("noData");
 
 			AsciiBasicControl originalAscii = this.originalAsciiList.get(index);
 			int matchTimes = 0;
@@ -110,7 +110,7 @@ public class ResultCompare {
 				for (int column = 0; column < simulationContent[0].length; column++) {
 					String simulationValue = simulationContent[row][column];
 					if (!simulationValue.equals(simulationNull)) {
-						double[] coordinate = this.mergeAsciiList.get(index).getCoordinate(column, row);
+						double[] coordinate = this.compareAsciiList.get(index).getCoordinate(column, row);
 
 						double temptSimulationValue = Double.parseDouble(simulationValue);
 						double temptOriginalValue = Double

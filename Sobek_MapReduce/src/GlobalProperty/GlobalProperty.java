@@ -4,12 +4,14 @@ public class GlobalProperty {
 	// ==========================================
 	public static int splitSize = 1;
 	public static int K_meansInitialTime = 4;
+	public static double roughBufferCoefficient = 1.2;
+	public static double errorConvergence = 1.1;
 	// DEM split time ========> 0.7 hour
 	// ==========================================
 	public static double splitTime = 0.8 * 3600000;
 	// Total allow time
 	// ==========================================
-	public static double totalAllowTime =  3600 * 1000;
+	public static double totalAllowTime = 3600 * 1000;
 
 	// userSetting
 	// =================================================
@@ -18,7 +20,7 @@ public class GlobalProperty {
 
 	// modelSetting
 	// =================================================
-	public static String caseFolder = sobekWorkSpace  + "Active12.lit\\5\\";
+	public static String caseFolder = sobekWorkSpace + "Active12.lit\\5\\";
 	public static String caseNetWork_NTW = caseFolder + "NETWORK.NTW";
 	public static String caseFrictionDescription = caseFolder + "FRICTION.DAT";
 	public static String caseNodeDescription = caseFolder + "NODES.DAT";
@@ -32,8 +34,14 @@ public class GlobalProperty {
 	public static String overviewProperty_roughTotal = "SpendTime_roughTotal";
 	public static String overviewProperty_Split = "mergeSplit_";
 	public static String overviewProperty_SplitSpendTime = "spendTime";
+	public static String overviewProperty_MaxSpendTime = "maxSpendTime";
 	public static String overviewProperty_SplitDelicateBoundary = "DelicateBoundary";
 	public static String overviewProperty_SplitRoughBoundary = "RoughBoundary";
+
+	public static String overviewProperty_MaxBufferCoefficient = "MaxBufferCoefficient";
+	public static String overviewProperty_BufferCoefficient = "BufferCoefficient";
+	public static String overviewProperty_FloodTimesError = "FloodTimesError";
+	public static String overviewProperty_FloodDepthError = "FloodDepthError";
 
 	// SOBEK Runtimes folder
 	// =======================================================
@@ -46,7 +54,7 @@ public class GlobalProperty {
 	// original demFile ==============> level and kn including
 	public static String originalDelicate = workSpace + "OriginalDEM\\ZoneU1_20m.asc";
 	public static String originalDelicateKn = workSpace + "OriginalDEM\\ZoneU1_20m(kn).asc";
-	
+
 	//
 	// Original ROUGH user setting
 	// original demFile ==============> level and kn including
@@ -64,6 +72,10 @@ public class GlobalProperty {
 	// =================================================
 	// split folder
 	public static String saveFolder_Split = workSpace + "\\split\\";
+
+	// split folder for error convergence
+	public static String saveFolder_convergence = workSpace + "\\convergence\\";
+	
 
 	// ================================================
 	// Analysis

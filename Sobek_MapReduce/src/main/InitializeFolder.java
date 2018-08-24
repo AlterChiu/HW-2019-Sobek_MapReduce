@@ -7,8 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +23,12 @@ import usualTool.FileFunction;
 public class InitializeFolder {
 	private FileFunction ff = new FileFunction();
 
+	/**
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
 	public void resetWorkSpace() {
 		try {
 			ff.copyFile(GlobalProperty.saveFile_SobekFriction, GlobalProperty.caseFrictionDescription);
@@ -39,10 +43,15 @@ public class InitializeFolder {
 		ff.delete(GlobalProperty.saveFolder_Split);
 		ff.delete(GlobalProperty.saveFolder_Merge);
 		ff.delete(GlobalProperty.saveFolder_Sobek);
-		ff.delete(GlobalProperty.overViewPropertyFile);
+		ff.delete(GlobalProperty.saveFolder_convergence);
 		ff.delete(GlobalProperty.overViewPropertyFile);
 	}
 
+	/**
+	 * 
+	 * 
+	 * @throws IOException
+	 */
 	public void createBeforeTotalRun() throws IOException {
 		// =============Analysis Property===============
 		if (!new File(GlobalProperty.workSpace + GlobalProperty.propertyFileName).exists()) {
@@ -72,21 +81,68 @@ public class InitializeFolder {
 		ff.newFolder(GlobalProperty.saveFolder_Analysis);
 	}
 
+	/**
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * @throws IOException
+	 */
 	public void createAfterTotalRun() throws IOException {
 		ff.delete(GlobalProperty.saveFolder_Split);
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
 		// ====================Split==================
 		ff.newFolder(GlobalProperty.saveFolder_Split);
 		for (int i = 0; i < GlobalProperty.splitSize; i++) {
 			ff.newFolder(GlobalProperty.saveFolder_Split + i);
 		}
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+		// clear the overview property
+		JsonObject json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		for (int index = 0; index < index + 1; index++) {
+			try {
+				json.remove(GlobalProperty.overviewProperty_Split + index);
+			} catch (Exception e) {
+				break;
+			}
 		}
 	}
 
+	public void setSplitSize() throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
+		JsonObject object = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		double totalTimeCount = object.get(GlobalProperty.overviewProperty_delicateTotal).getAsDouble();
+		GlobalProperty.splitSize = new BigDecimal(totalTimeCount / GlobalProperty.splitTime)
+				.setScale(0, BigDecimal.ROUND_UP).intValue();
+	}
+
+	/**
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
+	public void createAfterSplitRun() {
+		ff.newFolder(GlobalProperty.saveFolder_convergence);
+		for (int index = 0; index < GlobalProperty.splitSize; index++) {
+			ff.newFolder(GlobalProperty.saveFolder_convergence + index);
+			ff.copyFolder(GlobalProperty.saveFolder_Split + index,
+					GlobalProperty.saveFolder_convergence + index + "\\0");
+		}
+	}
+
+	// <==================================================================>
+	/**
+	 * 
+	 * create for the SobekModel
+	 * 
+	 * 
+	 * @throws IOException
+	 */
 	public void setNetWork_Pt2File() throws IOException {
 		BufferedReader br = new BufferedReader(
 				new InputStreamReader(new FileInputStream(GlobalProperty.caseNetWork_D12)));
@@ -118,13 +174,6 @@ public class InitializeFolder {
 		});
 		new AtFileWriter(pt12List.parallelStream().toArray(String[][]::new),
 				GlobalProperty.saveFile_SobekNetWorkD12_Pt2).textWriter(" ");
-	}
-
-	public void setSplitSize() throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
-		JsonObject object = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
-		double totalTimeCount = object.get(GlobalProperty.overviewProperty_delicateTotal).getAsDouble();
-		GlobalProperty.splitSize = new BigDecimal(totalTimeCount / GlobalProperty.splitTime)
-				.setScale(0, BigDecimal.ROUND_UP).intValue();
 	}
 
 }
