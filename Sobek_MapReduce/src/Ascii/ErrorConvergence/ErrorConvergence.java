@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import com.google.gson.JsonArray;
@@ -25,54 +23,57 @@ import usualTool.FileFunction;
 
 public class ErrorConvergence extends DeterminRoughAsciiFile {
 	private double temptBufferCoefficient;
-
-	public ErrorConvergence() {
-	}
+	private double bufferCoefficientLimit;
 
 	public void start() throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
-		for (int index = 0; index < GlobalProperty.splitSize; index++) {
-			// option for stopping the convergence
-			Boolean keepConvergence = true;
-
+		for (int index = 1; index < GlobalProperty.splitSize; index++) {
 			// reset the buffer coefficient to the selected delicate demFile
-			resetBufferCoefficient(index);
+			this.temptBufferCoefficient = 1.0;
+			this.bufferCoefficientLimit = settingBufferLimit(index);
 
-			// to convergence the error value
-			// using try and error
-			while (this.temptBufferCoefficient <= GlobalProperty.splitSize || keepConvergence) {
-				// initial the save folder for the convergence folder
-				String targetFolder = initialTempFolder(index);
+			try {
+				// to convergence the error value
+				// using try and error
+				while (this.temptBufferCoefficient < bufferCoefficientLimit) {
+					// initial the save folder for the convergence folder
+					String targetFolder = initialTempFolder(index);
 
-				// adjust the buffer coefficient
-				this.temptBufferCoefficient = this.temptBufferCoefficient * GlobalProperty.errorConvergence;
+					// create the rough demFile for the adjusted coefficient
+					determinRoughAsciiFile(targetFolder, this.temptBufferCoefficient);
 
-				// create the rough demFile for the adjusted coefficient
-				determinRoughAsciiFile(targetFolder, this.temptBufferCoefficient);
+					// start SobekRuntimes
+					SobekDem sobekDem = new SobekDem();
+					sobekDem.addDelicateDem(targetFolder + GlobalProperty.saveFile_DelicateDem,
+							targetFolder + GlobalProperty.saveFile_DelicateDemKn);
+					sobekDem.addRoughDem(targetFolder + GlobalProperty.saveFile_RoughDem,
+							targetFolder + GlobalProperty.saveFile_RoughDemKn);
+					sobekDem.start();
+					Runtimes runtimes = new Runtimes();
 
-				// start SobekRuntimes
-				SobekDem sobekDem = new SobekDem();
-				sobekDem.addDelicateDem(targetFolder + GlobalProperty.saveFile_DelicateDem,
-						targetFolder + GlobalProperty.saveFile_DelicateDemKn);
-				sobekDem.addRoughDem(targetFolder + GlobalProperty.saveFile_RoughDem,
-						targetFolder + GlobalProperty.saveFile_RoughDemKn);
-				sobekDem.start();
-				new Runtimes();
+					// move the result to the targetFolder
+					moveRsult(targetFolder);
 
-				// move the result to the targetFolder
-				moveRsult(targetFolder);
+					// save the overview property
+					outPutResult(index, this.temptBufferCoefficient, runtimes.getSimulateTime());
 
-				// save the overview property
-				outPutResult(index, this.temptBufferCoefficient);
+					// adjust the buffer coefficient
+					this.temptBufferCoefficient = this.temptBufferCoefficient * GlobalProperty.errorConvergence;
+				}
+			} catch (Exception e) {
+				System.out.println("error convergence over\tsplitDem_" + index);
 			}
 		}
 
 	}
 
-	private void resetBufferCoefficient(int index)
+	private double settingBufferLimit(int index)
 			throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
-		JsonObject overviewJson = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
-		this.temptBufferCoefficient = overviewJson.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject()
-				.get(GlobalProperty.overviewProperty_MaxBufferCoefficient).getAsDouble();
+		JsonObject json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		double delicateSpend = json.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject()
+				.get(GlobalProperty.overviewProperty_SplitDelicateBoundary).getAsJsonObject()
+				.get(GlobalProperty.overviewProperty_SplitSpendTime).getAsDouble();
+
+		return GlobalProperty.totalAllowTime / delicateSpend;
 	}
 
 	/*
@@ -91,7 +92,7 @@ public class ErrorConvergence extends DeterminRoughAsciiFile {
 		String[] outPutList = new File(GlobalProperty.sobekResultFolder).list();
 		for (String result : outPutList) {
 			if (result.contains(".asc")) {
-				ff.moveFile(GlobalProperty.sobekResultFolder + result, targetFolder + result);
+				ff.moveFile(GlobalProperty.sobekResultFolder + "\\" + result, targetFolder + "\\" + result);
 			}
 		}
 	}
@@ -104,9 +105,19 @@ public class ErrorConvergence extends DeterminRoughAsciiFile {
 	 * @return
 	 */
 	private String initialTempFolder(int index) {
+		FileFunction ff = new FileFunction();
+
+		// create the folder
 		String folder = GlobalProperty.saveFolder_convergence;
-		folder = folder + index + "\\" + new File(folder).list().length;
-		new FileFunction().newFolder(folder);
+		folder = folder + index;
+		folder = folder + "\\" + new File(folder).list().length + "\\";
+		ff.newFolder(folder);
+
+		// copy delicate demFile
+		ff.copyFile(GlobalProperty.saveFolder_Split + index + GlobalProperty.saveFile_DelicateDem,
+				folder + GlobalProperty.saveFile_DelicateDem);
+		ff.copyFile(GlobalProperty.saveFolder_Split + index + GlobalProperty.saveFile_DelicateDemKn,
+				folder + GlobalProperty.saveFile_DelicateDemKn);
 
 		return folder;
 	}
@@ -121,21 +132,26 @@ public class ErrorConvergence extends DeterminRoughAsciiFile {
 	 * @param bufferCoefficient
 	 * @throws IOException
 	 */
-	private void outPutResult(int index, double bufferCoefficient) throws IOException {
+	private void outPutResult(int index, double bufferCoefficient, double simulationTime) throws IOException {
+		String resultFolder = GlobalProperty.saveFolder_convergence;
+		resultFolder = resultFolder + index;
+		resultFolder = resultFolder + "\\" + (new File(resultFolder).list().length - 1) + "\\";
+
 		JsonObject overviewJson = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
 		JsonArray outJsonArray = overviewJson.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject()
 				.get(GlobalProperty.overviewProperty_SplitRoughBoundary).getAsJsonArray();
 
 		// comparison
-		ResultCompare resultCompare = new ResultCompare(GlobalProperty.saveFolder_Split + index + "//");
+		ResultCompare resultCompare = new ResultCompare(resultFolder);
 
 		// rough
 		// coefficient, split spend time, flood time error, flood depth error
-		Map<String, String> roughProperty = new AsciiBasicControl(
-				GlobalProperty.saveFolder_Split + index + GlobalProperty.saveFile_RoughDem).getProperty();
+		Map<String, String> roughProperty = new AsciiBasicControl(resultFolder + GlobalProperty.saveFile_RoughDem)
+				.getProperty();
 		JsonObject temptRoughJson = getBoundaryJson(roughProperty);
 		temptRoughJson.addProperty(GlobalProperty.overviewProperty_BufferCoefficient,
 				new BigDecimal(bufferCoefficient).setScale(3, BigDecimal.ROUND_HALF_UP).toString());
+		temptRoughJson.addProperty(GlobalProperty.overviewProperty_SplitSpendTime, simulationTime);
 		temptRoughJson.addProperty(GlobalProperty.overviewProperty_FloodTimesError,
 				resultCompare.getMeanTimesDifference());
 		temptRoughJson.addProperty(GlobalProperty.overviewProperty_FloodDepthError,

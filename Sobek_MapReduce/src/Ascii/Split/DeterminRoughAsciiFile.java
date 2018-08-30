@@ -19,7 +19,7 @@ public class DeterminRoughAsciiFile {
 	// < Create DemFile Boundary>
 	// <==================================================================>
 	// determine the unitDem , roughDem is defined by the delicateDem
-	public void determinRoughAsciiFile(String splitFolder, double restTimeCoefficient) throws IOException {
+	public void determinRoughAsciiFile(String targetFolder, double restTimeCoefficient) throws IOException {
 		this.overviewPorperty = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
 		double restTime = GlobalProperty.totalAllowTime
 				- overviewPorperty.get(GlobalProperty.overviewProperty_delicateTotal).getAsDouble()
@@ -29,18 +29,18 @@ public class DeterminRoughAsciiFile {
 		// the boundary of the rough demFile here is calculate by the rest time
 		// there is no necessary to point the boundary exact
 		Map<String, Double> roughBoundary = getBufferBoundary(
-				new AsciiBasicControl(splitFolder + GlobalProperty.saveFile_DelicateDem), restTime);
+				new AsciiBasicControl(targetFolder + GlobalProperty.saveFile_DelicateDem), restTime);
 		String[][] roughAscii = new AsciiIntercept(GlobalProperty.originalRough).getIntercept(roughBoundary.get("minX"),
 				roughBoundary.get("maxX"), roughBoundary.get("minY"), roughBoundary.get("maxY"));
 		String[][] roughAsciiKn = new AsciiIntercept(GlobalProperty.originalRoughKn).getIntercept(
 				roughBoundary.get("minX"), roughBoundary.get("maxX"), roughBoundary.get("minY"),
 				roughBoundary.get("maxY"));
 
-		roughAscii = setOverlappingNull(splitFolder + GlobalProperty.saveFile_DelicateDem, roughAscii);
-		roughAsciiKn = setOverlappingNull(splitFolder + GlobalProperty.saveFile_DelicateDem, roughAsciiKn);
+		roughAscii = setOverlappingNull(targetFolder + GlobalProperty.saveFile_DelicateDem, roughAscii);
+		roughAsciiKn = setOverlappingNull(targetFolder + GlobalProperty.saveFile_DelicateDem, roughAsciiKn);
 
-		new AtFileWriter(roughAscii, splitFolder + GlobalProperty.saveFile_RoughDem).textWriter("    ");
-		new AtFileWriter(roughAsciiKn, splitFolder + GlobalProperty.saveFile_RoughDemKn).textWriter("    ");
+		new AtFileWriter(roughAscii, targetFolder + GlobalProperty.saveFile_RoughDem).textWriter("    ");
+		new AtFileWriter(roughAsciiKn, targetFolder + GlobalProperty.saveFile_RoughDemKn).textWriter("    ");
 	}
 
 	private String[][] setOverlappingNull(String delicateAsciiFile, String[][] roughAsciiFile) throws IOException {

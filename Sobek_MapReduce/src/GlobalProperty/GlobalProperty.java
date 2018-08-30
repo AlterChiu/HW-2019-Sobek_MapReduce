@@ -2,7 +2,7 @@ package GlobalProperty;
 
 public class GlobalProperty {
 	// ==========================================
-	public static int splitSize = 1;
+	public static int splitSize = 2;
 	public static int K_meansInitialTime = 4;
 	public static double roughBufferCoefficient = 1.2;
 	public static double errorConvergence = 1.1;
@@ -34,11 +34,9 @@ public class GlobalProperty {
 	public static String overviewProperty_roughTotal = "SpendTime_roughTotal";
 	public static String overviewProperty_Split = "mergeSplit_";
 	public static String overviewProperty_SplitSpendTime = "spendTime";
-	public static String overviewProperty_MaxSpendTime = "maxSpendTime";
 	public static String overviewProperty_SplitDelicateBoundary = "DelicateBoundary";
 	public static String overviewProperty_SplitRoughBoundary = "RoughBoundary";
 
-	public static String overviewProperty_MaxBufferCoefficient = "MaxBufferCoefficient";
 	public static String overviewProperty_BufferCoefficient = "BufferCoefficient";
 	public static String overviewProperty_FloodTimesError = "FloodTimesError";
 	public static String overviewProperty_FloodDepthError = "FloodDepthError";

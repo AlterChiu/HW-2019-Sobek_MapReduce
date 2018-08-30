@@ -36,7 +36,6 @@ public class SplitAscii_Kmeas extends DeterminRoughAsciiFile {
 		for (int index = 0; index < classified.size(); index++) {
 			String splitFolder = GlobalProperty.saveFolder_Split + index + "\\";
 			determinUnitDelicateDem(splitFolder, index);
-			determinRoughAsciiFile(splitFolder, this.restTimeCoefficient);
 		}
 	}
 

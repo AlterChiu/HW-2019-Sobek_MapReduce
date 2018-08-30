@@ -92,7 +92,7 @@ public class InitializeFolder {
 	public void createAfterTotalRun() throws IOException {
 		ff.delete(GlobalProperty.saveFolder_Split);
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(1000);
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
@@ -106,11 +106,14 @@ public class InitializeFolder {
 		JsonObject json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
 		for (int index = 0; index < index + 1; index++) {
 			try {
-				json.remove(GlobalProperty.overviewProperty_Split + index);
+				if (!json.get(GlobalProperty.overviewProperty_Split + index).isJsonNull()) {
+					json.remove(GlobalProperty.overviewProperty_Split + index);
+				}
 			} catch (Exception e) {
 				break;
 			}
 		}
+		new AtFileWriter(json, GlobalProperty.overViewPropertyFile).textWriter("");
 	}
 
 	public void setSplitSize() throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
