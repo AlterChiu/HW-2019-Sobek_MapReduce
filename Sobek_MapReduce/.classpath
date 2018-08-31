@@ -4,5 +4,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="C:/code/JAVA library/commonTool.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/AtCommonFunction"/>
+	<classpathentry kind="lib" path="C:/code/JAVA library/Gson/gson-2.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/code/JAVA library/Apache/common-Lang/common-lang3.jar"/>
+	<classpathentry kind="lib" path="C:/code/JAVA library/Apache/commons-math3-3.6.1/commons-math3-3.6.1.jar"/>
+	<classpathentry kind="lib" path="C:/code/JAVA library/Apache/commons-math3-3.6.1/javaml-0.1.7.jar"/>
+	<classpathentry kind="lib" path="C:/code/JAVA library/Apache/commons-math3-3.6.1/jdistlib-0.4.5-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

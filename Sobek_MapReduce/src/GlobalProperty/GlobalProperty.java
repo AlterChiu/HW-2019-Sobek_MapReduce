@@ -41,6 +41,10 @@ public class GlobalProperty {
 	public static String overviewProperty_FloodTimesError = "FloodTimesError";
 	public static String overviewProperty_FloodDepthError = "FloodDepthError";
 
+	// result error property
+	public static double resultError_FloodTimesError = -1;
+	public static double resultError_ErrorDifference = 9999;
+
 	// SOBEK Runtimes folder
 	// =======================================================
 	public static String sobekRuntimesBatFile = sobekWorkSpace + "\\MapReduce.bat";
@@ -73,7 +77,6 @@ public class GlobalProperty {
 
 	// split folder for error convergence
 	public static String saveFolder_convergence = workSpace + "\\convergence\\";
-	
 
 	// ================================================
 	// Analysis
