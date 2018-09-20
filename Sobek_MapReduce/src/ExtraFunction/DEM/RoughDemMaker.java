@@ -1,4 +1,4 @@
-package Ascii.DemMaker;
+package ExtraFunction.DEM;
 
 import java.io.IOException;
 import java.util.ArrayList;

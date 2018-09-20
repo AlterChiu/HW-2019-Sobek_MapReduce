@@ -55,23 +55,25 @@ public class MergeSplitResult {
 				double[] corrdinate = origainalAscii.getCoordinate(column, row);
 				List<Double> temptValueList = new ArrayList<Double>();
 
-				for (AsciiBasicControl temptAscii : splitAscii) {
-					// if the value on that position isn't null put it in to value list
-					String temptNullValue = temptAscii.getProperty().get("noData");
-					try {
-						String temptValue = temptAscii.getValue(corrdinate[0], corrdinate[1]);
-						if (!temptValue.equals(temptNullValue)) {
-							temptValueList.add(Double.parseDouble(temptValue));
+				if (!asciiGrid[row][column].equals(nullValue)) {
+					for (AsciiBasicControl temptAscii : splitAscii) {
+						// if the value on that position isn't null put it in to value list
+						String temptNullValue = temptAscii.getProperty().get("noData");
+						try {
+							String temptValue = temptAscii.getValue(corrdinate[0], corrdinate[1]);
+							if (!temptValue.equals(temptNullValue)) {
+								temptValueList.add(Double.parseDouble(temptValue));
+							}
+						} catch (Exception e) {
 						}
-					} catch (Exception e) {
 					}
-				}
-				// get the mean value of the tempt value list
-				// if there isn't any value in that list set the value to null value
-				try {
-					origainalAscii.setValue(column, row, new AtCommonMath(temptValueList).getMean() + "");
-				} catch (Exception e) {
-					origainalAscii.setValue(column, row, nullValue);
+					// get the mean value of the tempt value list
+					// if there isn't any value in that list set the value to null value
+					try {
+						origainalAscii.setValue(column, row, new AtCommonMath(temptValueList).getMean() + "");
+					} catch (Exception e) {
+						origainalAscii.setValue(column, row, nullValue);
+					}
 				}
 			}
 		}
@@ -82,7 +84,7 @@ public class MergeSplitResult {
 	// <===================================================================>
 
 	// <====================================================================>
-	// < Get smoth value>
+	// < Get smooth value>
 	// <====================================================================>
 	/**
 	 * @throws IOException
@@ -91,7 +93,7 @@ public class MergeSplitResult {
 	 * 
 	 */
 	// <====================================================================>
-	public void getSmothValue() throws IOException {
+	public void getSmoothValue() throws IOException {
 		String splitFolderList[] = new File(GlobalProperty.saveFolder_Split).list();
 
 		// read all timeStep of the ascii in each split folder
@@ -102,12 +104,12 @@ public class MergeSplitResult {
 			}
 
 			// output the merged asciiFile
-			new AtFileWriter(getSmothValueFunction(timeAsciiList.get(ascii), temptAsciiList).getAsciiFile(),
+			new AtFileWriter(getSmoothValueFunction(timeAsciiList.get(ascii), temptAsciiList).getAsciiFile(),
 					GlobalProperty.saveFolder_Merge + ascii).textWriter("    ");
 		}
 	}
 
-	private AsciiBasicControl getSmothValueFunction(AsciiBasicControl origainalAscii,
+	private AsciiBasicControl getSmoothValueFunction(AsciiBasicControl origainalAscii,
 			List<AsciiBasicControl> splitAscii) {
 		String nullValue = origainalAscii.getProperty().get("noData");
 		String[][] asciiGrid = origainalAscii.getAsciiGrid();
@@ -118,30 +120,39 @@ public class MergeSplitResult {
 				List<Double> temptValueList = new ArrayList<Double>();
 				List<Double> temptRateList = new ArrayList<Double>();
 
-				for (AsciiBasicControl temptAscii : splitAscii) {
-					// if the value on that position isn't null put it in to value list
-					String temptNullValue = temptAscii.getProperty().get("noData");
+				if (!asciiGrid[row][column].equals(nullValue)) {
+					for (AsciiBasicControl temptAscii : splitAscii) {
+						// if the value on that position isn't null put it in to value list
+						String temptNullValue = temptAscii.getProperty().get("noData");
+						try {
+							String temptValue = temptAscii.getValue(corrdinate[0], corrdinate[1]);
+							if (!temptValue.equals(temptNullValue)) {
+								temptValueList.add(Double.parseDouble(temptValue));
+								temptRateList.add(getBoundaryRate(temptAscii, corrdinate[0], corrdinate[1]));
+							}
+						} catch (Exception e) {
+						}
+					}
+
+					// get the smooth value of the tempt value list
+					// temptLvalue * rate / (rateSum)
+					// if there isn't any value in that list set the value to null value
 					try {
-						String temptValue = temptAscii.getValue(corrdinate[0], corrdinate[1]);
-						if (!temptValue.equals(temptNullValue)) {
-							temptValueList.add(Double.parseDouble(temptValue));
-							temptRateList.add(getRate(temptAscii , corrdinate[0] , corrdinate[1]));
+						if (temptValueList.size() > 1) {
+							List<Double> outValueList = new ArrayList<Double>();
+							double sumRate = new AtCommonMath(temptRateList).getSum();
+							for (int index = 0; index < temptValueList.size(); index++) {
+								outValueList.add(temptValueList.get(index) * temptRateList.get(index) / sumRate);
+							}
+							origainalAscii.setValue(column, row, new AtCommonMath(outValueList).getSum() + "");
+						} else if (temptValueList.size() == 1) {
+							origainalAscii.setValue(column, row, temptValueList.get(0) + "");
+						} else {
+							origainalAscii.setValue(column, row, nullValue);
 						}
 					} catch (Exception e) {
+						origainalAscii.setValue(column, row, nullValue);
 					}
-				}
-				// get the smooth value of the tempt value list
-				// temptLvalue * rate / (rateSum)
-				// if there isn't any value in that list set the value to null value
-				try {
-					List<Double> outValueList = new ArrayList<Double>();
-					double sumRate = new AtCommonMath(temptRateList).getSum();
-					for(int index = 0 ; index< temptValueList.size();index++) {
-						outValueList.add(temptValueList.get(index)*temptRateList.get(index)/sumRate);
-					}
-					origainalAscii.setValue(column, row, new AtCommonMath(outValueList).getSum() + "");
-				} catch (Exception e) {
-					origainalAscii.setValue(column, row, nullValue);
 				}
 			}
 		}
@@ -152,19 +163,35 @@ public class MergeSplitResult {
 	// get the rate of the position in this asciiDem
 	// it calculate from the center of the grid
 	// if target position is on the boundary
-	private double getRate(AsciiBasicControl ascii, double x, double y) {
+	private double getCenterRate(AsciiBasicControl ascii, double x, double y) {
 		Map<String, String> property = ascii.getProperty();
 		double maxX = Double.parseDouble(property.get("topX"));
 		double maxY = Double.parseDouble(property.get("topY"));
 		double minX = Double.parseDouble(property.get("bottomX"));
 		double minY = Double.parseDouble(property.get("bottomY"));
 
-		double maxLength = Math.sqrt(Math.pow((maxX - minX), 2) + Math.pow((maxY - minY), 2)) / 2;
 		double centerX = (maxX + minX) / 2;
 		double centerY = (maxY + minY) / 2;
+		double maxLength = Math.sqrt(Math.pow((maxX - minX), 2) + Math.pow((maxY - minY), 2))/2;
 
 		double length = Math.sqrt(Math.pow(Math.abs(x - centerX), 2) + Math.pow(Math.abs(y - centerY), 2));
-		return maxLength / length;
+		return (maxLength-length);
+	}
+
+	public double getBoundaryRate(AsciiBasicControl ascii, double x, double y) {
+		Map<String, String> property = ascii.getProperty();
+		double maxX = Double.parseDouble(property.get("topX"));
+		double maxY = Double.parseDouble(property.get("topY"));
+		double minX = Double.parseDouble(property.get("bottomX"));
+		double minY = Double.parseDouble(property.get("bottomY"));
+
+		List<Double> temptList = new ArrayList<Double>();
+		temptList.add(maxX-x);
+		temptList.add(x - minX);
+		temptList.add(maxY - y);
+		temptList.add(y - minY);
+
+		return new AtCommonMath(temptList).getMin();
 	}
 	// <====================================================================>
 

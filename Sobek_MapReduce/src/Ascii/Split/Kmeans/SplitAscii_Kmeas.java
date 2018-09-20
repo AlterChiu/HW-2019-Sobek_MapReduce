@@ -17,6 +17,7 @@ import usualTool.AtCommonMath;
 import usualTool.AtFileReader;
 import usualTool.AtFileWriter;
 import usualTool.AtKmeans;
+import usualTool.RandomMaker;
 
 public class SplitAscii_Kmeas extends DeterminRoughAsciiFile {
 	private AsciiBasicControl originalDelicateAscii;
@@ -112,6 +113,12 @@ public class SplitAscii_Kmeas extends DeterminRoughAsciiFile {
 	// get the kmeans classified
 	private List<List<Double[]>> getKmeansClassified(int floodInitialTimes) throws IOException {
 		AsciiBasicControl ascii = new AsciiBasicControl(GlobalProperty.saveFile_Analysis_InitailFlood);
+		double minX = Double.parseDouble(ascii.getProperty().get("bottomX"));
+		double minY = Double.parseDouble(ascii.getProperty().get("bottomY"));
+		double maxX = Double.parseDouble(ascii.getProperty().get("topX"));
+		double maxY = Double.parseDouble(ascii.getProperty().get("topY"));
+		double maxLength = Math.sqrt(Math.pow(maxX-minX, 2) + Math.pow(maxY-minY, 2));
+		
 		List<Double[]> analysisData = new ArrayList<Double[]>();
 
 		// read the ascii content which value is under limit
@@ -126,8 +133,33 @@ public class SplitAscii_Kmeas extends DeterminRoughAsciiFile {
 			}
 		}
 		AtKmeans kmeans = new AtKmeans(analysisData, GlobalProperty.splitSize);
+	
+		
+		
 		return kmeans.getClassifier();
 	}
+	
+//	private List<Double[]> getKmeansStartPoint(List<Double[]> analysisData , double minX , double maxX , double minY , double maxY){
+//		List<Double[]> outList = new ArrayList<Double[]>();
+//		
+//		double maxLength;
+//		if(maxX - minX > maxY - minY) {
+//			maxLength = maxX - minX;
+//		}else {
+//			maxLength = maxY - minY;
+//		}
+//		
+//		RandomMaker random = new RandomMaker();
+//		for(int index = 0 ; index< GlobalProperty.splitSize ; index++) {
+//			int valueIndex = random.RandomInt(0, analysisData.size());
+//			outList.add(analysisData.get(valueIndex));
+//			
+//			for(int checkIndxt =)
+//		}
+		
+	
+		
+//	}
 	// <=================================================================>
 
 }

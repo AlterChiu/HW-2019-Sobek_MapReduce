@@ -17,19 +17,19 @@ public class TotalTimeCount {
 
 	public void RoughTotalTimeCount() throws IOException {
 		this.saveFolder = GlobalProperty.saveFolder_Total_Rough;
-		this.jsonKeyName = GlobalProperty.overviewProperty_roughTotal;
+		this.jsonKeyName = GlobalProperty.overviewProperty_SpendTime_roughTotal;
 		
 		SobekDem sobekDem = new SobekDem();
 		sobekDem.addRoughDem(GlobalProperty.originalRough, GlobalProperty.originalRoughKn);
 		sobekDem.start();
-		sobekDem.setNode();
+//		sobekDem.setNode();
 
 		startRuntimes();
 	}
 
 	public void DelicateTotalTimeCount() throws IOException {
 		this.saveFolder = GlobalProperty.saveFolder_Total_Delicate;
-		this.jsonKeyName = GlobalProperty.overviewProperty_delicateTotal;
+		this.jsonKeyName = GlobalProperty.overviewProperty_SpendTime_delicateTotal;
 		
 		SobekDem sobekDem = new SobekDem();
 		sobekDem.addDelicateDem(GlobalProperty.originalDelicate, GlobalProperty.originalDelicateKn);

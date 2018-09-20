@@ -59,10 +59,11 @@ public class SplitTimeCount {
 
 				// restart this function
 				restar = true;
+				System.out.println("=================resplit unitDem================");
 				break;
 
 			} else {
-				// copy the result of delicate demFile to the temptSave folder
+				// move the result to classified folder
 				moveRsult(classifiedSaveFolder);
 				// outPut result to the overview property file
 				outPutResult(index, sobekRuntimes.getSimulateTime());
@@ -101,7 +102,7 @@ public class SplitTimeCount {
 
 	// output the boundary of the unitDem
 	private void outPutResult(int index, double simulationTime) throws IOException {
-		JsonObject overviewProperty = new AtFileReader(GlobalProperty.propertyFileName).getJsonObject();
+		JsonObject overviewProperty = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
 		JsonObject outJsonObject = new JsonObject();
 		JsonArray roughArray = new JsonArray();
 
@@ -109,7 +110,7 @@ public class SplitTimeCount {
 		Map<String, String> delicateProperty = new AsciiBasicControl(
 				GlobalProperty.saveFolder_Split + index + GlobalProperty.saveFile_DelicateDem).getProperty();
 		JsonObject delicateJson = getBoundaryJson(delicateProperty);
-		delicateJson.addProperty(GlobalProperty.overviewProperty_SplitSpendTime, simulationTime);
+		delicateJson.addProperty(GlobalProperty.overviewProperty_SpendTime_Split, simulationTime);
 
 		// add the property to the overview jsonFile
 		// spend time of the unit simulation the boundary of unitDem(delicate and rough)
@@ -118,7 +119,7 @@ public class SplitTimeCount {
 		outJsonObject.add(GlobalProperty.overviewProperty_SplitDelicateBoundary, delicateJson);
 		outJsonObject.add(GlobalProperty.overviewProperty_SplitRoughBoundary, roughArray);
 		overviewProperty.add(GlobalProperty.overviewProperty_Split + index, outJsonObject);
-		
+
 		new AtFileWriter(overviewProperty, GlobalProperty.overViewPropertyFile).textWriter("");
 	}
 

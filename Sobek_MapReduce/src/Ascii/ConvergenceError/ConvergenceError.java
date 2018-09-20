@@ -1,4 +1,4 @@
-package Ascii.ErrorConvergence;
+package Ascii.ConvergenceError;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,25 +21,41 @@ import usualTool.AtFileReader;
 import usualTool.AtFileWriter;
 import usualTool.FileFunction;
 
-public class ErrorConvergence extends DeterminRoughAsciiFile {
+public class ConvergenceError extends DeterminRoughAsciiFile {
 	private double temptBufferCoefficient;
-	private double bufferCoefficientLimit;
+	private double coefficeintDisplace;
 
 	public void start() throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
 		for (int index = 0; index < GlobalProperty.splitSize; index++) {
 			// reset the buffer coefficient to the selected delicate demFile
-			this.temptBufferCoefficient = 1.0;
-			this.bufferCoefficientLimit = settingBufferLimit(index);
+			this.temptBufferCoefficient = settingBufferLimit(index) - GlobalProperty.errorConvergence_difference;
+			System.out.println("max buffer coefficient unitDem_" + index + " : " + this.temptBufferCoefficient);
+			this.coefficeintDisplace = settingBufferDisplace(index);
+			System.out.println("difference buffer coefficient unitDem_" + index + " : " + this.coefficeintDisplace);
 
 			// to convergence the error value
 			// using try and error
-			while (this.temptBufferCoefficient < bufferCoefficientLimit) {
+			Boolean exitBoolean = false;
+			while (GlobalProperty.errorConvergence_Min < temptBufferCoefficient) {
 				// initial the save folder for the convergence folder
 				String targetFolder = initialTempFolder(index);
 
 				// create the rough demFile for the adjusted coefficient
-				determinRoughAsciiFile(targetFolder, this.temptBufferCoefficient);
+				determinRoughAsciiFile(targetFolder, this.temptBufferCoefficient, index);
 
+				// check for the rough boundary
+				// if it's equal to the original rough in twice then skip it
+				try {
+					if (checkRoughBoundary(targetFolder)) {
+						if (exitBoolean) {
+							new FileFunction().delete(targetFolder);
+							break;
+						} else {
+							exitBoolean = true;
+						}
+					}
+				} catch (Exception e) {
+				}
 				// start SobekRuntimes
 				SobekDem sobekDem = new SobekDem();
 				sobekDem.addDelicateDem(targetFolder + GlobalProperty.saveFile_DelicateDem,
@@ -47,6 +63,7 @@ public class ErrorConvergence extends DeterminRoughAsciiFile {
 				sobekDem.addRoughDem(targetFolder + GlobalProperty.saveFile_RoughDem,
 						targetFolder + GlobalProperty.saveFile_RoughDemKn);
 				sobekDem.start();
+				
 				Runtimes runtimes = new Runtimes();
 
 				// move the result to the targetFolder
@@ -56,11 +73,38 @@ public class ErrorConvergence extends DeterminRoughAsciiFile {
 				outPutResult(index, this.temptBufferCoefficient, runtimes.getSimulateTime());
 
 				// adjust the buffer coefficient
-				this.temptBufferCoefficient = this.temptBufferCoefficient * GlobalProperty.errorConvergence;
+				this.temptBufferCoefficient = this.temptBufferCoefficient - this.coefficeintDisplace;
 			}
-
+			System.out.println("min buffer coefficient unitDem_" + index + " : " + this.temptBufferCoefficient);
 			System.out.println("error convergence over\tsplitDem_" + index);
 		}
+	}
+
+	private boolean checkRoughBoundary(String targetFolder) throws IOException {
+		AsciiBasicControl temptAscii = new AsciiBasicControl(targetFolder + GlobalProperty.saveFile_RoughDem);
+		int temptRow = Integer.parseInt(temptAscii.getProperty().get("row"));
+		int temptColumn = Integer.parseInt(temptAscii.getProperty().get("column"));
+
+		AsciiBasicControl originalAscii = new AsciiBasicControl(GlobalProperty.originalRough);
+		int originalRow = Integer.parseInt(originalAscii.getProperty().get("row"));
+		int originalColumn = Integer.parseInt(originalAscii.getProperty().get("column"));
+
+		if (temptRow == originalRow && temptColumn == originalColumn) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private double settingBufferDisplace(int index)
+			throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
+		JsonObject json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		double delicatePartSpend = json.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject()
+				.get(GlobalProperty.overviewProperty_SplitDelicateBoundary).getAsJsonObject()
+				.get(GlobalProperty.overviewProperty_SpendTime_Split).getAsDouble();
+		double roughTotalSpend = json.get(GlobalProperty.overviewProperty_SpendTime_roughTotal).getAsDouble();
+
+		return roughTotalSpend / delicatePartSpend * GlobalProperty.errorConvergence_difference;
 	}
 
 	private double settingBufferLimit(int index)
@@ -68,7 +112,7 @@ public class ErrorConvergence extends DeterminRoughAsciiFile {
 		JsonObject json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
 		double delicateSpend = json.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject()
 				.get(GlobalProperty.overviewProperty_SplitDelicateBoundary).getAsJsonObject()
-				.get(GlobalProperty.overviewProperty_SplitSpendTime).getAsDouble();
+				.get(GlobalProperty.overviewProperty_SpendTime_Split).getAsDouble();
 
 		return GlobalProperty.totalAllowTime / delicateSpend;
 	}
@@ -145,7 +189,7 @@ public class ErrorConvergence extends DeterminRoughAsciiFile {
 		JsonObject temptRoughJson = getBoundaryJson(roughProperty);
 		temptRoughJson.addProperty(GlobalProperty.overviewProperty_BufferCoefficient,
 				new BigDecimal(bufferCoefficient).setScale(3, BigDecimal.ROUND_HALF_UP).toString());
-		temptRoughJson.addProperty(GlobalProperty.overviewProperty_SplitSpendTime, simulationTime);
+		temptRoughJson.addProperty(GlobalProperty.overviewProperty_SpendTime_Split, simulationTime);
 
 		// comparison
 		// if there is error setting the value of comparison in {-1,9999}

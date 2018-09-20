@@ -19,11 +19,12 @@ public class DeterminRoughAsciiFile {
 	// < Create DemFile Boundary>
 	// <==================================================================>
 	// determine the unitDem , roughDem is defined by the delicateDem
-	public void determinRoughAsciiFile(String targetFolder, double restTimeCoefficient) throws IOException {
+	public void determinRoughAsciiFile(String targetFolder, double restTimeCoefficient, int index) throws IOException {
 		this.overviewPorperty = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
 		double restTime = GlobalProperty.totalAllowTime
-				- overviewPorperty.get(GlobalProperty.overviewProperty_delicateTotal).getAsDouble()
-						* restTimeCoefficient / GlobalProperty.splitSize;
+				- (overviewPorperty.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject()
+						.get(GlobalProperty.overviewProperty_SplitDelicateBoundary).getAsJsonObject()
+						.get(GlobalProperty.overviewProperty_SpendTime_Split).getAsDouble() * restTimeCoefficient);
 
 		// determine the rough asciiFile and knFile
 		// the boundary of the rough demFile here is calculate by the rest time
@@ -36,8 +37,10 @@ public class DeterminRoughAsciiFile {
 				roughBoundary.get("minX"), roughBoundary.get("maxX"), roughBoundary.get("minY"),
 				roughBoundary.get("maxY"));
 
-		roughAscii = setOverlappingNull(targetFolder + GlobalProperty.saveFile_DelicateDem, roughAscii);
-		roughAsciiKn = setOverlappingNull(targetFolder + GlobalProperty.saveFile_DelicateDem, roughAsciiKn);
+		// roughAscii = setOverlappingNull(targetFolder +
+		// GlobalProperty.saveFile_DelicateDem, roughAscii);
+		// roughAsciiKn = setOverlappingNull(targetFolder +
+		// GlobalProperty.saveFile_DelicateDem, roughAsciiKn);
 
 		new AtFileWriter(roughAscii, targetFolder + GlobalProperty.saveFile_RoughDem).textWriter("    ");
 		new AtFileWriter(roughAsciiKn, targetFolder + GlobalProperty.saveFile_RoughDemKn).textWriter("    ");
@@ -77,7 +80,8 @@ public class DeterminRoughAsciiFile {
 
 		// get the ratio of spend time between delicate one and rough one
 		// rough / delicate (spend time)
-		double ratio = restTime / overviewPorperty.get(GlobalProperty.overviewProperty_roughTotal).getAsDouble();
+		double ratio = restTime
+				/ overviewPorperty.get(GlobalProperty.overviewProperty_SpendTime_roughTotal).getAsDouble();
 
 		// get the original boundary
 		Map<String, String> asciiProperty = splitAscii.getProperty();

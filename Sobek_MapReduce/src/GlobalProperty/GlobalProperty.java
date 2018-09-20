@@ -3,10 +3,11 @@ package GlobalProperty;
 public class GlobalProperty {
 	// ==========================================
 	public static int splitSize = 2;
-	public static int K_meansInitialTime = 4;
+	public static int K_meansInitialTime = 7;
 	public static double roughBufferCoefficient = 1.2;
 	public static double errorConvergence = 1.1;
-	// DEM split time ========> 0.7 hour
+	public static double errorConvergence_difference = 0.1;
+	public static double errorConvergence_Min = 1.0;
 	// ==========================================
 	public static double splitTime = 0.8 * 3600000;
 	// Total allow time
@@ -15,12 +16,12 @@ public class GlobalProperty {
 
 	// userSetting
 	// =================================================
-	public static String workSpace = "S:\\HomeWork\\mapReduce\\";
+	public static String workSpace = "E:\\HomeWork\\mapReduce\\modelTest\\";
 	public static String sobekWorkSpace = "C:\\Sobek213\\";
 
 	// modelSetting
 	// =================================================
-	public static String caseFolder = sobekWorkSpace + "Active12.lit\\5\\";
+	public static String caseFolder = sobekWorkSpace + "PIN40Z02.lit\\2\\";
 	public static String caseNetWork_NTW = caseFolder + "NETWORK.NTW";
 	public static String caseFrictionDescription = caseFolder + "FRICTION.DAT";
 	public static String caseNodeDescription = caseFolder + "NODES.DAT";
@@ -30,10 +31,10 @@ public class GlobalProperty {
 	// ================================================
 	public static String propertyFileName = "\\property.json";
 	public static String overViewPropertyFile = workSpace + propertyFileName;
-	public static String overviewProperty_delicateTotal = "SpendTime_delicateTotal";
-	public static String overviewProperty_roughTotal = "SpendTime_roughTotal";
+	public static String overviewProperty_SpendTime_delicateTotal = "SpendTime_delicateTotal";
+	public static String overviewProperty_SpendTime_roughTotal = "SpendTime_roughTotal";
 	public static String overviewProperty_Split = "mergeSplit_";
-	public static String overviewProperty_SplitSpendTime = "spendTime";
+	public static String overviewProperty_SpendTime_Split = "spendTime";
 	public static String overviewProperty_SplitDelicateBoundary = "DelicateBoundary";
 	public static String overviewProperty_SplitRoughBoundary = "RoughBoundary";
 
@@ -54,14 +55,14 @@ public class GlobalProperty {
 	//
 	// Original DELICATE user setting
 	// original demFile ==============> level and kn including
-	public static String originalDelicate = workSpace + "OriginalDEM\\ZoneU1_20m.asc";
-	public static String originalDelicateKn = workSpace + "OriginalDEM\\ZoneU1_20m(kn).asc";
+	public static String originalDelicate = workSpace + "OriginalDEM\\highResolutionDem.asc";
+	public static String originalDelicateKn = workSpace + "OriginalDEM\\highResolutionDem(kn).asc";
 
 	//
 	// Original ROUGH user setting
 	// original demFile ==============> level and kn including
-	public static String originalRough = workSpace + "OriginalDEM\\ZoneU1_40m.asc";
-	public static String originalRoughKn = workSpace + "OriginalDEM\\ZoneU1_40m(kn).asc";
+	public static String originalRough = workSpace + "OriginalDEM\\lowResolutionDem.asc";
+	public static String originalRoughKn = workSpace + "OriginalDEM\\lowResolutionDem(kn).asc";
 
 	//
 	// SAVE Folder
@@ -113,6 +114,6 @@ public class GlobalProperty {
 	// ===============================
 	// ==============TEST==============
 	// ===============================
-	public static String testFolder = "S:\\HomeWork\\mapReduce\\testFolder\\";
+	public static String testFolder = "E:\\HomeWork\\mapReduce\\testFolder\\";
 
 }

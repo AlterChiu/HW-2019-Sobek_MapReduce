@@ -26,6 +26,7 @@ public class Runtimes {
 		builder.directory(new File(GlobalProperty.sobekWorkSpace));
 		builder.command(command);
 		Process process = builder.start();
+
 		try {
 			process.waitFor();
 		} catch (InterruptedException e) {

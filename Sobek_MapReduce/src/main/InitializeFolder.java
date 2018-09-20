@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -56,8 +57,8 @@ public class InitializeFolder {
 		// =============Analysis Property===============
 		if (!new File(GlobalProperty.workSpace + GlobalProperty.propertyFileName).exists()) {
 			JsonObject outJson = new JsonObject();
-			outJson.addProperty(GlobalProperty.overviewProperty_delicateTotal, 0);
-			outJson.addProperty(GlobalProperty.overviewProperty_roughTotal, 0);
+			outJson.addProperty(GlobalProperty.overviewProperty_SpendTime_delicateTotal, 0);
+			outJson.addProperty(GlobalProperty.overviewProperty_SpendTime_roughTotal, 0);
 
 			new AtFileWriter(outJson, GlobalProperty.overViewPropertyFile).textWriter("");
 		}
@@ -118,23 +119,34 @@ public class InitializeFolder {
 
 	public void setSplitSize() throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
 		JsonObject object = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
-		double totalTimeCount = object.get(GlobalProperty.overviewProperty_delicateTotal).getAsDouble();
+		double totalTimeCount = object.get(GlobalProperty.overviewProperty_SpendTime_delicateTotal).getAsDouble();
 		GlobalProperty.splitSize = new BigDecimal(totalTimeCount / GlobalProperty.splitTime)
 				.setScale(0, BigDecimal.ROUND_UP).intValue();
 	}
 
 	/**
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 * @throws JsonSyntaxException
+	 * @throws JsonIOException
 	 * 
 	 * 
 	 * 
 	 * 
 	 */
-	public void createAfterSplitRun() {
+	public void createAfterSplitRun() throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
+		JsonObject object = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		for (int index = 0; index < GlobalProperty.splitSize; index++) {
+			JsonArray nullArray = new JsonArray();
+			object.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject()
+					.add(GlobalProperty.overviewProperty_SplitRoughBoundary, nullArray);
+		}
+		new AtFileWriter(object, GlobalProperty.overViewPropertyFile).textWriter("");
+
+		ff.delete(GlobalProperty.saveFolder_convergence);
 		ff.newFolder(GlobalProperty.saveFolder_convergence);
 		for (int index = 0; index < GlobalProperty.splitSize; index++) {
 			ff.newFolder(GlobalProperty.saveFolder_convergence + index);
-			ff.copyFolder(GlobalProperty.saveFolder_Split + index,
-					GlobalProperty.saveFolder_convergence + index + "\\0");
 		}
 	}
 
