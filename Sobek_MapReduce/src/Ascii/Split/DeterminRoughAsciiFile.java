@@ -37,10 +37,8 @@ public class DeterminRoughAsciiFile {
 				roughBoundary.get("minX"), roughBoundary.get("maxX"), roughBoundary.get("minY"),
 				roughBoundary.get("maxY"));
 
-		// roughAscii = setOverlappingNull(targetFolder +
-		// GlobalProperty.saveFile_DelicateDem, roughAscii);
-		// roughAsciiKn = setOverlappingNull(targetFolder +
-		// GlobalProperty.saveFile_DelicateDem, roughAsciiKn);
+		roughAscii = setOverlappingNull(targetFolder + GlobalProperty.saveFile_DelicateDem, roughAscii);
+		roughAsciiKn = setOverlappingNull(targetFolder + GlobalProperty.saveFile_DelicateDem, roughAsciiKn);
 
 		new AtFileWriter(roughAscii, targetFolder + GlobalProperty.saveFile_RoughDem).textWriter("    ");
 		new AtFileWriter(roughAsciiKn, targetFolder + GlobalProperty.saveFile_RoughDemKn).textWriter("    ");

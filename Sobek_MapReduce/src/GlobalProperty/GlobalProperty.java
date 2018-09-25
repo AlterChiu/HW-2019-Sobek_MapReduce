@@ -5,11 +5,11 @@ public class GlobalProperty {
 	public static int splitSize = 2;
 	public static int K_meansInitialTime = 7;
 	public static double roughBufferCoefficient = 1.2;
-	public static double errorConvergence = 1.1;
 	public static double errorConvergence_difference = 0.1;
 	public static double errorConvergence_Min = 1.0;
 	// ==========================================
 	public static double splitTime = 0.8 * 3600000;
+	public static double shutDownLimit = 1.5 * 3600000;
 	// Total allow time
 	// ==========================================
 	public static double totalAllowTime = 3600 * 1000;
@@ -39,6 +39,10 @@ public class GlobalProperty {
 	public static String overviewProperty_SplitRoughBoundary = "RoughBoundary";
 
 	public static String overviewProperty_BufferCoefficient = "BufferCoefficient";
+	public static String overviewProperty_BufferCoefficient_Max = "BufferCoefficient_Max";
+	public static String overviewProperty_BufferCoefficient_Difference = "BufferCoefficient_Difference";
+	public static String overviewProperty_BufferCoefficient_Min = "BufferCoefficient_Min";
+
 	public static String overviewProperty_FloodTimesError = "FloodTimesError";
 	public static String overviewProperty_FloodDepthError = "FloodDepthError";
 

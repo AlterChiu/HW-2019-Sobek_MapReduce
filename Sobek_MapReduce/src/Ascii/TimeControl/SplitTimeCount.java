@@ -34,7 +34,7 @@ public class SplitTimeCount {
 	// <=======================================================>
 	// main operation in this class
 	// <=======================================================>
-	public void runSplitDem() throws IOException {
+	public void runSplitDem() throws IOException, InterruptedException {
 		Boolean restar = false;
 
 		// loop for the classified
@@ -46,9 +46,11 @@ public class SplitTimeCount {
 			sobekDem.addDelicateDem(classifiedSaveFolder + GlobalProperty.saveFile_DelicateDem,
 					classifiedSaveFolder + GlobalProperty.saveFile_DelicateDemKn);
 			sobekDem.start();
+			
 
 			// check for the simulation time is over limit or not
 			Runtimes sobekRuntimes = new Runtimes();
+			sobekRuntimes.RuntimesNoLimit();
 			System.out.println("simulation time unitDem_" + index + " : " + sobekRuntimes.getSimulateTime());
 			if (sobekRuntimes.getSimulateTime() > GlobalProperty.totalAllowTime) {
 				// resetting the split number of the unitDem

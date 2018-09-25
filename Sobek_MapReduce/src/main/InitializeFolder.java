@@ -136,11 +136,22 @@ public class InitializeFolder {
 	 */
 	public void createAfterSplitRun() throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
 		JsonObject object = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		// clear rough covergence result
 		for (int index = 0; index < GlobalProperty.splitSize; index++) {
 			JsonArray nullArray = new JsonArray();
 			object.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject()
 					.add(GlobalProperty.overviewProperty_SplitRoughBoundary, nullArray);
 		}
+
+		// clear the buffer coefficient for each classified
+		for (int index = 0; index < GlobalProperty.splitSize; index++) {
+			JsonObject temptObject = object.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject()
+					.get(GlobalProperty.overviewProperty_SplitDelicateBoundary).getAsJsonObject();
+			temptObject.remove(GlobalProperty.overviewProperty_BufferCoefficient_Difference);
+			temptObject.remove(GlobalProperty.overviewProperty_BufferCoefficient_Max);
+			temptObject.remove(GlobalProperty.overviewProperty_BufferCoefficient_Min);
+		}
+
 		new AtFileWriter(object, GlobalProperty.overViewPropertyFile).textWriter("");
 
 		ff.delete(GlobalProperty.saveFolder_convergence);

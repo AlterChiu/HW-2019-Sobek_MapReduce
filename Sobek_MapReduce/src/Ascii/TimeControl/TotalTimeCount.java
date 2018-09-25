@@ -15,32 +15,33 @@ public class TotalTimeCount {
 	private String saveFolder;
 	private String jsonKeyName;
 
-	public void RoughTotalTimeCount() throws IOException {
+	public void RoughTotalTimeCount() throws IOException, InterruptedException {
 		this.saveFolder = GlobalProperty.saveFolder_Total_Rough;
 		this.jsonKeyName = GlobalProperty.overviewProperty_SpendTime_roughTotal;
-		
+
 		SobekDem sobekDem = new SobekDem();
 		sobekDem.addRoughDem(GlobalProperty.originalRough, GlobalProperty.originalRoughKn);
 		sobekDem.start();
-//		sobekDem.setNode();
+		sobekDem.setRoughNode();
 
 		startRuntimes();
 	}
 
-	public void DelicateTotalTimeCount() throws IOException {
+	public void DelicateTotalTimeCount() throws IOException, InterruptedException {
 		this.saveFolder = GlobalProperty.saveFolder_Total_Delicate;
 		this.jsonKeyName = GlobalProperty.overviewProperty_SpendTime_delicateTotal;
-		
+
 		SobekDem sobekDem = new SobekDem();
 		sobekDem.addDelicateDem(GlobalProperty.originalDelicate, GlobalProperty.originalDelicateKn);
 		sobekDem.start();
-
+		
 		startRuntimes();
 	}
 
-	private void startRuntimes() throws IOException {
+	private void startRuntimes() throws IOException, InterruptedException {
 		// run sobek model
 		Runtimes sobekRuntimes = new Runtimes();
+		sobekRuntimes.RuntimesNoLimit();
 		System.out.println(sobekRuntimes.getSimulateTime());
 
 		// output the property file

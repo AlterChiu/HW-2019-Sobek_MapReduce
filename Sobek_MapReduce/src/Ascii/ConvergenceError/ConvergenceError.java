@@ -25,13 +25,15 @@ public class ConvergenceError extends DeterminRoughAsciiFile {
 	private double temptBufferCoefficient;
 	private double coefficeintDisplace;
 
-	public void start() throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
+	public void start()
+			throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException, InterruptedException {
 		for (int index = 0; index < GlobalProperty.splitSize; index++) {
 			// reset the buffer coefficient to the selected delicate demFile
 			this.temptBufferCoefficient = settingBufferLimit(index) - GlobalProperty.errorConvergence_difference;
 			System.out.println("max buffer coefficient unitDem_" + index + " : " + this.temptBufferCoefficient);
 			this.coefficeintDisplace = settingBufferDisplace(index);
 			System.out.println("difference buffer coefficient unitDem_" + index + " : " + this.coefficeintDisplace);
+			outPutCoefficientProperty(index);
 
 			// to convergence the error value
 			// using try and error
@@ -63,9 +65,10 @@ public class ConvergenceError extends DeterminRoughAsciiFile {
 				sobekDem.addRoughDem(targetFolder + GlobalProperty.saveFile_RoughDem,
 						targetFolder + GlobalProperty.saveFile_RoughDemKn);
 				sobekDem.start();
-				
-				Runtimes runtimes = new Runtimes();
+				sobekDem.setRoughNode();
 
+				Runtimes runtimes = new Runtimes();
+				runtimes.RuntimesSetLimit();
 				// move the result to the targetFolder
 				moveRsult(targetFolder);
 
@@ -75,6 +78,7 @@ public class ConvergenceError extends DeterminRoughAsciiFile {
 				// adjust the buffer coefficient
 				this.temptBufferCoefficient = this.temptBufferCoefficient - this.coefficeintDisplace;
 			}
+			outPutCoefficientMin(index);
 			System.out.println("min buffer coefficient unitDem_" + index + " : " + this.temptBufferCoefficient);
 			System.out.println("error convergence over\tsplitDem_" + index);
 		}
@@ -161,6 +165,28 @@ public class ConvergenceError extends DeterminRoughAsciiFile {
 				folder + GlobalProperty.saveFile_DelicateDemKn);
 
 		return folder;
+	}
+
+	private void outPutCoefficientProperty(int index)
+			throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
+		JsonObject json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		JsonObject temptObject = json.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject()
+				.get(GlobalProperty.overviewProperty_SplitDelicateBoundary).getAsJsonObject();
+
+		temptObject.addProperty(GlobalProperty.overviewProperty_BufferCoefficient_Max, this.temptBufferCoefficient);
+		temptObject.addProperty(GlobalProperty.overviewProperty_BufferCoefficient_Difference, this.coefficeintDisplace);
+		new AtFileWriter(json, GlobalProperty.overViewPropertyFile).textWriter("");
+	}
+
+	private void outPutCoefficientMin(int index)
+			throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
+		JsonObject json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		JsonObject temptObject = json.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject()
+				.get(GlobalProperty.overviewProperty_SplitDelicateBoundary).getAsJsonObject();
+
+		temptObject.addProperty(GlobalProperty.overviewProperty_BufferCoefficient_Min, this.temptBufferCoefficient);
+		new AtFileWriter(json, GlobalProperty.overViewPropertyFile).textWriter("");
+		;
 	}
 
 	// <==================================================================>

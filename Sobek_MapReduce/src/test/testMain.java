@@ -17,15 +17,26 @@ public class testMain {
 	public static InitializeFolder initialize = new InitializeFolder();
 	public static FileFunction ff = new FileFunction();
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		// TODO Auto-generated method stub
-		SobekDem sobek = new SobekDem();
-		sobek.addRoughDem(GlobalProperty.originalRough, GlobalProperty.originalRoughKn);
-		sobek.start();
-		sobek.setNode();
+
+			
+			
 		
-		Runtimes run = new Runtimes();
-		System.out.println(run.getSimulateTime());
+	}
+	
+	 private static  void test() throws IOException, InterruptedException {
+			List<String> simulateShutDown = new ArrayList<String>();
+			simulateShutDown.add("cmd");
+			simulateShutDown.add("/c");
+			simulateShutDown.add("taskkill");
+			simulateShutDown.add("/IM");
+			simulateShutDown.add("simulate.exe");
+			simulateShutDown.add("/T");
+			ProcessBuilder simulateBuilder = new ProcessBuilder();
+			simulateBuilder.command(simulateShutDown);
+			Process simulateProcess = simulateBuilder.start();
+			simulateProcess.waitFor();
 	}
 
 }
