@@ -34,6 +34,31 @@ public class SplitTimeCount {
 	// <=======================================================>
 	// main operation in this class
 	// <=======================================================>
+
+	public void runSplitDem(int index) throws IOException, InterruptedException {
+		// loop for the classified
+		String classifiedSaveFolder = GlobalProperty.saveFolder_Split + index + "\\";
+
+		// run sobek model
+		SobekDem sobekDem = new SobekDem();
+		sobekDem.addDelicateDem(classifiedSaveFolder + GlobalProperty.saveFile_DelicateDem,
+				classifiedSaveFolder + GlobalProperty.saveFile_DelicateDemKn);
+		if(GlobalProperty.nodeFunction_convergence_Delicate) {
+			sobekDem.setDelicateNode();
+		}
+		sobekDem.start();
+
+		// check for the simulation time is over limit or not
+		Runtimes sobekRuntimes = new Runtimes();
+		sobekRuntimes.RuntimesNoLimit();
+		System.out.println("simulation time unitDem_" + index + " : " + sobekRuntimes.getSimulateTime());
+
+		// move the result to classified folder
+		moveRsult(classifiedSaveFolder);
+		// outPut result to the overview property file
+		outPutResult(index, sobekRuntimes.getSimulateTime());
+	}
+
 	public void runSplitDem() throws IOException, InterruptedException {
 		Boolean restar = false;
 
@@ -46,7 +71,6 @@ public class SplitTimeCount {
 			sobekDem.addDelicateDem(classifiedSaveFolder + GlobalProperty.saveFile_DelicateDem,
 					classifiedSaveFolder + GlobalProperty.saveFile_DelicateDemKn);
 			sobekDem.start();
-			
 
 			// check for the simulation time is over limit or not
 			Runtimes sobekRuntimes = new Runtimes();

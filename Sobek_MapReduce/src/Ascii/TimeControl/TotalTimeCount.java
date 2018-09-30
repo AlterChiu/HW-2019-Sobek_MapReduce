@@ -22,8 +22,10 @@ public class TotalTimeCount {
 		SobekDem sobekDem = new SobekDem();
 		sobekDem.addRoughDem(GlobalProperty.originalRough, GlobalProperty.originalRoughKn);
 		sobekDem.start();
-		sobekDem.setRoughNode();
-
+		if(GlobalProperty.nodeFunction_RoughTotal) {
+			sobekDem.setRoughNode();
+		}
+		
 		startRuntimes();
 	}
 
@@ -34,6 +36,9 @@ public class TotalTimeCount {
 		SobekDem sobekDem = new SobekDem();
 		sobekDem.addDelicateDem(GlobalProperty.originalDelicate, GlobalProperty.originalDelicateKn);
 		sobekDem.start();
+		if(GlobalProperty.nodeFunction_DelicateTotal) {
+			sobekDem.setDelicateNode();
+		}
 		
 		startRuntimes();
 	}

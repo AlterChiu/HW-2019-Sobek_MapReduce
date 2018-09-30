@@ -25,62 +25,71 @@ public class ConvergenceError extends DeterminRoughAsciiFile {
 	private double temptBufferCoefficient;
 	private double coefficeintDisplace;
 
+	public void start(int index) throws IOException, InterruptedException {
+		// reset the buffer coefficient to the selected delicate demFile
+		this.temptBufferCoefficient = settingBufferLimit(index) - GlobalProperty.errorConvergence_difference;
+		System.out.println("max buffer coefficient unitDem_" + index + " : " + this.temptBufferCoefficient);
+		this.coefficeintDisplace = settingBufferDisplace(index);
+		System.out.println("difference buffer coefficient unitDem_" + index + " : " + this.coefficeintDisplace);
+		outPutCoefficientProperty(index);
+
+		// to convergence the error value
+		// using try and error
+		Boolean exitBoolean = false;
+		while (GlobalProperty.errorConvergence_Min < temptBufferCoefficient) {
+			// initial the save folder for the convergence folder
+			String targetFolder = initialTempFolder(index);
+
+			// create the rough demFile for the adjusted coefficient
+			determinRoughAsciiFile(targetFolder, this.temptBufferCoefficient, index);
+
+			// check for the rough boundary
+			// if it's equal to the original rough in twice then skip it
+			try {
+				if (checkRoughBoundary(targetFolder)) {
+					if (exitBoolean) {
+						new FileFunction().delete(targetFolder);
+						break;
+					} else {
+						exitBoolean = true;
+					}
+				}
+			} catch (Exception e) {
+			}
+			// start SobekRuntimes
+			SobekDem sobekDem = new SobekDem();
+			sobekDem.addDelicateDem(targetFolder + GlobalProperty.saveFile_DelicateDem,
+					targetFolder + GlobalProperty.saveFile_DelicateDemKn);
+			sobekDem.addRoughDem(targetFolder + GlobalProperty.saveFile_RoughDem,
+					targetFolder + GlobalProperty.saveFile_RoughDemKn);
+			if(GlobalProperty.nodeFunction_convergence_Delicate) {
+				sobekDem.setDelicateNode();
+			}
+			if(GlobalProperty.nodeFunction_convergence_Rough) {
+				sobekDem.setRoughNode();
+			}
+			
+			sobekDem.start();
+
+			Runtimes runtimes = new Runtimes();
+			runtimes.RuntimesSetLimit();
+			// move the result to the targetFolder
+			moveRsult(targetFolder);
+
+			// save the overview property
+			outPutResult(index, this.temptBufferCoefficient, runtimes.getSimulateTime());
+
+			// adjust the buffer coefficient
+			this.temptBufferCoefficient = this.temptBufferCoefficient - this.coefficeintDisplace;
+		}
+		outPutCoefficientMin(index);
+		System.out.println("min buffer coefficient unitDem_" + index + " : " + this.temptBufferCoefficient);
+	}
+
 	public void start()
 			throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException, InterruptedException {
 		for (int index = 0; index < GlobalProperty.splitSize; index++) {
-			// reset the buffer coefficient to the selected delicate demFile
-			this.temptBufferCoefficient = settingBufferLimit(index) - GlobalProperty.errorConvergence_difference;
-			System.out.println("max buffer coefficient unitDem_" + index + " : " + this.temptBufferCoefficient);
-			this.coefficeintDisplace = settingBufferDisplace(index);
-			System.out.println("difference buffer coefficient unitDem_" + index + " : " + this.coefficeintDisplace);
-			outPutCoefficientProperty(index);
-
-			// to convergence the error value
-			// using try and error
-			Boolean exitBoolean = false;
-			while (GlobalProperty.errorConvergence_Min < temptBufferCoefficient) {
-				// initial the save folder for the convergence folder
-				String targetFolder = initialTempFolder(index);
-
-				// create the rough demFile for the adjusted coefficient
-				determinRoughAsciiFile(targetFolder, this.temptBufferCoefficient, index);
-
-				// check for the rough boundary
-				// if it's equal to the original rough in twice then skip it
-				try {
-					if (checkRoughBoundary(targetFolder)) {
-						if (exitBoolean) {
-							new FileFunction().delete(targetFolder);
-							break;
-						} else {
-							exitBoolean = true;
-						}
-					}
-				} catch (Exception e) {
-				}
-				// start SobekRuntimes
-				SobekDem sobekDem = new SobekDem();
-				sobekDem.addDelicateDem(targetFolder + GlobalProperty.saveFile_DelicateDem,
-						targetFolder + GlobalProperty.saveFile_DelicateDemKn);
-				sobekDem.addRoughDem(targetFolder + GlobalProperty.saveFile_RoughDem,
-						targetFolder + GlobalProperty.saveFile_RoughDemKn);
-				sobekDem.start();
-				sobekDem.setRoughNode();
-
-				Runtimes runtimes = new Runtimes();
-				runtimes.RuntimesSetLimit();
-				// move the result to the targetFolder
-				moveRsult(targetFolder);
-
-				// save the overview property
-				outPutResult(index, this.temptBufferCoefficient, runtimes.getSimulateTime());
-
-				// adjust the buffer coefficient
-				this.temptBufferCoefficient = this.temptBufferCoefficient - this.coefficeintDisplace;
-			}
-			outPutCoefficientMin(index);
-			System.out.println("min buffer coefficient unitDem_" + index + " : " + this.temptBufferCoefficient);
-			System.out.println("error convergence over\tsplitDem_" + index);
+			start(index);
 		}
 	}
 

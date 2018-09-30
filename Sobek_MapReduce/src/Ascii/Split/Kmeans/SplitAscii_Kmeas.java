@@ -23,7 +23,6 @@ public class SplitAscii_Kmeas extends DeterminRoughAsciiFile {
 	private AsciiBasicControl originalDelicateAscii;
 	private AsciiBasicControl originalDelicateAsciiKn;
 	private List<List<Double[]>> classified;
-	public double restTimeCoefficient = GlobalProperty.roughBufferCoefficient;
 
 	public SplitAscii_Kmeas() throws IOException {
 		this.originalDelicateAscii = new AsciiBasicControl(GlobalProperty.originalDelicate);
@@ -92,21 +91,27 @@ public class SplitAscii_Kmeas extends DeterminRoughAsciiFile {
 		double delicateCellSize = Double
 				.parseDouble(new AsciiBasicControl(GlobalProperty.originalDelicate).getProperty().get("cellSize"));
 
-		double minX = xListStatics.getMin() - delicateCellSize;
-		double maxX = xListStatics.getMax() + delicateCellSize;
-		double minY = yListStatics.getMin() - delicateCellSize;
-		double maxY = yListStatics.getMax() + delicateCellSize;
+		double minX = xListStatics.getMin() - delicateCellSize * 0.5;
+		double maxX = xListStatics.getMax() + delicateCellSize * 0.5;
+		double minY = yListStatics.getMin() - delicateCellSize * 0.5;
+		double maxY = yListStatics.getMax() + delicateCellSize * 0.5;
 
 		// make it match the grid of rough asciiDem
 		AsciiBasicControl roughAscii = new AsciiBasicControl(GlobalProperty.originalRough);
+		double roughCellSize = Double.parseDouble(roughAscii.getProperty().get("cellSize"));
 
 		double[] bottomCoordinate = roughAscii.getClosestCoordinate(minX, minY);
 		double[] topCoordinate = roughAscii.getClosestCoordinate(maxX, maxY);
 
-		outMap.put("minX", bottomCoordinate[0]);
-		outMap.put("maxX", topCoordinate[0]);
-		outMap.put("minY", bottomCoordinate[1]);
-		outMap.put("maxY", topCoordinate[1]);
+		minX = bottomCoordinate[0] - 0.5 * roughCellSize - delicateCellSize;
+		minY = bottomCoordinate[1] - 0.5 * roughCellSize - delicateCellSize;
+		maxX = topCoordinate[0] + 0.5 * roughCellSize + delicateCellSize;
+		maxY = topCoordinate[1] + 0.5 * roughCellSize + delicateCellSize;
+
+		outMap.put("minX", minX);
+		outMap.put("maxX", maxX);
+		outMap.put("minY", minY);
+		outMap.put("maxY", maxY);
 		return outMap;
 	}
 
@@ -117,8 +122,7 @@ public class SplitAscii_Kmeas extends DeterminRoughAsciiFile {
 		double minY = Double.parseDouble(ascii.getProperty().get("bottomY"));
 		double maxX = Double.parseDouble(ascii.getProperty().get("topX"));
 		double maxY = Double.parseDouble(ascii.getProperty().get("topY"));
-		double maxLength = Math.sqrt(Math.pow(maxX-minX, 2) + Math.pow(maxY-minY, 2));
-		
+
 		List<Double[]> analysisData = new ArrayList<Double[]>();
 
 		// read the ascii content which value is under limit
@@ -126,40 +130,37 @@ public class SplitAscii_Kmeas extends DeterminRoughAsciiFile {
 		for (int row = 0; row < content.length; row++) {
 			for (int column = 0; column < content[0].length; column++) {
 				double value = Double.parseDouble(ascii.getValue(column, row));
-				if (value <= floodInitialTimes && value > 0) {
+				if (value <= floodInitialTimes && value >= 0) {
 					double[] coordinate = ascii.getCoordinate(column, row);
 					analysisData.add(new Double[] { coordinate[0], coordinate[1] });
 				}
 			}
 		}
 		AtKmeans kmeans = new AtKmeans(analysisData, GlobalProperty.splitSize);
-	
-		
-		
+
 		return kmeans.getClassifier();
 	}
-	
-//	private List<Double[]> getKmeansStartPoint(List<Double[]> analysisData , double minX , double maxX , double minY , double maxY){
-//		List<Double[]> outList = new ArrayList<Double[]>();
-//		
-//		double maxLength;
-//		if(maxX - minX > maxY - minY) {
-//			maxLength = maxX - minX;
-//		}else {
-//			maxLength = maxY - minY;
-//		}
-//		
-//		RandomMaker random = new RandomMaker();
-//		for(int index = 0 ; index< GlobalProperty.splitSize ; index++) {
-//			int valueIndex = random.RandomInt(0, analysisData.size());
-//			outList.add(analysisData.get(valueIndex));
-//			
-//			for(int checkIndxt =)
-//		}
-		
-	
-		
-//	}
+
+	// private List<Double[]> getKmeansStartPoint(List<Double[]> analysisData ,
+	// double minX , double maxX , double minY , double maxY){
+	// List<Double[]> outList = new ArrayList<Double[]>();
+	//
+	// double maxLength;
+	// if(maxX - minX > maxY - minY) {
+	// maxLength = maxX - minX;
+	// }else {
+	// maxLength = maxY - minY;
+	// }
+	//
+	// RandomMaker random = new RandomMaker();
+	// for(int index = 0 ; index< GlobalProperty.splitSize ; index++) {
+	// int valueIndex = random.RandomInt(0, analysisData.size());
+	// outList.add(analysisData.get(valueIndex));
+	//
+	// for(int checkIndxt =)
+	// }
+
+	// }
 	// <=================================================================>
 
 }

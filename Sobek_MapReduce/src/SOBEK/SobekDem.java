@@ -20,14 +20,16 @@ import usualTool.AtFileWriter;
 import usualTool.FileFunction;
 
 public class SobekDem {
+	private AsciiBasicControl currentAscii;
+
 	private List<String> demList = new ArrayList<String>();
 	private List<String> knList = new ArrayList<String>();
 	private List<String> networkFile = new ArrayList<String>();
 	private List<String> frictionFile = new ArrayList<String>();
 	private List<String[]> ptList;
-	private Map<String, Double[]> nodeList = new TreeMap<String, Double[]>();
 	private Map<Integer, List<String>> domnList = new TreeMap<Integer, List<String>>();
-	private AsciiBasicControl currentAscii;
+
+	protected Map<String, Double[]> nodeList = new TreeMap<String, Double[]>();
 
 	private String delicateDem = null;
 	private String delicateDemKn = null;
@@ -171,10 +173,10 @@ public class SobekDem {
 				int[] topPosition = currentAscii.getPosition(interceptMaxX, interceptMaxY);
 				int[] bottomPosition = currentAscii.getPosition(interceptMinX, interceptMinY);
 				childBlock.append("    CHILDBLOCK");
-				childBlock.append(" ltx " + targetProperty.get("bottomX"));
-				childBlock.append(" lty " + targetProperty.get("topY"));
-				childBlock.append(" rbx " + targetProperty.get("topX"));
-				childBlock.append(" rby " + targetProperty.get("bottomY"));
+				childBlock.append(" ltX " + targetProperty.get("bottomX"));
+				childBlock.append(" ltY " + targetProperty.get("topY"));
+				childBlock.append(" rbX " + targetProperty.get("topX"));
+				childBlock.append(" rbY " + targetProperty.get("bottomY"));
 				childBlock.append(" ltC " + (bottomPosition[0] + 1));
 				childBlock.append(" ltR " + (topPosition[1] + 1));
 				childBlock.append(" rbC " + (topPosition[0] + 1));
@@ -281,7 +283,7 @@ public class SobekDem {
 	// <NetWork.ntw>
 	// <===================>
 	// <====================================================================>
-	private void clearNetWork() throws IOException {
+	protected void clearNetWork() throws IOException {
 		BufferedReader br = new BufferedReader(
 				new InputStreamReader(new FileInputStream(GlobalProperty.saveFile_SobekNetWorkNtw), AtFileReader.ANSI));
 
@@ -406,9 +408,8 @@ public class SobekDem {
 	// <====================================================================>
 	private void setNode(String asciiAdd) throws IOException {
 		String[][] nodeContent = new AtFileReader(GlobalProperty.saveFile_SobekNodes).getStr();
-
+		
 		// make the street level of nodes to the upper demLevel
-
 		this.currentAscii = new AsciiBasicControl(asciiAdd);
 
 		// set asciiDem to match node content => take the highest level
@@ -427,7 +428,7 @@ public class SobekDem {
 	}
 
 	// make node.DAT to match the asciiDem
-	private String[][] setNode_Level(AsciiBasicControl ascii, String[][] nodeContent) throws IOException {
+	protected String[][] setNode_Level(AsciiBasicControl ascii, String[][] nodeContent) throws IOException {
 
 		// make the street level of nodes to the upper demLevel
 		String nullValue = ascii.getProperty().get("noData");

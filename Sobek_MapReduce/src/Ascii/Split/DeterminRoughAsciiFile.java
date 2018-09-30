@@ -36,10 +36,12 @@ public class DeterminRoughAsciiFile {
 		String[][] roughAsciiKn = new AsciiIntercept(GlobalProperty.originalRoughKn).getIntercept(
 				roughBoundary.get("minX"), roughBoundary.get("maxX"), roughBoundary.get("minY"),
 				roughBoundary.get("maxY"));
-
-		roughAscii = setOverlappingNull(targetFolder + GlobalProperty.saveFile_DelicateDem, roughAscii);
-		roughAsciiKn = setOverlappingNull(targetFolder + GlobalProperty.saveFile_DelicateDem, roughAsciiKn);
-
+		
+		if (GlobalProperty.clipFunction_convergence_Rough) {
+			roughAscii = setOverlappingNull(targetFolder + GlobalProperty.saveFile_DelicateDem, roughAscii);
+			roughAsciiKn = setOverlappingNull(targetFolder + GlobalProperty.saveFile_DelicateDemKn, roughAsciiKn);
+		}
+		
 		new AtFileWriter(roughAscii, targetFolder + GlobalProperty.saveFile_RoughDem).textWriter("    ");
 		new AtFileWriter(roughAsciiKn, targetFolder + GlobalProperty.saveFile_RoughDemKn).textWriter("    ");
 	}
@@ -50,10 +52,10 @@ public class DeterminRoughAsciiFile {
 		String roughNullValue = roughAscii.getProperty().get("noData");
 
 		String[][] asciiContent = delicateAscii.getAsciiGrid();
-		for (int row = 1; row < asciiContent.length - 1; row++) {
-			for (int column = 1; column < asciiContent[0].length - 1; column++) {
-				double[] coordinate = delicateAscii.getCoordinate(column, row);
+		for (int row = 2; row < asciiContent.length - 2; row++) {
+			for (int column = 2; column < asciiContent[0].length - 2; column++) {
 				try {
+					double[] coordinate = delicateAscii.getCoordinate(column, row);
 					roughAscii.setValue(coordinate[0], coordinate[1], roughNullValue);
 				} catch (Exception e) {
 				}

@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 import GlobalProperty.GlobalProperty;
+import main.MapReduceMainPage;
 import usualTool.AtFileReader;
 import usualTool.FileFunction;
 
@@ -99,11 +100,13 @@ public class SelectRoughBoundary {
 			// check for selecting rough boundary
 			if (selectedRoughIndex != -1) {
 				System.out.println("Rough Boundary " + index + " Auto Selected : " + selectedRoughIndex);
+				MapReduceMainPage.logFile.add("Rough Boundary " + index + " Auto Selected : " + selectedRoughIndex);
 				new FileFunction().copyFolder(
 						GlobalProperty.saveFolder_convergence + index + "//" + selectedRoughIndex,
 						GlobalProperty.saveFolder_Split + index);
 			} else {
 				System.out.println("Rough Boundary" + index + " Auto Selected : no selected");
+				MapReduceMainPage.logFile.add("Rough Boundary" + index + " Auto Selected : no selected");
 			}
 		}
 
