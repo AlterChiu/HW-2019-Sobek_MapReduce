@@ -1,4 +1,4 @@
-package Ascii.ConvergenceError;
+package Ascii.Rough.ConvergenceError;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,7 +15,7 @@ import Analysis.Result.FloodCompare.ResultCompare;
 import GlobalProperty.GlobalProperty;
 import SOBEK.Runtimes;
 import SOBEK.SobekDem;
-import Ascii.Split.DeterminRoughAsciiFile;
+import Ascii.Delicate.Split.DeterminRoughAsciiFile;
 import asciiFunction.AsciiBasicControl;
 import usualTool.AtFileReader;
 import usualTool.AtFileWriter;

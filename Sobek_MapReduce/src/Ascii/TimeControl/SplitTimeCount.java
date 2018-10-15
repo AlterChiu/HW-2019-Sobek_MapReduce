@@ -9,7 +9,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import Analysis.Result.FloodCompare.ResultCompare;
-import Ascii.Split.Kmeans.SplitAscii_Kmeas;
+import Ascii.Delicate.Split.Kmeans.SplitAscii_Kmeas;
 import SOBEK.Runtimes;
 import SOBEK.SobekDem;
 import asciiFunction.AsciiBasicControl;

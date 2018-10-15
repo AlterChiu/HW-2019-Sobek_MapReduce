@@ -1,4 +1,4 @@
-package Ascii.Split;
+package Ascii.Delicate.Split;
 
 import java.io.IOException;
 import java.util.Map;

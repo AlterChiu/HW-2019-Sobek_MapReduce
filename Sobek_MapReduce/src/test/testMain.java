@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import Analysis.Result.FloodCompare.ResultCompare;
+import Ascii.Delicate.Split.Kmeans.SplitAscii_Kmean_Weight;
+import Ascii.Delicate.Split.Kmeans.SplitAscii_Kmeas;
 import ExtraFunction.DEM.NodeChecker;
 import GlobalProperty.GlobalProperty;
 import SOBEK.Runtimes;
@@ -21,23 +24,8 @@ public class testMain {
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		// TODO Auto-generated method stub
-		NodeChecker checker = new NodeChecker();
-		checker.getDifference(GlobalProperty.originalDelicate, GlobalProperty.workSpace + "nodeDelicate.csv");
+		SplitAscii_Kmeas split  = new SplitAscii_Kmeas();
+		split.outputClassified("E:\\HomeWork\\mapReduce\\modelTest\\classified_Original.csv");
 
 	}
-
-	private static void test() throws IOException, InterruptedException {
-		List<String> simulateShutDown = new ArrayList<String>();
-		simulateShutDown.add("cmd");
-		simulateShutDown.add("/c");
-		simulateShutDown.add("taskkill");
-		simulateShutDown.add("/IM");
-		simulateShutDown.add("simulate.exe");
-		simulateShutDown.add("/T");
-		ProcessBuilder simulateBuilder = new ProcessBuilder();
-		simulateBuilder.command(simulateShutDown);
-		Process simulateProcess = simulateBuilder.start();
-		simulateProcess.waitFor();
-	}
-
 }

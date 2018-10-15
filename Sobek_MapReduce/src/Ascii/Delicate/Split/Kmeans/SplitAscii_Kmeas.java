@@ -1,4 +1,4 @@
-package Ascii.Split.Kmeans;
+package Ascii.Delicate.Split.Kmeans;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -6,18 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.google.gson.JsonObject;
-
-import Ascii.Split.DeterminRoughAsciiFile;
+import Ascii.Delicate.Split.DeterminRoughAsciiFile;
 import GlobalProperty.GlobalProperty;
 import asciiFunction.AsciiBasicControl;
 import asciiFunction.AsciiIntercept;
 import main.MapReduceMainPage;
 import usualTool.AtCommonMath;
-import usualTool.AtFileReader;
 import usualTool.AtFileWriter;
 import usualTool.AtKmeans;
-import usualTool.RandomMaker;
 
 public class SplitAscii_Kmeas extends DeterminRoughAsciiFile {
 	private AsciiBasicControl originalDelicateAscii;
@@ -27,7 +23,6 @@ public class SplitAscii_Kmeas extends DeterminRoughAsciiFile {
 	public SplitAscii_Kmeas() throws IOException {
 		this.originalDelicateAscii = new AsciiBasicControl(GlobalProperty.originalDelicate);
 		this.originalDelicateAsciiKn = new AsciiBasicControl(GlobalProperty.originalDelicateKn);
-
 		// reset the split folder
 		MapReduceMainPage.initialize.createAfterTotalRun();
 		this.classified = getKmeansClassified(GlobalProperty.K_meansInitialTime);
@@ -38,7 +33,6 @@ public class SplitAscii_Kmeas extends DeterminRoughAsciiFile {
 			determinUnitDelicateDem(splitFolder, index);
 		}
 	}
-
 	/*
 	 * 
 	 * 
@@ -47,7 +41,7 @@ public class SplitAscii_Kmeas extends DeterminRoughAsciiFile {
 	 * 
 	 * 
 	 */
-	private void determinUnitDelicateDem(String splitFodler, int index) throws IOException {
+	protected void determinUnitDelicateDem(String splitFodler, int index) throws IOException {
 		// determine the delicate asciiFile and knFile
 		// the boundary(classifiedBoundary) of the delicate demFile here is the most
 		// outer coordinate
@@ -116,13 +110,8 @@ public class SplitAscii_Kmeas extends DeterminRoughAsciiFile {
 	}
 
 	// get the kmeans classified
-	private List<List<Double[]>> getKmeansClassified(int floodInitialTimes) throws IOException {
+	protected List<List<Double[]>> getKmeansClassified(int floodInitialTimes) throws IOException {
 		AsciiBasicControl ascii = new AsciiBasicControl(GlobalProperty.saveFile_Analysis_InitailFlood);
-		double minX = Double.parseDouble(ascii.getProperty().get("bottomX"));
-		double minY = Double.parseDouble(ascii.getProperty().get("bottomY"));
-		double maxX = Double.parseDouble(ascii.getProperty().get("topX"));
-		double maxY = Double.parseDouble(ascii.getProperty().get("topY"));
-
 		List<Double[]> analysisData = new ArrayList<Double[]>();
 
 		// read the ascii content which value is under limit
@@ -141,26 +130,16 @@ public class SplitAscii_Kmeas extends DeterminRoughAsciiFile {
 		return kmeans.getClassifier();
 	}
 
-	// private List<Double[]> getKmeansStartPoint(List<Double[]> analysisData ,
-	// double minX , double maxX , double minY , double maxY){
-	// List<Double[]> outList = new ArrayList<Double[]>();
-	//
-	// double maxLength;
-	// if(maxX - minX > maxY - minY) {
-	// maxLength = maxX - minX;
-	// }else {
-	// maxLength = maxY - minY;
-	// }
-	//
-	// RandomMaker random = new RandomMaker();
-	// for(int index = 0 ; index< GlobalProperty.splitSize ; index++) {
-	// int valueIndex = random.RandomInt(0, analysisData.size());
-	// outList.add(analysisData.get(valueIndex));
-	//
-	// for(int checkIndxt =)
-	// }
+	public void outputClassified(String saveAdd) throws IOException {
+		List<String[]> outList = new ArrayList<String[]>();
+		outList.add(new String[] { "x", "y", "index" });
 
-	// }
-	// <=================================================================>
+		for (int index = 0; index < this.classified.size(); index++) {
+			for (Double[] coordinate : this.classified.get(index)) {
+				outList.add(new String[] { coordinate[0] + "", coordinate[1] + "", index + "" });
+			}
+		}
+		new AtFileWriter(outList.parallelStream().toArray(String[][]::new), saveAdd).csvWriter();
+	}
 
 }

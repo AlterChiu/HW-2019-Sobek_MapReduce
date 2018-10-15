@@ -11,7 +11,7 @@ import Analysis.DelicateTotal.FloodInitail.InitailFloodTime;
 import Analysis.Result.FloodCompare.ResultCompare;
 import Analysis.Result.MergeSplit.MergeSplitResult;
 import Analysis.Result.SelectRoughBoundary.SelectRoughBoundary;
-import Ascii.ConvergenceError.ConvergenceError;
+import Ascii.Rough.ConvergenceError.ConvergenceError;
 import Ascii.TimeControl.SplitTimeCount;
 import Ascii.TimeControl.TotalTimeCount;
 import GlobalProperty.GlobalProperty;

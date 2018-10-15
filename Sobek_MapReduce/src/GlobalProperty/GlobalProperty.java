@@ -7,9 +7,9 @@ public class GlobalProperty {
 	public static double errorConvergence_difference = 0.1;
 	public static double errorConvergence_Min = 0.8;
 	
-	public static Boolean nodeFunction_DelicateTotal = true;
+	public static Boolean nodeFunction_DelicateTotal = false;
 	public static Boolean nodeFunction_RoughTotal = true;
-	public static Boolean nodeFunction_convergence_Delicate = true;
+	public static Boolean nodeFunction_convergence_Delicate = false;
 	public static Boolean nodeFunction_convergence_Rough = true;
 	
 	public static Boolean clipFunction_convergence_Rough = true;

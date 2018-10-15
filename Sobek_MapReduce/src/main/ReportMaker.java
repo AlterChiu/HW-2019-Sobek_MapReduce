@@ -15,9 +15,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 import Drawing.Excel.ChartImplemetns;
-import Drawing.Excel.ExcelBasicControl;
 import GlobalProperty.GlobalProperty;
 import usualTool.AtFileReader;
+import usualTool.ExcelBasicControl;
 
 public class ReportMaker {
 	private int splitSize;
