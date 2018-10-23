@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import Ascii.Delicate.Split.DeterminRoughAsciiFile;
+import Ascii.Rough.Determine.DeterminRoughAsciiFile;
 import GlobalProperty.GlobalProperty;
 import asciiFunction.AsciiBasicControl;
-import asciiFunction.AsciiIntercept;
+import asciiFunction.AsciiIntersect;
 import main.MapReduceMainPage;
 import usualTool.AtCommonMath;
 import usualTool.AtFileWriter;
@@ -46,10 +46,10 @@ public class SplitAscii_Kmeas extends DeterminRoughAsciiFile {
 		// the boundary(classifiedBoundary) of the delicate demFile here is the most
 		// outer coordinate
 		Map<String, Double> classifiedBoundary = getListStatics(this.classified.get(index));
-		String[][] delicateAscii = new AsciiIntercept(this.originalDelicateAscii).getIntercept(
+		String[][] delicateAscii = new AsciiIntersect(this.originalDelicateAscii).getIntersect(
 				classifiedBoundary.get("minX"), classifiedBoundary.get("maxX"), classifiedBoundary.get("minY"),
 				classifiedBoundary.get("maxY"));
-		String[][] delicateAsciiKn = new AsciiIntercept(this.originalDelicateAsciiKn).getIntercept(
+		String[][] delicateAsciiKn = new AsciiIntersect(this.originalDelicateAsciiKn).getIntersect(
 				classifiedBoundary.get("minX"), classifiedBoundary.get("maxX"), classifiedBoundary.get("minY"),
 				classifiedBoundary.get("maxY"));
 		new AtFileWriter(delicateAscii, splitFodler + GlobalProperty.saveFile_DelicateDem).textWriter("    ");

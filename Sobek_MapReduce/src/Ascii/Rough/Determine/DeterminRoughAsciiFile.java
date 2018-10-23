@@ -1,4 +1,4 @@
-package Ascii.Delicate.Split;
+package Ascii.Rough.Determine;
 
 import java.io.IOException;
 import java.util.Map;
@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 
 import GlobalProperty.GlobalProperty;
 import asciiFunction.AsciiBasicControl;
-import asciiFunction.AsciiIntercept;
+import asciiFunction.AsciiIntersect;
 import usualTool.AtFileReader;
 import usualTool.AtFileWriter;
 
@@ -31,9 +31,9 @@ public class DeterminRoughAsciiFile {
 		// there is no necessary to point the boundary exact
 		Map<String, Double> roughBoundary = getBufferBoundary(
 				new AsciiBasicControl(targetFolder + GlobalProperty.saveFile_DelicateDem), restTime);
-		String[][] roughAscii = new AsciiIntercept(GlobalProperty.originalRough).getIntercept(roughBoundary.get("minX"),
+		String[][] roughAscii = new AsciiIntersect(GlobalProperty.originalRough).getIntersect(roughBoundary.get("minX"),
 				roughBoundary.get("maxX"), roughBoundary.get("minY"), roughBoundary.get("maxY"));
-		String[][] roughAsciiKn = new AsciiIntercept(GlobalProperty.originalRoughKn).getIntercept(
+		String[][] roughAsciiKn = new AsciiIntersect(GlobalProperty.originalRoughKn).getIntersect(
 				roughBoundary.get("minX"), roughBoundary.get("maxX"), roughBoundary.get("minY"),
 				roughBoundary.get("maxY"));
 		

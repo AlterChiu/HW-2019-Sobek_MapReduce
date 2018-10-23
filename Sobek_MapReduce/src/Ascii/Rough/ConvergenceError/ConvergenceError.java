@@ -12,10 +12,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 import Analysis.Result.FloodCompare.ResultCompare;
+import Ascii.Rough.Determine.DeterminRoughAsciiFile;
 import GlobalProperty.GlobalProperty;
 import SOBEK.Runtimes;
 import SOBEK.SobekDem;
-import Ascii.Delicate.Split.DeterminRoughAsciiFile;
 import asciiFunction.AsciiBasicControl;
 import usualTool.AtFileReader;
 import usualTool.AtFileWriter;

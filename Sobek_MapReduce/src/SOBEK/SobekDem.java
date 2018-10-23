@@ -13,7 +13,7 @@ import java.util.TreeMap;
 
 import GlobalProperty.GlobalProperty;
 import asciiFunction.AsciiBasicControl;
-import asciiFunction.AsciiIntercept;
+import asciiFunction.AsciiIntersect;
 import usualTool.AtCommonMath;
 import usualTool.AtFileReader;
 import usualTool.AtFileWriter;
@@ -156,7 +156,7 @@ public class SobekDem {
 				List<String> domContent = this.domnList.get(index);
 
 				// if is content get the interceptArea
-				Map<String, String> intercept = new AsciiIntercept(this.currentAscii).getBoundary(targetAscii);
+				Map<String, String> intercept = new AsciiIntersect(this.currentAscii).getBoundary(targetAscii);
 				double interceptMaxX = Double.parseDouble(intercept.get("maxX"));
 				double interceptMaxY = Double.parseDouble(intercept.get("maxY"));
 				double interceptMinX = Double.parseDouble(intercept.get("minX"));
