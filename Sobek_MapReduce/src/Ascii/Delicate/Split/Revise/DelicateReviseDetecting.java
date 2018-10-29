@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -68,7 +69,11 @@ public class DelicateReviseDetecting {
 				reviseWork.startRevising(GlobalProperty.delicateAscii_Max_ReviseTimes);
 				new AtFileWriter(reviseWork.getDeclineAscii().getAsciiFile(), declineAsciiFile).textWriter(" ");
 				new AtFileWriter(reviseWork.getExtendAscii().getAsciiFile(), extendAsciiFile).textWriter(" ");
-
+				
+				// output to property jsonFile
+				outPutResult(index, reviseWork.getDeclineSpendTime());
+				outPutResult(minIndex, reviseWork.getExtendSpendTime());
+				
 				System.out.println("selectDem " + index + "revise complete");
 			}
 		}
@@ -182,6 +187,41 @@ public class DelicateReviseDetecting {
 			System.out.println("no section is overtime");
 		}
 	}
+
+	// output the boundary of the unitDem
+	private void outPutResult(int index, double simulationTime) throws IOException {
+		JsonObject overviewProperty = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		JsonObject outJsonObject = new JsonObject();
+		JsonArray roughArray = new JsonArray();
+
+		// delicate
+		Map<String, String> delicateProperty = new AsciiBasicControl(
+				GlobalProperty.saveFolder_Split + index + GlobalProperty.saveFile_DelicateDem).getProperty();
+		JsonObject delicateJson = getBoundaryJson(delicateProperty);
+		delicateJson.addProperty(GlobalProperty.overviewProperty_SpendTime_Split, simulationTime);
+
+		// add the property to the overview jsonFile
+		// spend time of the unit simulation the boundary of unitDem(delicate and rough)
+		// outer JsonFile will contain, max spend time, max buffer coefficient,
+		// minError(time and value)
+		outJsonObject.add(GlobalProperty.overviewProperty_SplitDelicateBoundary, delicateJson);
+		outJsonObject.add(GlobalProperty.overviewProperty_SplitRoughBoundary, roughArray);
+		overviewProperty.add(GlobalProperty.overviewProperty_Split + index, outJsonObject);
+
+		new AtFileWriter(overviewProperty, GlobalProperty.overViewPropertyFile).textWriter("");
+	}
+
+	// use while get the boundary of unitDem
+	private JsonObject getBoundaryJson(Map<String, String> asciiProperty) {
+		JsonObject json = new JsonObject();
+		double cellSize = Double.parseDouble(asciiProperty.get("cellSize"));
+		json.addProperty("minX", Double.parseDouble(asciiProperty.get("bottomX")) - 0.5 * cellSize);
+		json.addProperty("maxX", Double.parseDouble(asciiProperty.get("topX")) + 0.5 * cellSize);
+		json.addProperty("minY", Double.parseDouble(asciiProperty.get("bottomY")) - 0.5 * cellSize);
+		json.addProperty("maxY", Double.parseDouble(asciiProperty.get("topY")) + 0.5 * cellSize);
+		return json;
+	}
+	// <==========================================================================>
 	// <=================================================>
 
 }

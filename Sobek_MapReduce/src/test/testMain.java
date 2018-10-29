@@ -24,8 +24,8 @@ public class testMain {
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		// TODO Auto-generated method stub
-		SplitAscii_Kmeas split  = new SplitAscii_Kmeas();
-		split.outputClassified("E:\\HomeWork\\mapReduce\\modelTest\\classified_Original.csv");
+		Runtimes run = new Runtimes();
+		run.RuntimesNoLimit();
 
 	}
 }

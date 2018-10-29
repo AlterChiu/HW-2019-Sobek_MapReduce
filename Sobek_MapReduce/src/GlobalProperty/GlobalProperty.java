@@ -23,9 +23,9 @@ public class GlobalProperty {
 
 	// userSetting
 	// =================================================
-	public static String workSpace = "E:\\HomeWork\\mapReduce\\modelTest\\";
+	public static String workSpace = "E:\\mapReduce\\modelTest\\";
 	public static String logFile = workSpace + "log.txt";
-	public static String sobekWorkSpace = "C:\\Sobek213\\";
+	public static String sobekWorkSpace = "F:\\Sobek213\\";
 
 	// modelSetting
 	// =================================================
@@ -132,6 +132,6 @@ public class GlobalProperty {
 	// ===============================
 	// ==============TEST==============
 	// ===============================
-	public static String testFolder = "E:\\HomeWork\\mapReduce\\testFolder\\";
+	public static String testFolder = "E:\\mapReduce\\testFolder\\";
 
 }

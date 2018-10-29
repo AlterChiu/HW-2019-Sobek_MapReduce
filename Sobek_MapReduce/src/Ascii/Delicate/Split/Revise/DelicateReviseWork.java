@@ -28,11 +28,13 @@ public class DelicateReviseWork {
 	private AsciiBasicControl declineKn;
 	private double declineAsciiCenterX = 0;
 	private double declineAsciiCenterY = 0;
+	private double declineSpendTime = 0;
 
 	private AsciiBasicControl extendAscii;
 	private AsciiBasicControl extendKn;
 	private double extendAsciiCenterX = 0;
 	private double extendAsciiCenterY = 0;
+	private double extendSpendTime = 0;
 	// <===================================>
 
 	// use for revise delicate asciiFile
@@ -86,8 +88,16 @@ public class DelicateReviseWork {
 		return this.extendAscii;
 	}
 
+	public double getExtendSpendTime() {
+		return this.extendSpendTime;
+	}
+
 	public AsciiBasicControl getDeclineAscii() {
 		return this.declineAscii;
+	}
+
+	public double getDeclineSpendTime() {
+		return this.declineSpendTime;
 	}
 	// <==========================================>
 

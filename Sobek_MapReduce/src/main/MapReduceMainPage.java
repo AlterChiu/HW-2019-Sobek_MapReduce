@@ -11,6 +11,7 @@ import Analysis.DelicateTotal.FloodInitail.InitailFloodTime;
 import Analysis.Result.FloodCompare.ResultCompare;
 import Analysis.Result.MergeSplit.MergeSplitResult;
 import Analysis.Result.SelectRoughBoundary.SelectRoughBoundary;
+import Ascii.Delicate.Split.Revise.DelicateReviseDetecting;
 import Ascii.Rough.ConvergenceError.ConvergenceError;
 import Ascii.TimeControl.SplitTimeCount;
 import Ascii.TimeControl.TotalTimeCount;
@@ -54,6 +55,10 @@ public class MapReduceMainPage {
 		// splitTimeCount.runSplitDem(index);
 		// }
 		splitTimeCount.runSplitDem();
+
+		System.out.println("============= Delicate Dem Revise ================");
+		DelicateReviseDetecting delicateRevise = new DelicateReviseDetecting();
+		delicateRevise.autoRevise();
 
 		System.out.println("====== Determine the Rough Dem for each Classified =======");
 		initialize.createAfterSplitRun();
