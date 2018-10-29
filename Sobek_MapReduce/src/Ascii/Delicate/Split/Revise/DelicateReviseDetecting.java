@@ -15,6 +15,7 @@ import GlobalProperty.GlobalProperty;
 import asciiFunction.AsciiBasicControl;
 import asciiFunction.AsciiIntersect;
 import usualTool.AtFileReader;
+import usualTool.AtFileWriter;
 
 public class DelicateReviseDetecting {
 	private JsonObject json;
@@ -26,22 +27,26 @@ public class DelicateReviseDetecting {
 		initialliszeVariable();
 	}
 
-	// <=============================================>
-	// <for user work>
-	// <=============================================>
 	/*
 	 * 
 	 * 
 	 */
-	public void autoRevise() {
-
+	// <=============================================>
+	// <for user work>
+	// <=============================================>
+	public void autoRevise() throws IOException, InterruptedException {
+		for (int declineIndex : this.overTimeIndex) {
+			seliectedRevise(declineIndex);
+		}
 	}
 
-	public void seliectedRevise(int index) {
+	public void seliectedRevise(int index) throws IOException, InterruptedException {
+		String declineAsciiFile = GlobalProperty.saveFolder_Split + index + GlobalProperty.saveFile_DelicateDem;
+
 		// check for the selected index is overtime or not
 		// and also check for is there any other demFile is overlapping with it
 		Set<Integer> overLappingList = this.overlappingMap.get(index);
-		if (this.overTimeIndex.contains(index) && overLappingList != null) {
+		if (this.overTimeIndex.contains(index) && overLappingList.size() > 0) {
 
 			// detect which the demFile use the less time
 			double minSpendTime = 0;
@@ -52,14 +57,20 @@ public class DelicateReviseDetecting {
 					minIndex = detect;
 				}
 			}
+			String extendAsciiFile = GlobalProperty.saveFolder_Split + minIndex + GlobalProperty.saveFile_DelicateDem;
 
-			//
+			// judgment for is there any other available decline asciiFile
 			if (minSpendTime > GlobalProperty.splitTime) {
-				System.out.println("selectDem " + index + "");
+				System.out.println("selectDem " + index + "no available decline asciiFile");
 			} else {
-				
-			}
+				// output revised asciiFile
+				DelicateReviseWork reviseWork = new DelicateReviseWork(declineAsciiFile, extendAsciiFile);
+				reviseWork.startRevising(GlobalProperty.delicateAscii_Max_ReviseTimes);
+				new AtFileWriter(reviseWork.getDeclineAscii().getAsciiFile(), declineAsciiFile).textWriter(" ");
+				new AtFileWriter(reviseWork.getExtendAscii().getAsciiFile(), extendAsciiFile).textWriter(" ");
 
+				System.out.println("selectDem " + index + "revise complete");
+			}
 		}
 	}
 	// <=============================================>
@@ -115,6 +126,7 @@ public class DelicateReviseDetecting {
 			throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
 		this.json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
 		for (int index = 0; index < GlobalProperty.splitSize; index++) {
+
 			// get the delicate split demFile index and it's spend time in demMap
 			JsonObject temptJson = this.json.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject();
 			Double temptTime = temptJson.get(GlobalProperty.overviewProperty_SpendTime_Split).getAsDouble();

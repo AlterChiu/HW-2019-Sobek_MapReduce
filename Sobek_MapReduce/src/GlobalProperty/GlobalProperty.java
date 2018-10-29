@@ -4,14 +4,15 @@ public class GlobalProperty {
 	// ==========================================
 	public static int splitSize = 2;
 	public static int K_meansInitialTime = 4;
+	public static int delicateAscii_Max_ReviseTimes = 3;
 	public static double errorConvergence_difference = 0.1;
 	public static double errorConvergence_Min = 0.8;
-	
+
 	public static Boolean nodeFunction_DelicateTotal = false;
 	public static Boolean nodeFunction_RoughTotal = true;
 	public static Boolean nodeFunction_convergence_Delicate = false;
 	public static Boolean nodeFunction_convergence_Rough = true;
-	
+
 	public static Boolean clipFunction_convergence_Rough = true;
 	// ==========================================
 	public static double splitTime = 0.8 * 3600000;
@@ -41,7 +42,7 @@ public class GlobalProperty {
 	public static String overviewProperty_SpendTime_delicateTotal = "SpendTime_delicateTotal";
 	public static String overviewProperty_SpendTime_roughTotal = "SpendTime_roughTotal";
 	public static String overviewProperty_SpendTime_Split = "spendTime";
-	
+
 	public static String overviewProperty_Split = "mergeSplit_";
 	public static String overviewProperty_SplitDelicateBoundary = "DelicateBoundary";
 	public static String overviewProperty_SplitRoughBoundary = "RoughBoundary";
@@ -109,6 +110,7 @@ public class GlobalProperty {
 
 	// =================================================
 	// temptSaveName
+	public static String saveFolder_tempt = workSpace + "\\tempt\\";
 	public static String saveFile_DelicateDem = "\\delicateDem.asc";
 	public static String saveFile_DelicateDemKn = "\\delicateDem(kn).asc";
 	public static String saveFile_RoughDem = "\\roughDem.asc";
