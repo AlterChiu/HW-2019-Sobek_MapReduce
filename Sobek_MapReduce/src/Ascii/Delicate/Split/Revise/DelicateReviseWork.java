@@ -10,6 +10,7 @@ import asciiFunction.AsciiBasicControl;
 import asciiFunction.AsciiIntersect;
 import asciiFunction.AsciiMerge;
 import asciiFunction.AsciiToPath;
+import geo.gdal.SpatialWriter;
 import geo.path.IntersectLine;
 import usualTool.AtCommonMath;
 import usualTool.AtFileWriter;
@@ -63,18 +64,24 @@ public class DelicateReviseWork {
 		this.declineAscii = declineAscii;
 		this.extendAscii = extendAscii;
 		this.mergeAscii = new AsciiBasicControl(
-				new AsciiMerge(this.extendAscii, this.declineAscii).getMergeAsciiArray());
+				new AsciiMerge(this.extendAscii, this.declineAscii).getMergedAsciiFile());
 		this.mergedPath = new AsciiToPath(this.mergeAscii).getAsciiPath();
+		
 		getIntersectProerpty();
+		SpatialWriter spWriter = new SpatialWriter(this.mergedPath);
+		spWriter.saveAsShp("F:\\FEWS\\FEWS_Taiwan_2017\\Taiwan\\Export\\Alter\\temptAscii.geoJson");
 	}
 
 	public DelicateReviseWork(String declineAsciiAdd, String extendAsciiAdd) throws IOException {
 		this.declineAscii = new AsciiBasicControl(declineAsciiAdd);
 		this.extendAscii = new AsciiBasicControl(extendAsciiAdd);
 		this.mergeAscii = new AsciiBasicControl(
-				new AsciiMerge(this.extendAscii, this.declineAscii).getMergeAsciiArray());
+				new AsciiMerge(this.extendAscii, this.declineAscii).getMergedAsciiFile());
 		this.mergedPath = new AsciiToPath(this.mergeAscii).getAsciiPath();
+
 		getIntersectProerpty();
+		SpatialWriter spWriter = new SpatialWriter(this.mergedPath);
+		spWriter.saveAsShp("F:\\FEWS\\FEWS_Taiwan_2017\\Taiwan\\Export\\Alter\\temptAscii.geoJson");
 	}
 	// <==========================================>
 

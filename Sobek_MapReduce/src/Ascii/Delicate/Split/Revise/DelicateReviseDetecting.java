@@ -37,11 +37,11 @@ public class DelicateReviseDetecting {
 	// <=============================================>
 	public void autoRevise() throws IOException, InterruptedException {
 		for (int declineIndex : this.overTimeIndex) {
-			seliectedRevise(declineIndex);
+			selectedRevise(declineIndex);
 		}
 	}
 
-	public void seliectedRevise(int index) throws IOException, InterruptedException {
+	public void selectedRevise(int index) throws IOException, InterruptedException {
 		String declineAsciiFile = GlobalProperty.saveFolder_Split + index + GlobalProperty.saveFile_DelicateDem;
 
 		// check for the selected index is overtime or not
@@ -69,24 +69,24 @@ public class DelicateReviseDetecting {
 				reviseWork.startRevising(GlobalProperty.delicateAscii_Max_ReviseTimes);
 				new AtFileWriter(reviseWork.getDeclineAscii().getAsciiFile(), declineAsciiFile).textWriter(" ");
 				new AtFileWriter(reviseWork.getExtendAscii().getAsciiFile(), extendAsciiFile).textWriter(" ");
-				
+
 				// output to property jsonFile
 				outPutResult(index, reviseWork.getDeclineSpendTime());
 				outPutResult(minIndex, reviseWork.getExtendSpendTime());
-				
+
 				System.out.println("selectDem " + index + "revise complete");
 			}
 		}
 	}
 	// <=============================================>
 
-	// <=============================================>
-	// < private function for preparation>
-	// <=============================================>
 	/*
 	 * 
 	 * detect overLapping
 	 */
+	// <=============================================>
+	// < private function for preparation>
+	// <=============================================>
 	private void detectingOverLapping() throws IOException {
 		// initial overlapping map
 		for (int index = 0; index < GlobalProperty.splitSize; index++) {
@@ -133,7 +133,8 @@ public class DelicateReviseDetecting {
 		for (int index = 0; index < GlobalProperty.splitSize; index++) {
 
 			// get the delicate split demFile index and it's spend time in demMap
-			JsonObject temptJson = this.json.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject();
+			JsonObject temptJson = this.json.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject()
+					.get(GlobalProperty.overviewProperty_SplitDelicateBoundary).getAsJsonObject();
 			Double temptTime = temptJson.get(GlobalProperty.overviewProperty_SpendTime_Split).getAsDouble();
 			spenTimeMap.put(index, temptTime);
 
@@ -150,13 +151,13 @@ public class DelicateReviseDetecting {
 
 	// <==================================================>
 
-	// <==================================================>
-	// <For user function>
-	// <===================================================>
 	/*
 	 * 
 	 * 
 	 */
+	// <==================================================>
+	// <For user function>
+	// <===================================================>
 	public void clear() {
 		this.overlappingMap.clear();
 		this.overTimeIndex.clear();
@@ -164,8 +165,7 @@ public class DelicateReviseDetecting {
 	}
 
 	/*
-	 * 
-	 * 
+	 * check for is there any asciiFile is over time
 	 */
 	public Boolean isOvertime() {
 		if (this.overTimeIndex.size() > 0) {
@@ -177,7 +177,7 @@ public class DelicateReviseDetecting {
 
 	/*
 	 * 
-	 * 
+	 * print out which delicateAscii is over time
 	 */
 	public void printOverTime() {
 		if (this.overTimeIndex.size() > 0) {
@@ -188,6 +188,12 @@ public class DelicateReviseDetecting {
 		}
 	}
 
+	/*
+	 * 
+	 */
+	// <=====================================================>
+	// <>
+	// <=====================================================>
 	// output the boundary of the unitDem
 	private void outPutResult(int index, double simulationTime) throws IOException {
 		JsonObject overviewProperty = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();

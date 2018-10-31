@@ -25,7 +25,7 @@ public class testMain {
 	public static void main(String[] args) throws IOException, InterruptedException {
 		// TODO Auto-generated method stub
 		Runtimes run = new Runtimes();
-		run.RuntimesNoLimit();
+		run.RuntimesSetLimit();
 
 	}
 }
