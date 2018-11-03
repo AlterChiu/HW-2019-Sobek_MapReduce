@@ -14,7 +14,6 @@ import java.util.TreeMap;
 import GlobalProperty.GlobalProperty;
 import asciiFunction.AsciiBasicControl;
 import asciiFunction.AsciiIntersect;
-import usualTool.AtCommonMath;
 import usualTool.AtFileReader;
 import usualTool.AtFileWriter;
 import usualTool.FileFunction;
@@ -156,11 +155,11 @@ public class SobekDem {
 				List<String> domContent = this.domnList.get(index);
 
 				// if is content get the interceptArea
-				Map<String, String> intercept = new AsciiIntersect(this.currentAscii).getBoundary(targetAscii);
-				double interceptMaxX = Double.parseDouble(intercept.get("maxX"));
-				double interceptMaxY = Double.parseDouble(intercept.get("maxY"));
-				double interceptMinX = Double.parseDouble(intercept.get("minX"));
-				double interceptMinY = Double.parseDouble(intercept.get("minY"));
+				Map<String, Double> intercept = new AsciiIntersect(this.currentAscii).getBoundary(targetAscii);
+				double interceptMaxX = intercept.get("maxX");
+				double interceptMaxY = intercept.get("maxY");
+				double interceptMinX = intercept.get("minX");
+				double interceptMinY = intercept.get("minY");
 
 				// get the isChild tag
 				StringBuilder isChild = new StringBuilder();
@@ -408,7 +407,7 @@ public class SobekDem {
 	// <====================================================================>
 	private void setNode(String asciiAdd) throws IOException {
 		String[][] nodeContent = new AtFileReader(GlobalProperty.saveFile_SobekNodes).getStr();
-		
+
 		// make the street level of nodes to the upper demLevel
 		this.currentAscii = new AsciiBasicControl(asciiAdd);
 
@@ -446,18 +445,15 @@ public class SobekDem {
 					if (!value.equals(nullValue)) {
 
 						// check for the streetLevel of mainHole, it must higher than bottomLevel
-						double topLevel = Double.parseDouble(nodeContent[line][12]);
 						double bottomLevel = Double.parseDouble(nodeContent[line][10]);
-						if (Double.parseDouble(value) >= bottomLevel) {
+						if (Double.parseDouble(value) >= bottomLevel + 1.2) {
 							nodeContent[line][12] = value;
+							
+							// change the node from open to close
+						} else {
+							nodeContent[line][4] = 2 + "";
+							nodeContent[line][12] = bottomLevel + 1.2 + "";
 						}
-						// if (Math.abs(Double.parseDouble(value) - topLevel) > 0.05 &&
-						// Double.parseDouble(value)<bottomLevel) {
-						// temptList.add(new String[] { coordinate[0] + "", coordinate[1] + "", value,
-						// topLevel + "",
-						// bottomLevel + "" });
-						// }
-
 					}
 				}
 			} catch (Exception e) {

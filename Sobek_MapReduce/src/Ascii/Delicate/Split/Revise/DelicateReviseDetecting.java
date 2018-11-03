@@ -74,7 +74,7 @@ public class DelicateReviseDetecting {
 				outPutResult(index, reviseWork.getDeclineSpendTime());
 				outPutResult(minIndex, reviseWork.getExtendSpendTime());
 
-				System.out.println("selectDem " + index + "revise complete");
+				System.out.println("selectDem " + index + " revise complete");
 			}
 		}
 	}
