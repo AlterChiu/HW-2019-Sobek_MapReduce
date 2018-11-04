@@ -6,7 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import GlobalProperty.GlobalProperty;
+import asciiFunction.AsciiBasicControl;
+import usualTool.AtCommonMath;
 import usualTool.AtFileWriter;
+import usualTool.FileFunction;
 
 public class Runtimes {
 	private long simulateTime = 0;
@@ -70,8 +73,48 @@ public class Runtimes {
 		this.simulateTime = endTime - startTime;
 	}
 
+	/*
+	 * 
+	 */
+	// <=========================================>
+	// <user function>
+	// <=========================================>
 	public double getSimulateTime() {
 		return this.simulateTime;
+	}
+
+	public void moveResult(String targetFolder) throws IOException {
+		// mover ascFile to targetFolder
+		FileFunction ff = new FileFunction();
+		List<AsciiBasicControl> asciiList = new ArrayList<AsciiBasicControl>();
+
+		String[] outPutList = new File(GlobalProperty.sobekResultFolder).list();
+		for (String result : outPutList) {
+			if (result.contains(".asc")) {
+				asciiList.add(new AsciiBasicControl(GlobalProperty.sobekResultFolder + "\\" + result));
+				ff.moveFile(GlobalProperty.sobekResultFolder + "\\" + result, targetFolder + "\\" + result);
+			}
+		}
+
+		// create the maxD0 while there isn't exist
+		AsciiBasicControl outAscii = asciiList.get(0);
+		int row = Integer.parseInt(outAscii.getProperty().get("row"));
+		int column = Integer.parseInt(outAscii.getProperty().get("column"));
+		String nullValue = outAscii.getProperty().get("noData");
+
+		for (int temptRow = 0; temptRow < row; temptRow++) {
+			for (int temptColumn = 0; temptColumn < column; temptColumn++) {
+				List<Double> gridValue = new ArrayList<Double>();
+				if (!outAscii.getValue(temptColumn, temptRow).equals(nullValue)) {
+					for (AsciiBasicControl temptAscii : asciiList) {
+						gridValue.add(Double.parseDouble(temptAscii.getValue(temptColumn, temptRow)));
+					}
+					outAscii.setValue(temptColumn, temptRow, new AtCommonMath(gridValue).getMax() + "");
+				}
+			}
+		}
+		new AtFileWriter(outAscii.getAsciiFile(), targetFolder + GlobalProperty.saveFile_MaxFloodResult)
+				.textWriter(" ");
 	}
 
 	private void shutDownCommand() throws IOException, InterruptedException {

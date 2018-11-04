@@ -115,6 +115,7 @@ public class GlobalProperty {
 	public static String saveFile_DelicateDemKn = "\\delicateDem(kn).asc";
 	public static String saveFile_RoughDem = "\\roughDem.asc";
 	public static String saveFile_RoughDemKn = "\\roughDem(kn).asc";
+	public static String saveFile_MaxFloodResult = "\\dm1maxd0.asc";
 
 	// =================================================
 	// Sobek model file

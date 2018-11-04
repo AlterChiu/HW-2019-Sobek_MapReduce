@@ -1,6 +1,5 @@
 package Ascii.TimeControl;
 
-import java.io.File;
 import java.io.IOException;
 import com.google.gson.JsonObject;
 
@@ -9,7 +8,6 @@ import SOBEK.Runtimes;
 import SOBEK.SobekDem;
 import usualTool.AtFileReader;
 import usualTool.AtFileWriter;
-import usualTool.FileFunction;
 
 public class TotalTimeCount {
 	private String saveFolder;
@@ -22,10 +20,10 @@ public class TotalTimeCount {
 		SobekDem sobekDem = new SobekDem();
 		sobekDem.addRoughDem(GlobalProperty.originalRough, GlobalProperty.originalRoughKn);
 		sobekDem.start();
-		if(GlobalProperty.nodeFunction_RoughTotal) {
+		if (GlobalProperty.nodeFunction_RoughTotal) {
 			sobekDem.setRoughNode();
 		}
-		
+
 		startRuntimes();
 	}
 
@@ -36,10 +34,10 @@ public class TotalTimeCount {
 		SobekDem sobekDem = new SobekDem();
 		sobekDem.addDelicateDem(GlobalProperty.originalDelicate, GlobalProperty.originalDelicateKn);
 		sobekDem.start();
-		if(GlobalProperty.nodeFunction_DelicateTotal) {
+		if (GlobalProperty.nodeFunction_DelicateTotal) {
 			sobekDem.setDelicateNode();
 		}
-		
+
 		startRuntimes();
 	}
 
@@ -55,13 +53,7 @@ public class TotalTimeCount {
 		new AtFileWriter(readJson, GlobalProperty.overViewPropertyFile).textWriter("");
 
 		// copy the result file to folder
-		String[] outPutList = new File(GlobalProperty.sobekResultFolder).list();
-		FileFunction ff = new FileFunction();
-		for (String result : outPutList) {
-			if (result.contains(".asc")) {
-				ff.moveFile(GlobalProperty.sobekResultFolder + result, this.saveFolder + result);
-			}
-		}
+		sobekRuntimes.moveResult(this.saveFolder);
 	}
 
 }

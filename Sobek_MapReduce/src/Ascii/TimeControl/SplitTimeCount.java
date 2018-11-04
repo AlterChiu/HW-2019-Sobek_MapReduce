@@ -43,7 +43,7 @@ public class SplitTimeCount {
 		SobekDem sobekDem = new SobekDem();
 		sobekDem.addDelicateDem(classifiedSaveFolder + GlobalProperty.saveFile_DelicateDem,
 				classifiedSaveFolder + GlobalProperty.saveFile_DelicateDemKn);
-		if(GlobalProperty.nodeFunction_convergence_Delicate) {
+		if (GlobalProperty.nodeFunction_convergence_Delicate) {
 			sobekDem.setDelicateNode();
 		}
 		sobekDem.start();
@@ -51,10 +51,10 @@ public class SplitTimeCount {
 		// check for the simulation time is over limit or not
 		Runtimes sobekRuntimes = new Runtimes();
 		sobekRuntimes.RuntimesNoLimit();
+		// move the result to classified folder
+		sobekRuntimes.moveResult(classifiedSaveFolder);
 		System.out.println("simulation time unitDem_" + index + " : " + sobekRuntimes.getSimulateTime());
 
-		// move the result to classified folder
-		moveRsult(classifiedSaveFolder);
 		// outPut result to the overview property file
 		outPutResult(index, sobekRuntimes.getSimulateTime());
 	}
@@ -90,7 +90,7 @@ public class SplitTimeCount {
 
 			} else {
 				// move the result to classified folder
-				moveRsult(classifiedSaveFolder);
+				sobekRuntimes.moveResult(classifiedSaveFolder);
 				// outPut result to the overview property file
 				outPutResult(index, sobekRuntimes.getSimulateTime());
 			}
@@ -103,30 +103,13 @@ public class SplitTimeCount {
 		}
 	}
 
-	// <==========================================================>
-
 	/*
-	 * 
-	 * 
-	 * 
-	 * 
 	 * 
 	 * 
 	 */
 	// <==========================================================>
-	// < output Result Function>
-	// <==========================================================>
-	private void moveRsult(String classfiedFolder) {
-		FileFunction ff = new FileFunction();
-		String[] outPutList = new File(GlobalProperty.sobekResultFolder).list();
-		for (String result : outPutList) {
-			if (result.contains(".asc")) {
-				ff.moveFile(GlobalProperty.sobekResultFolder + result, classfiedFolder + result);
-			}
-		}
-	}
-
 	// output the boundary of the unitDem
+	// <==========================================================>
 	private void outPutResult(int index, double simulationTime) throws IOException {
 		JsonObject overviewProperty = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
 		JsonObject outJsonObject = new JsonObject();

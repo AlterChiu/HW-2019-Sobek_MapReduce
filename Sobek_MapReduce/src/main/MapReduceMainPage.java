@@ -25,36 +25,36 @@ public class MapReduceMainPage {
 	public static void main(String[] args)
 			throws IOException, JsonIOException, JsonSyntaxException, InterruptedException {
 		// TODO Auto-generated method stub
-//		System.out.println("============= Initialize Folder =================");
-//		initialize.resetWorkSpace();
-//		initialize.createBeforeTotalRun();
-//		initialize.setNetWork_Pt2File();
-//
-//		System.out.println("=========== Delicate Time Count ================");
-//		TotalTimeCount totalTimeCount = new TotalTimeCount();
-//		totalTimeCount.DelicateTotalTimeCount();
-//		initialize.createAfterTotalRun();
-//
-//		System.out.println("============ Rough Time Count ================");
-//		totalTimeCount.RoughTotalTimeCount();
+		System.out.println("============= Initialize Folder =================");
+		initialize.resetWorkSpace();
+		initialize.createBeforeTotalRun();
+		initialize.setNetWork_Pt2File();
+
+		System.out.println("=========== Delicate Time Count ================");
+		TotalTimeCount totalTimeCount = new TotalTimeCount();
+		totalTimeCount.DelicateTotalTimeCount();
+		initialize.createAfterTotalRun();
+
+		System.out.println("============ Rough Time Count ================");
+		totalTimeCount.RoughTotalTimeCount();
 
 		// prepare for splitting unitDem
-//		System.out.println("=========== Get The InitailFlood Time ==============");
-//		InitailFloodTime initialFlood = new InitailFloodTime(GlobalProperty.saveFolder_Total_Delicate);
-//		initialFlood.outPutFile(GlobalProperty.saveFile_Analysis_InitailFlood);
-//
-//		System.out.println("============== Set Split Size ===================");
-//		initialize.setSplitSize();
-//		initialize.createAfterTotalRun();
-//
-//		System.out.println("======== Classified the Delicate Dem ================");
-//		SplitTimeCount splitTimeCount = new SplitTimeCount();
-//		// for manual function
-//		// it could only run for the specific unit demFile but no restart function
-//		// for(int index = 0 ; index<GlobalProperty.splitSize ; index++) {
-//		// splitTimeCount.runSplitDem(index);
-//		// }
-//		splitTimeCount.runSplitDem();
+		System.out.println("=========== Get The InitailFlood Time ==============");
+		InitailFloodTime initialFlood = new InitailFloodTime(GlobalProperty.saveFolder_Total_Delicate);
+		initialFlood.outPutFile(GlobalProperty.saveFile_Analysis_InitailFlood);
+
+		System.out.println("============== Set Split Size ===================");
+		initialize.setSplitSize();
+		initialize.createAfterTotalRun();
+
+		System.out.println("======== Classified the Delicate Dem ================");
+		SplitTimeCount splitTimeCount = new SplitTimeCount();
+		// for manual function
+		// it could only run for the specific unit demFile but no restart function
+		// for(int index = 0 ; index<GlobalProperty.splitSize ; index++) {
+		// splitTimeCount.runSplitDem(index);
+		// }
+		splitTimeCount.runSplitDem();
 
 		System.out.println("============= Delicate Dem Revise ================");
 		DelicateReviseDetecting delicateRevise = new DelicateReviseDetecting();

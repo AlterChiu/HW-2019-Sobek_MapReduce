@@ -74,7 +74,7 @@ public class ConvergenceError extends DeterminRoughAsciiFile {
 			Runtimes runtimes = new Runtimes();
 			runtimes.RuntimesSetLimit();
 			// move the result to the targetFolder
-			moveRsult(targetFolder);
+			runtimes.moveResult(targetFolder);
 
 			// save the overview property
 			outPutResult(index, this.temptBufferCoefficient, runtimes.getSimulateTime());
