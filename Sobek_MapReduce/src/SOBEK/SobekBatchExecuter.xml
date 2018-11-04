@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sobekAdvancedBatch xmlns="http://www.wldelft.nl/fews" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.wldelft.nl/fews http://fews.wldelft.nl/schemas/version1.0/adapter-schemas/sobekAdvancedBatch.xsd">
+	<general>
+		<version>2</version>
+		<projectDir>LitFolderName</projectDir>
+		<caseName>caseNaem</caseName>
+		<showTablesFlipped>true</showTablesFlipped>
+		<resultsHisFile>Output\Output.his</resultsHisFile>
+		<dataPath>Output</dataPath>
+		<resultsSaved>true</resultsSaved>
+		<parInfoFile>Output\Output_par.csv</parInfoFile>
+		<storeWorkDir>true</storeWorkDir>
+		<workDirStored>true</workDirStored>
+		<storeOutputInOneFile>false</storeOutputInOneFile>
+		<storeFEWSState>false</storeFEWSState>
+		<fewsDiagnosticsFile>Diagnostics\Diagnostics.xml</fewsDiagnosticsFile>
+		<clearWorkingDirectories>true</clearWorkingDirectories>
+		<skipTimeSteps>0</skipTimeSteps>
+		<useXMLBinFileType>false</useXMLBinFileType>
+		<useParsenUpdateMode>false</useParsenUpdateMode>
+		<parsenMinimumTimeSeriesLength>3600</parsenMinimumTimeSeriesLength>
+		<parsenSourceFiles>Defaults\sobek.*</parsenSourceFiles>
+	</general>
+	<preProcessingActivities>
+		<activity>
+			<action>destroy</action>
+			<source>..\WORK\dm1d????.asc</source>
+		</activity>
+	</preProcessingActivities>
+	<postProcessingActivities>
+		<activity>
+			<action>copy</action>
+			<source>..\WORK\OUTPUT.RRR</source>
+			<target>..\..\States\OUTPUT.RRR</target>
+		</activity>
+		<activity>
+			<action>copy</action>
+			<source>..\WORK\OUTPUT.RDA</source>
+			<target>..\..\States\OUTPUT.RDA</target>
+		</activity>
+		<activity>
+			<action>copy</action>
+			<source>..\WORK\OUTPUT.RDF</source>
+			<target>..\..\States\OUTPUT.RDF</target>
+		</activity>
+		<activity>
+			<action>copy</action>
+			<source>..\WORK\OUTPUT.FLS</source>
+			<target>..\..\States\OUTPUT.FLS</target>
+		</activity>
+		<activity>
+			<action>move</action>
+			<source>..\WORK\dm1d????.asc</source>
+			<target>..\..\Output</target>
+		</activity>
+	</postProcessingActivities>
+	<mapStack>
+		<fileName>Output\dm1dmapstack.xml</fileName>
+		<fileMask>dm1d????.asc</fileMask>
+		<geoDatum>TWD 1997</geoDatum>
+		<locationId>map</locationId>
+		<parameterId>Depth</parameterId>
+		<timeStep>unit="minute" multiplier="60"</timeStep>
+		<module>2dflow</module>
+		<mapStackActive>true</mapStackActive>
+	</mapStack>
+	<parameters>
+		<parameter>
+			<description>Input</description>
+			<subParameter>
+				<description>Meteo event</description>
+				<type>rainfallfile</type>
+				<classPiFile>..\..\Input\Rainfall.xml</classPiFile>
+				<locationId/>
+				<parameterId/>
+			</subParameter>
+			<subParameter>
+				<description>Evaporation file</description>
+				<type>evapfile</type>
+				<classPiFile>..\..\Input\Evaporation.xml</classPiFile>
+				<locationId/>
+				<parameterId/>
+			</subParameter>
+			<subParameter>
+				<description>RR - restart file</description>
+				<type>rrrestart</type>
+				<classFile>..\..\States\INPUT.RRR</classFile>
+			</subParameter>
+			<subParameter>
+				<description>CF/SF - restart file</description>
+				<type>flowrestart</type>
+				<classFile>..\..\States\INPUT.RDA</classFile>
+			</subParameter>
+			<subParameter>
+				<description>2D Flow - restart file</description>
+				<type>fls_restart</type>
+				<classFile>..\..\States\INPUT.FLS</classFile>
+			</subParameter>
+		</parameter>
+	</parameters>
+	<jobs>
+		<job>
+			<jobName>Sobek 2D run</jobName>
+			<storeDir/>
+			<parameter>
+				<classIndex>1</classIndex>
+			</parameter>
+		</job>
+	</jobs>
+	<!-- Cold States -->
+	<states>
+		<stateXmlOutputFile>States\Outputstates.xml</stateXmlOutputFile>
+		<state>
+			<readLocation>States\INPUT.RDA</readLocation>
+			<writeLocation>States\OUTPUT.RDA</writeLocation>
+		</state>
+		<state>
+			<readLocation>States\INPUT.RDF</readLocation>
+			<writeLocation>States\OUTPUT.RDF</writeLocation>
+		</state>
+		<state>
+			<readLocation>States\INPUT.RRR</readLocation>
+			<writeLocation>States\OUTPUT.RRR</writeLocation>
+		</state>
+		<state>
+			<readLocation>States\INPUT.FLS</readLocation>
+			<writeLocation>States\OUTPUT.FLS</writeLocation>
+		</state>
+	</states>
+</sobekAdvancedBatch>
