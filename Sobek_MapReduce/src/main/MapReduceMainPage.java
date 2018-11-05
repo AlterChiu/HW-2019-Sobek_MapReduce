@@ -61,14 +61,14 @@ public class MapReduceMainPage {
 //		if (delicateRevise.isOvertime())
 //			delicateRevise.autoRevise();
 
-		System.out.println("====== Determine the Rough Dem for each Classified =======");
-		initialize.createAfterSplitRun();
-		ConvergenceError splitDemConvergence = new ConvergenceError();
-		// for manual function
-		// for(int index = 0 ; index<GlobalProperty.splitSize ; index++) {
-		// splitDemConvergence.start(index);
-		// }
-		splitDemConvergence.start();
+//		System.out.println("====== Determine the Rough Dem for each Classified =======");
+//		initialize.createAfterSplitRun();
+//		ConvergenceError splitDemConvergence = new ConvergenceError();
+//		// for manual function
+//		// for(int index = 0 ; index<GlobalProperty.splitSize ; index++) {
+//		// splitDemConvergence.start(index);
+//		// }
+//		splitDemConvergence.start();
 
 		System.out.println("============ Flood Result Analysis ================");
 		SelectRoughBoundary roughBoundarySelected = new SelectRoughBoundary();
@@ -79,21 +79,9 @@ public class MapReduceMainPage {
 		// get the comparision of result
 		ResultCompare comparision = new ResultCompare(GlobalProperty.saveFolder_Merge);
 		comparision.outputDifferenceAsciiSeries();
-		System.out.println("Flood times difference analysis : " + comparision.getMeanTimesDifference());
-		logFile.add("Flood times difference analysis : " + comparision.getMeanTimesDifference());
-		System.out.println("Flood depth difference analysis : " + comparision.getMeanValueDifference());
-		logFile.add("Flood depth difference analysis : " + comparision.getMeanValueDifference());
-		logFile.add("==============================================");
-		logFile.add("splitSize : " + GlobalProperty.splitSize);
-		logFile.add("Initial Flood Times : " + GlobalProperty.K_meansInitialTime);
-		logFile.add("node change Delicate total : " + GlobalProperty.nodeFunction_DelicateTotal);
-		logFile.add("node change Rough total : " + GlobalProperty.nodeFunction_RoughTotal);
-		logFile.add("node change Delicate convergence : " + GlobalProperty.nodeFunction_convergence_Delicate);
-		logFile.add("node change Rough convergence : " + GlobalProperty.nodeFunction_convergence_Rough);
-		logFile.add("convergence Rough Clip : " + GlobalProperty.clipFunction_convergence_Rough);
 
-		// output the log file
-		new AtFileWriter(logFile.parallelStream().toArray(String[]::new), GlobalProperty.logFile).tabWriter();
+		System.out.println("================= Log output ====================");
+		new LogOutput(comparision);
 
 	}
 

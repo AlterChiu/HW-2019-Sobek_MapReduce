@@ -23,7 +23,7 @@ public class ResultCompare {
 				String fileName = "dm1d" + String.format("%04d", index) + ".asc";
 				if (new File(GlobalProperty.saveFolder_Total_Delicate + fileName).exists()) {
 					originalAsciiList.add(new AsciiBasicControl(GlobalProperty.saveFolder_Total_Delicate + fileName));
-					compareAsciiList.add(new AsciiBasicControl(compareFolder+ fileName));
+					compareAsciiList.add(new AsciiBasicControl(compareFolder + fileName));
 				} else {
 					break;
 				}
@@ -89,7 +89,7 @@ public class ResultCompare {
 					}
 				}
 			}
-			new AtFileWriter(simulationAscii.getAsciiFile(), saveFolder + fileName).textWriter("    ");
+			new AtFileWriter(simulationAscii.getAsciiFile(), saveFolder + fileName).textWriter(" ");
 		}
 	}
 
