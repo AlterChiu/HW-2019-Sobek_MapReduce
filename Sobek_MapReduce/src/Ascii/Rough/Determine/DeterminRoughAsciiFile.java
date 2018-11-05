@@ -31,24 +31,24 @@ public class DeterminRoughAsciiFile {
 		// there is no necessary to point the boundary exact
 		Map<String, Double> roughBoundary = getBufferBoundary(
 				new AsciiBasicControl(targetFolder + GlobalProperty.saveFile_DelicateDem), restTime);
-		String[][] roughAscii = new AsciiIntersect(GlobalProperty.originalRough).getIntersect(roughBoundary.get("minX"),
-				roughBoundary.get("maxX"), roughBoundary.get("minY"), roughBoundary.get("maxY"));
-		String[][] roughAsciiKn = new AsciiIntersect(GlobalProperty.originalRoughKn).getIntersect(
-				roughBoundary.get("minX"), roughBoundary.get("maxX"), roughBoundary.get("minY"),
-				roughBoundary.get("maxY"));
-		
+		AsciiBasicControl roughAscii = new AsciiIntersect(GlobalProperty.originalRough)
+				.getIntersectAscii(roughBoundary);
+		AsciiBasicControl roughAsciiKn = new AsciiIntersect(GlobalProperty.originalRoughKn)
+				.getIntersectAscii(roughBoundary);
+
 		if (GlobalProperty.clipFunction_convergence_Rough) {
 			roughAscii = setOverlappingNull(targetFolder + GlobalProperty.saveFile_DelicateDem, roughAscii);
 			roughAsciiKn = setOverlappingNull(targetFolder + GlobalProperty.saveFile_DelicateDemKn, roughAsciiKn);
 		}
-		
-		new AtFileWriter(roughAscii, targetFolder + GlobalProperty.saveFile_RoughDem).textWriter("    ");
-		new AtFileWriter(roughAsciiKn, targetFolder + GlobalProperty.saveFile_RoughDemKn).textWriter("    ");
+
+		new AtFileWriter(roughAscii.getAsciiFile(), targetFolder + GlobalProperty.saveFile_RoughDem).textWriter(" ");
+		new AtFileWriter(roughAsciiKn.getAsciiFile(), targetFolder + GlobalProperty.saveFile_RoughDemKn)
+				.textWriter(" ");
 	}
 
-	private String[][] setOverlappingNull(String delicateAsciiFile, String[][] roughAsciiFile) throws IOException {
+	private AsciiBasicControl setOverlappingNull(String delicateAsciiFile, AsciiBasicControl roughAscii)
+			throws IOException {
 		AsciiBasicControl delicateAscii = new AsciiBasicControl(delicateAsciiFile);
-		AsciiBasicControl roughAscii = new AsciiBasicControl(roughAsciiFile);
 		String roughNullValue = roughAscii.getProperty().get("noData");
 
 		String[][] asciiContent = delicateAscii.getAsciiGrid();
@@ -61,7 +61,7 @@ public class DeterminRoughAsciiFile {
 				}
 			}
 		}
-		return roughAscii.getAsciiFile();
+		return roughAscii;
 	}
 
 	// use for determine the rough ascii boundary

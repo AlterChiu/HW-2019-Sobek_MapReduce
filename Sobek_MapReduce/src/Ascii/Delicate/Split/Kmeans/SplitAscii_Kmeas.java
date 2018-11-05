@@ -33,6 +33,7 @@ public class SplitAscii_Kmeas extends DeterminRoughAsciiFile {
 			determinUnitDelicateDem(splitFolder, index);
 		}
 	}
+
 	/*
 	 * 
 	 * 
@@ -46,14 +47,14 @@ public class SplitAscii_Kmeas extends DeterminRoughAsciiFile {
 		// the boundary(classifiedBoundary) of the delicate demFile here is the most
 		// outer coordinate
 		Map<String, Double> classifiedBoundary = getListStatics(this.classified.get(index));
-		String[][] delicateAscii = new AsciiIntersect(this.originalDelicateAscii).getIntersect(
-				classifiedBoundary.get("minX"), classifiedBoundary.get("maxX"), classifiedBoundary.get("minY"),
-				classifiedBoundary.get("maxY"));
-		String[][] delicateAsciiKn = new AsciiIntersect(this.originalDelicateAsciiKn).getIntersect(
-				classifiedBoundary.get("minX"), classifiedBoundary.get("maxX"), classifiedBoundary.get("minY"),
-				classifiedBoundary.get("maxY"));
-		new AtFileWriter(delicateAscii, splitFodler + GlobalProperty.saveFile_DelicateDem).textWriter("    ");
-		new AtFileWriter(delicateAsciiKn, splitFodler + GlobalProperty.saveFile_DelicateDemKn).textWriter("    ");
+		AsciiBasicControl delicateAscii = new AsciiIntersect(this.originalDelicateAscii)
+				.getIntersectAscii(classifiedBoundary);
+		AsciiBasicControl delicateAsciiKn = new AsciiIntersect(this.originalDelicateAsciiKn)
+				.getIntersectAscii(classifiedBoundary);
+		new AtFileWriter(delicateAscii.getAsciiFile(), splitFodler + GlobalProperty.saveFile_DelicateDem)
+				.textWriter(" ");
+		new AtFileWriter(delicateAsciiKn.getAsciiFile(), splitFodler + GlobalProperty.saveFile_DelicateDemKn)
+				.textWriter(" ");
 
 	}
 

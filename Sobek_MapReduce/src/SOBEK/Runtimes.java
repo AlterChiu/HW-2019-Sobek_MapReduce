@@ -97,24 +97,27 @@ public class Runtimes {
 		}
 
 		// create the maxD0 while there isn't exist
-		AsciiBasicControl outAscii = asciiList.get(0);
-		int row = Integer.parseInt(outAscii.getProperty().get("row"));
-		int column = Integer.parseInt(outAscii.getProperty().get("column"));
-		String nullValue = outAscii.getProperty().get("noData");
+		try {
+			AsciiBasicControl outAscii = asciiList.get(0);
+			int row = Integer.parseInt(outAscii.getProperty().get("row"));
+			int column = Integer.parseInt(outAscii.getProperty().get("column"));
+			String nullValue = outAscii.getProperty().get("noData");
 
-		for (int temptRow = 0; temptRow < row; temptRow++) {
-			for (int temptColumn = 0; temptColumn < column; temptColumn++) {
-				List<Double> gridValue = new ArrayList<Double>();
-				if (!outAscii.getValue(temptColumn, temptRow).equals(nullValue)) {
-					for (AsciiBasicControl temptAscii : asciiList) {
-						gridValue.add(Double.parseDouble(temptAscii.getValue(temptColumn, temptRow)));
+			for (int temptRow = 0; temptRow < row; temptRow++) {
+				for (int temptColumn = 0; temptColumn < column; temptColumn++) {
+					List<Double> gridValue = new ArrayList<Double>();
+					if (!outAscii.getValue(temptColumn, temptRow).equals(nullValue)) {
+						for (AsciiBasicControl temptAscii : asciiList) {
+							gridValue.add(Double.parseDouble(temptAscii.getValue(temptColumn, temptRow)));
+						}
+						outAscii.setValue(temptColumn, temptRow, new AtCommonMath(gridValue).getMax() + "");
 					}
-					outAscii.setValue(temptColumn, temptRow, new AtCommonMath(gridValue).getMax() + "");
 				}
 			}
+			new AtFileWriter(outAscii.getAsciiFile(), targetFolder + GlobalProperty.saveFile_MaxFloodResult)
+					.textWriter(" ");
+		} catch (Exception e) {
 		}
-		new AtFileWriter(outAscii.getAsciiFile(), targetFolder + GlobalProperty.saveFile_MaxFloodResult)
-				.textWriter(" ");
 	}
 
 	private void shutDownCommand() throws IOException, InterruptedException {

@@ -155,7 +155,7 @@ public class SobekDem {
 				List<String> domContent = this.domnList.get(index);
 
 				// if is content get the interceptArea
-				Map<String, Double> intercept = new AsciiIntersect(this.currentAscii).getBoundary(targetAscii);
+				Map<String, Double> intercept = new AsciiIntersect(this.currentAscii).getIntersectBoundary(targetAscii);
 				double interceptMaxX = intercept.get("maxX");
 				double interceptMaxY = intercept.get("maxY");
 				double interceptMinX = intercept.get("minX");
@@ -448,7 +448,7 @@ public class SobekDem {
 						double bottomLevel = Double.parseDouble(nodeContent[line][10]);
 						if (Double.parseDouble(value) >= bottomLevel + 1.2) {
 							nodeContent[line][12] = value;
-							
+
 							// change the node from open to close
 						} else {
 							nodeContent[line][4] = 2 + "";

@@ -16,17 +16,12 @@ public class RoughDemMaker {
 	public void setRoughDem(String roughTemplate) throws IOException {
 		AsciiBasicControl roughAscii = new AsciiBasicControl(roughTemplate);
 		AsciiBasicControl delicateAscii = new AsciiBasicControl(GlobalProperty.originalDelicate);
-		double cellSize = Double.parseDouble(delicateAscii.getProperty().get("cellSize"));
 
 		String roughNull = roughAscii.getProperty().get("noData");
 		String delicateNull = delicateAscii.getProperty().get("noData");
 
 		// clip the rough demFile by the boundary of the delicate one
-		double minX = Double.parseDouble(delicateAscii.getProperty().get("bottomX")) - 0.5 * cellSize;
-		double minY = Double.parseDouble(delicateAscii.getProperty().get("bottomY")) - 0.5 * cellSize;
-		double maxX = Double.parseDouble(delicateAscii.getProperty().get("topX")) + 0.5 * cellSize;
-		double maxY = Double.parseDouble(delicateAscii.getProperty().get("topY")) + 0.5 * cellSize;
-		roughAscii = new AsciiBasicControl(roughAscii.getClipAsciiFile(minX, minY, maxX, maxY));
+		roughAscii = roughAscii.getClipAsciiFile(delicateAscii.getBoundary());
 
 		String roughContent[][] = roughAscii.getAsciiGrid();
 		for (int row = 0; row < roughContent.length; row++) {

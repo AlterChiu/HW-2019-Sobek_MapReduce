@@ -1,19 +1,14 @@
 package Ascii.Delicate.Split.Revise;
 
-import java.awt.geom.Path2D;
 import java.io.IOException;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
 
 import asciiFunction.AsciiBasicControl;
 import asciiFunction.AsciiIntersect;
 import asciiFunction.AsciiMerge;
-import asciiFunction.AsciiToPath;
-import geo.gdal.SpatialWriter;
-import geo.path.IntersectLine;
-import usualTool.AtCommonMath;
 import usualTool.AtFileWriter;
 import GlobalProperty.GlobalProperty;
 import SOBEK.Runtimes;
@@ -23,7 +18,7 @@ public class DelicateReviseWork {
 	// merge ascii
 	private AsciiBasicControl mergeAscii;
 	private AsciiBasicControl mergeAsciiKn;
-	private Path2D mergedPath;
+//	private Path2D mergedPath;
 
 	// asciiFile
 	// <===================================>
@@ -57,11 +52,13 @@ public class DelicateReviseWork {
 	public DelicateReviseWork(AsciiBasicControl declineAscii, AsciiBasicControl extendAscii) throws IOException {
 		this.declineAscii = declineAscii;
 		this.extendAscii = extendAscii;
-		this.mergeAscii = new AsciiBasicControl(
-				new AsciiMerge(this.extendAscii, this.declineAscii).getMergedAsciiFile());
-		this.mergeAsciiKn = new AsciiBasicControl(new AsciiBasicControl(GlobalProperty.originalDelicateKn)
-				.getClipAsciiFile(this.mergeAscii.getBoundary()));
-		this.mergedPath = new AsciiToPath(this.mergeAscii).getAsciiPath();
+
+		// get the merged asciiFile
+		// then fill the null grid by the original asciiFile
+		this.mergeAscii = new AsciiMerge(this.extendAscii, this.declineAscii).getMergedAscii();
+		this.mergeAscii = new AsciiIntersect(GlobalProperty.originalDelicate).getIntersectAscii(this.mergeAscii);
+		this.mergeAsciiKn = new AsciiBasicControl(GlobalProperty.originalDelicateKn)
+				.getClipAsciiFile(this.mergeAscii.getBoundary());
 
 		getIntersectProerpty();
 	}
@@ -69,11 +66,13 @@ public class DelicateReviseWork {
 	public DelicateReviseWork(String declineAsciiAdd, String extendAsciiAdd) throws IOException {
 		this.declineAscii = new AsciiBasicControl(declineAsciiAdd);
 		this.extendAscii = new AsciiBasicControl(extendAsciiAdd);
-		this.mergeAscii = new AsciiBasicControl(
-				new AsciiMerge(this.extendAscii, this.declineAscii).getMergedAsciiFile());
-		this.mergeAsciiKn = new AsciiBasicControl(new AsciiBasicControl(GlobalProperty.originalDelicateKn)
-				.getClipAsciiFile(this.mergeAscii.getBoundary()));
-		this.mergedPath = new AsciiToPath(this.mergeAscii).getAsciiPath();
+
+		// get the merged asciiFile
+		// then fill the null grid by the original asciiFile
+		this.mergeAscii = new AsciiMerge(this.extendAscii, this.declineAscii).getMergedAscii();
+		this.mergeAscii = new AsciiIntersect(GlobalProperty.originalDelicate).getIntersectAscii(this.mergeAscii);
+		this.mergeAsciiKn = new AsciiBasicControl(GlobalProperty.originalDelicateKn)
+				.getClipAsciiFile(this.mergeAscii.getBoundary());
 
 		getIntersectProerpty();
 	}
@@ -109,9 +108,8 @@ public class DelicateReviseWork {
 	// <==========================================>
 	public void startRevising(int maxTimes) throws IOException, InterruptedException {
 		// setting new asciiFile
-		IntersectLine intersect = new IntersectLine(this.mergedPath);
-		List<List<Double[]>> sidePoints = intersect.getSidePoints(this.cutLineXcoefficient, this.cutLineYcoefficient,
-				this.cutLineIntercept);
+		List<Map<String, Double>> sidePoints = new AsciiIntersect(this.mergeAscii)
+				.getIntersectSideBoundary(this.cutLineXcoefficient, this.cutLineYcoefficient, this.cutLineIntercept);
 
 		// split asciiFile to two part ,by the cut line
 		clipAscii(sidePoints);
@@ -171,35 +169,21 @@ public class DelicateReviseWork {
 	 * 
 	 */
 //<=======================================================>
-	private void clipAscii(List<List<Double[]>> sidePoints) throws IOException {
-		double cellSize = Double.parseDouble(this.mergeAscii.getProperty().get("cellSize"));
+	private void clipAscii(List<Map<String, Double>> sideBoundary) throws IOException {
 
-		for (int index = 0; index < sidePoints.size(); index++) {
-			List<Double> temptXList = new ArrayList<Double>();
-			List<Double> temptYList = new ArrayList<Double>();
-
-			List<Double[]> temptPoints = sidePoints.get(index);
-			temptPoints.forEach(point -> {
-				temptXList.add(point[0]);
-				temptYList.add(point[1]);
-			});
-			AtCommonMath xStatics = new AtCommonMath(temptXList);
-			AtCommonMath yStatics = new AtCommonMath(temptYList);
-			double temptCenterX = xStatics.getMean();
-			double temptCenterY = yStatics.getMean();
-			double minX = xStatics.getMin() - cellSize;
-			double maxX = xStatics.getMax() + cellSize;
-			double minY = yStatics.getMin() - cellSize;
-			double maxY = yStatics.getMax() + cellSize;
-			Map<String, Double> boundary = new AsciiIntersect(this.mergeAscii).getBoundary(minX, maxX, minY, maxY);
+		for (int index = 0; index < sideBoundary.size(); index++) {
+			// to pick up which asciiFile is contained the center of boundary
+			Map<String, Double> temptPoints = sideBoundary.get(index);
+			double temptCenterX = (temptPoints.get("minX") + temptPoints.get("maxX")) / 2;
+			double temptCenterY = (temptPoints.get("minY") + temptPoints.get("maxY")) / 2;
 
 			// clipAscii
 			if (this.declineAscii.isContain(temptCenterX, temptCenterY)) {
-				this.declineAscii = new AsciiBasicControl(this.mergeAscii.getClipAsciiFile(boundary));
-				this.declineKn = new AsciiBasicControl(this.mergeAsciiKn.getClipAsciiFile(boundary));
+				this.declineAscii = this.mergeAscii.getClipAsciiFile(sideBoundary.get(index));
+				this.declineKn = this.mergeAsciiKn.getClipAsciiFile(sideBoundary.get(index));
 			} else if (this.extendAscii.isContain(temptCenterX, temptCenterY)) {
-				this.extendAscii = new AsciiBasicControl(this.mergeAscii.getClipAsciiFile(boundary));
-				this.extendKn = new AsciiBasicControl(this.mergeAsciiKn.getClipAsciiFile(boundary));
+				this.extendAscii = this.mergeAscii.getClipAsciiFile(sideBoundary.get(index));
+				this.extendKn = this.mergeAsciiKn.getClipAsciiFile(sideBoundary.get(index));
 			} else {
 				System.out.println(" cutLine error while clip asciiFile");
 			}
@@ -223,7 +207,8 @@ public class DelicateReviseWork {
 		this.boundaryDeclineY = declineAsciiCneter[1];
 
 		// set the extendBoundary to the center of the intersect
-		Map<String, Double> intersectBoundary = new AsciiIntersect(this.declineAscii).getBoundary(this.extendAscii);
+		Map<String, Double> intersectBoundary = new AsciiIntersect(this.declineAscii)
+				.getIntersectBoundary(this.extendAscii);
 		this.boundaryExtendX = (intersectBoundary.get("minX") + intersectBoundary.get("maxX")) / 2;
 		this.boundaryExtendY = (intersectBoundary.get("minY") + intersectBoundary.get("maxY")) / 2;
 
