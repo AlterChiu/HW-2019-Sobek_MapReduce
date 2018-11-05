@@ -1,15 +1,11 @@
 package ExtraFunction.DEM;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.TreeMap;
 
 import GlobalProperty.GlobalProperty;
 import asciiFunction.AsciiBasicControl;
 import asciiFunction.AsciiGridChange;
 import usualTool.AtFileWriter;
-import usualTool.AtListFunction;
 
 public class RoughDemMaker {
 

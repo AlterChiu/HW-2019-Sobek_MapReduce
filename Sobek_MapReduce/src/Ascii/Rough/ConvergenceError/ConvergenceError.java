@@ -130,27 +130,6 @@ public class ConvergenceError extends DeterminRoughAsciiFile {
 		return GlobalProperty.totalAllowTime / delicateSpend;
 	}
 
-	/*
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 */
-	// <==========================================================>
-	// < output Result Function>
-	// <==========================================================>
-	private void moveRsult(String targetFolder) {
-		FileFunction ff = new FileFunction();
-		String[] outPutList = new File(GlobalProperty.sobekResultFolder).list();
-		for (String result : outPutList) {
-			if (result.contains(".asc")) {
-				ff.moveFile(GlobalProperty.sobekResultFolder + "\\" + result, targetFolder + "\\" + result);
-			}
-		}
-	}
-
 	/**
 	 * 
 	 * 
