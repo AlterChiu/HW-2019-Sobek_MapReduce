@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-
 import asciiFunction.AsciiBasicControl;
 import asciiFunction.AsciiIntersect;
 import asciiFunction.AsciiMerge;
@@ -168,6 +167,27 @@ public class DelicateReviseWork {
 	/*
 	 * 
 	 */
+	// <=====================================================>
+	// < revise demBoundary by rough demFile>
+	// <=====================================================>
+	private Map<String, Double> reviseBoundary(Map<String, Double> boundary) throws IOException {
+		AsciiBasicControl roughAscii = new AsciiBasicControl(GlobalProperty.originalRough);
+		boundary = new AsciiIntersect(roughAscii).getIntersectBoundary(boundary);
+
+		double roughCellSize = Double.parseDouble(roughAscii.getProperty().get("cellSize"));
+		double delicateCellSize = Double.parseDouble(this.mergeAscii.getProperty().get("cellSize"));
+
+		boundary.put("minX", boundary.get("minX") - roughCellSize - delicateCellSize);
+		boundary.put("maxX", boundary.get("maxX") - roughCellSize - delicateCellSize);
+		boundary.put("minY", boundary.get("minY") - roughCellSize - delicateCellSize);
+		boundary.put("maxY", boundary.get("maxY") - roughCellSize - delicateCellSize);
+
+		return boundary;
+	}
+
+	/*
+	 * 
+	 */
 //<=======================================================>
 	private void clipAscii(List<Map<String, Double>> sideBoundary) throws IOException {
 
@@ -177,6 +197,8 @@ public class DelicateReviseWork {
 			double temptCenterX = (temptPoints.get("minX") + temptPoints.get("maxX")) / 2;
 			double temptCenterY = (temptPoints.get("minY") + temptPoints.get("maxY")) / 2;
 
+			// revise clip boundary by roughBoundary
+			temptPoints = reviseBoundary(temptPoints);
 			// clipAscii
 			if (this.declineAscii.isContain(temptCenterX, temptCenterY)) {
 				this.declineAscii = this.mergeAscii.getClipAsciiFile(sideBoundary.get(index));

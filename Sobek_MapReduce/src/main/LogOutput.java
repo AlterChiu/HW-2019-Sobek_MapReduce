@@ -1,6 +1,7 @@
 package main;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import Analysis.Result.FloodCompare.ResultCompare;
 import GlobalProperty.GlobalProperty;
@@ -10,19 +11,27 @@ import main.MapReduceMainPage;
 public class LogOutput {
 
 	public LogOutput(ResultCompare comparision) throws IOException {
+		// output for flood times
 		System.out.println("Flood times difference analysis : " + comparision.getMeanTimesDifference());
 		MapReduceMainPage.logFile
 				.add("Flood times difference analysis mean value : " + comparision.getMeanTimesDifference());
-		for (int index = 0; index < comparision.getTimesDifference().size(); index++) {
-			MapReduceMainPage.logFile.add(
-					"Flood times difference analysis " + index + " : " + comparision.getTimesDifference().get(index));
+		for (int index = 1; index < comparision.getTimesDifference().size(); index++) {
+			MapReduceMainPage.logFile.add("Flood times difference analysis " + String.format("%3s", index) + " : "
+					+ new BigDecimal(comparision.getTimesDifference().get(index)).setScale(3, BigDecimal.ROUND_HALF_UP)
+							.toString());
 		}
-		System.out.println("Flood depth difference analysis : " + comparision.getMeanValueDifference());
-		for (int index = 0; index < comparision.getValueDifference().size(); index++) {
-			MapReduceMainPage.logFile.add(
-					"Flood depth difference analysis " + index + " : " + comparision.getValueDifference().get(index));
+
+		// output for flood depth
+		System.out.println("Flood depth difference analysis mean value : " + comparision.getMeanValueDifference());
+		MapReduceMainPage.logFile
+				.add("Flood depth difference analysis mean value : " + comparision.getMeanValueDifference());
+		for (int index = 1; index < comparision.getValueDifference().size(); index++) {
+			MapReduceMainPage.logFile.add("Flood depth difference analysis " + String.format("%3s", index) + " : "
+					+ new BigDecimal(comparision.getValueDifference().get(index)).setScale(3, BigDecimal.ROUND_HALF_UP)
+							.toString());
 		}
-		MapReduceMainPage.logFile.add("Flood depth difference analysis : " + comparision.getMeanValueDifference());
+
+		// output for the global setting
 		MapReduceMainPage.logFile.add("==============================================");
 		MapReduceMainPage.logFile.add("splitSize : " + GlobalProperty.splitSize);
 		MapReduceMainPage.logFile.add("Initial Flood Times : " + GlobalProperty.K_meansInitialTime);

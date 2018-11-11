@@ -88,6 +88,7 @@ public class GlobalProperty {
 	public static String saveFolder_Total = workSpace + "\\total\\";
 	public static String saveFolder_Total_Delicate = saveFolder_Total + "\\delicate\\";
 	public static String saveFolder_Total_Rough = saveFolder_Total + "\\rough\\";
+	public static String pictureFolder = workSpace + "\\PictureFolder\\";
 
 	// =================================================
 	// split folder
