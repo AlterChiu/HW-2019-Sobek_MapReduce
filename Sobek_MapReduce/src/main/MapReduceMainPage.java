@@ -55,20 +55,21 @@ public class MapReduceMainPage {
 //		// splitTimeCount.runSplitDem(index);
 //		// }
 //		splitTimeCount.runSplitDem();
-//
-//		System.out.println("============= Delicate Dem Revise ================");
-//		DelicateReviseDetecting delicateRevise = new DelicateReviseDetecting();
-//		if (delicateRevise.isOvertime())
-//			delicateRevise.autoRevise();
 
-//		System.out.println("====== Determine the Rough Dem for each Classified =======");
-//		initialize.createAfterSplitRun();
-//		ConvergenceError splitDemConvergence = new ConvergenceError();
-//		// for manual function
-//		// for(int index = 0 ; index<GlobalProperty.splitSize ; index++) {
-//		// splitDemConvergence.start(index);
-//		// }
-//		splitDemConvergence.start();
+		System.out.println("============= Delicate Dem Revise ================");
+		initialize.createBeforeDelicateConvergence();
+		DelicateReviseDetecting delicateRevise = new DelicateReviseDetecting();
+		if (delicateRevise.isOvertime())
+			delicateRevise.autoRevise();
+
+		System.out.println("====== Determine the Rough Dem for each Classified =======");
+		initialize.createAfterSplitRun();
+		ConvergenceError splitDemConvergence = new ConvergenceError();
+		// for manual function
+		// for(int index = 0 ; index<GlobalProperty.splitSize ; index++) {
+		// splitDemConvergence.start(index);
+		// }
+		splitDemConvergence.start();
 
 		System.out.println("============ Flood Result Analysis ================");
 		SelectRoughBoundary roughBoundarySelected = new SelectRoughBoundary();

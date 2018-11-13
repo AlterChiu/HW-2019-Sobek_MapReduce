@@ -45,6 +45,7 @@ public class InitializeFolder {
 		ff.delete(GlobalProperty.saveFolder_Merge);
 		ff.delete(GlobalProperty.saveFolder_Sobek);
 		ff.delete(GlobalProperty.saveFolder_convergence);
+		ff.delete(GlobalProperty.saveFolder_tempt);
 		ff.delete(GlobalProperty.overViewPropertyFile);
 	}
 
@@ -122,6 +123,10 @@ public class InitializeFolder {
 		double totalTimeCount = object.get(GlobalProperty.overviewProperty_SpendTime_delicateTotal).getAsDouble();
 		GlobalProperty.splitSize = new BigDecimal(totalTimeCount / GlobalProperty.splitTime)
 				.setScale(0, BigDecimal.ROUND_UP).intValue();
+	}
+
+	public void createBeforeDelicateConvergence() {
+		ff.newFolder(GlobalProperty.saveFolder_tempt);
 	}
 
 	/**

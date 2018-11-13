@@ -14,7 +14,6 @@ import com.google.gson.JsonSyntaxException;
 
 import GlobalProperty.GlobalProperty;
 import asciiFunction.AsciiBasicControl;
-import asciiFunction.AsciiIntersect;
 import usualTool.AtFileReader;
 import usualTool.AtFileWriter;
 
@@ -97,11 +96,10 @@ public class DelicateReviseDetecting {
 		for (int index = 0; index < GlobalProperty.splitSize - 1; index++) {
 			String splitFolder = GlobalProperty.saveFolder_Split + index + "\\";
 			AsciiBasicControl temptAscii = new AsciiBasicControl(splitFolder + GlobalProperty.saveFile_DelicateDem);
-			AsciiIntersect intersect = new AsciiIntersect(temptAscii);
 
 			for (int detect = index + 1; detect < GlobalProperty.splitSize; detect++) {
 				String folder = GlobalProperty.saveFolder_Split + detect + "\\";
-				if (intersect.isIntersect(new AsciiBasicControl(folder + GlobalProperty.saveFile_DelicateDem))) {
+				if (temptAscii.isIntersect(new AsciiBasicControl(folder + GlobalProperty.saveFile_DelicateDem))) {
 					Set<Integer> temptList = overlappingMap.get(index);
 					Set<Integer> targetList = overlappingMap.get(detect);
 

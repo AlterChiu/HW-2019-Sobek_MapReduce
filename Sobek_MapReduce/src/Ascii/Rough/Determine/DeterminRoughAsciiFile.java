@@ -8,7 +8,6 @@ import com.google.gson.JsonObject;
 
 import GlobalProperty.GlobalProperty;
 import asciiFunction.AsciiBasicControl;
-import asciiFunction.AsciiIntersect;
 import usualTool.AtFileReader;
 import usualTool.AtFileWriter;
 
@@ -31,9 +30,9 @@ public class DeterminRoughAsciiFile {
 		// there is no necessary to point the boundary exact
 		Map<String, Double> roughBoundary = getBufferBoundary(
 				new AsciiBasicControl(targetFolder + GlobalProperty.saveFile_DelicateDem), restTime);
-		AsciiBasicControl roughAscii = new AsciiIntersect(GlobalProperty.originalRough)
+		AsciiBasicControl roughAscii = new AsciiBasicControl(GlobalProperty.originalRough)
 				.getIntersectAscii(roughBoundary);
-		AsciiBasicControl roughAsciiKn = new AsciiIntersect(GlobalProperty.originalRoughKn)
+		AsciiBasicControl roughAsciiKn = new AsciiBasicControl(GlobalProperty.originalRoughKn)
 				.getIntersectAscii(roughBoundary);
 
 		if (GlobalProperty.clipFunction_convergence_Rough) {

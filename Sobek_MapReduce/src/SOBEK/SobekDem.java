@@ -13,7 +13,6 @@ import java.util.TreeMap;
 
 import GlobalProperty.GlobalProperty;
 import asciiFunction.AsciiBasicControl;
-import asciiFunction.AsciiIntersect;
 import usualTool.AtFileReader;
 import usualTool.AtFileWriter;
 import usualTool.FileFunction;
@@ -35,6 +34,13 @@ public class SobekDem {
 	private String roughDem = null;
 	private String roughDemKn = null;
 
+	public SobekDem() throws IOException {
+		// reset
+		resetSobekFile();
+		clearFriction();
+		clearNetWork();
+	}
+
 	public void addDelicateDem(String demFile, String knFile) {
 		this.delicateDem = demFile;
 		this.delicateDemKn = knFile;
@@ -46,10 +52,6 @@ public class SobekDem {
 	}
 
 	public void start() throws IOException {
-		// reset
-		resetSobekFile();
-		clearFriction();
-		clearNetWork();
 		this.ptList = new ArrayList<String[]>(
 				Arrays.asList(new AtFileReader(GlobalProperty.saveFile_SobekNetWorkD12_Pt2).getStr()));
 
@@ -151,11 +153,11 @@ public class SobekDem {
 			double boundaryMaxY = Double.parseDouble(targetProperty.get("topY"));
 			double boundaryMinX = Double.parseDouble(targetProperty.get("bottomX"));
 			double boundaryMinY = Double.parseDouble(targetProperty.get("bottomY"));
-			if (currentAscii.isContain(boundaryMaxX, boundaryMinX, boundaryMaxY, boundaryMinY)) {
+			if (currentAscii.isIntersect(boundaryMaxX, boundaryMinX, boundaryMaxY, boundaryMinY)) {
 				List<String> domContent = this.domnList.get(index);
 
 				// if is content get the interceptArea
-				Map<String, Double> intercept = new AsciiIntersect(this.currentAscii).getIntersectBoundary(targetAscii);
+				Map<String, Double> intercept = this.currentAscii.getIntersectBoundary(targetAscii);
 				double interceptMaxX = intercept.get("maxX");
 				double interceptMaxY = intercept.get("maxY");
 				double interceptMinX = intercept.get("minX");
@@ -428,6 +430,11 @@ public class SobekDem {
 
 	// make node.DAT to match the asciiDem
 	protected String[][] setNode_Level(AsciiBasicControl ascii, String[][] nodeContent) throws IOException {
+		// <--------------------------------------------------->
+		// < ++++++++++++++++test+++++++++++>
+		// <--------------------------------------------------->
+		List<String> outList = new ArrayList<String>();
+		outList.add("name,X,Y,differ(bottom-dem)");
 
 		// make the street level of nodes to the upper demLevel
 		String nullValue = ascii.getProperty().get("noData");
@@ -448,17 +455,24 @@ public class SobekDem {
 						double bottomLevel = Double.parseDouble(nodeContent[line][10]);
 						if (Double.parseDouble(value) >= bottomLevel + 1.2) {
 							nodeContent[line][12] = value;
+							outList.add(nodeName + "," + coordinate[0] + "," + coordinate[1] + ","
+									+ (bottomLevel - Double.parseDouble(value)));
 
 							// change the node from open to close
 						} else {
 							nodeContent[line][4] = 2 + "";
 							nodeContent[line][12] = bottomLevel + 1.2 + "";
+							outList.add(nodeName + "," + coordinate[0] + "," + coordinate[1] + ","
+									+ (bottomLevel + 1.2 - Double.parseDouble(value)));
 						}
+
 					}
 				}
 			} catch (Exception e) {
 			}
 		}
+		new AtFileWriter(outList.parallelStream().toArray(String[]::new), "E:\\mapReduce\\modelTest\\nodeDiffer.csv")
+				.textWriter("");
 		// new AtFileWriter(temptList.parallelStream().toArray(String[][]::new) ,
 		// "E:\\HomeWork\\mapReduce\\test\\nodeTest.csv").csvWriter();;
 		return nodeContent;

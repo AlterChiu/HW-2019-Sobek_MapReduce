@@ -9,7 +9,6 @@ import java.util.TreeMap;
 import Ascii.Rough.Determine.DeterminRoughAsciiFile;
 import GlobalProperty.GlobalProperty;
 import asciiFunction.AsciiBasicControl;
-import asciiFunction.AsciiIntersect;
 import main.MapReduceMainPage;
 import usualTool.AtCommonMath;
 import usualTool.AtFileWriter;
@@ -47,10 +46,8 @@ public class SplitAscii_Kmeas extends DeterminRoughAsciiFile {
 		// the boundary(classifiedBoundary) of the delicate demFile here is the most
 		// outer coordinate
 		Map<String, Double> classifiedBoundary = getListStatics(this.classified.get(index));
-		AsciiBasicControl delicateAscii = new AsciiIntersect(this.originalDelicateAscii)
-				.getIntersectAscii(classifiedBoundary);
-		AsciiBasicControl delicateAsciiKn = new AsciiIntersect(this.originalDelicateAsciiKn)
-				.getIntersectAscii(classifiedBoundary);
+		AsciiBasicControl delicateAscii = this.originalDelicateAscii.getIntersectAscii(classifiedBoundary);
+		AsciiBasicControl delicateAsciiKn = this.originalDelicateAsciiKn.getIntersectAscii(classifiedBoundary);
 		new AtFileWriter(delicateAscii.getAsciiFile(), splitFodler + GlobalProperty.saveFile_DelicateDem)
 				.textWriter(" ");
 		new AtFileWriter(delicateAsciiKn.getAsciiFile(), splitFodler + GlobalProperty.saveFile_DelicateDemKn)
