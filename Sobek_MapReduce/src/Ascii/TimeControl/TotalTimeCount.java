@@ -48,7 +48,7 @@ public class TotalTimeCount {
 		System.out.println(sobekRuntimes.getSimulateTime());
 
 		// output the property file
-		JsonObject readJson = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		JsonObject readJson = new AtFileReader(GlobalProperty.overViewPropertyFile).getJson().getAsJsonObject();
 		readJson.addProperty(this.jsonKeyName, sobekRuntimes.getSimulateTime());
 		new AtFileWriter(readJson, GlobalProperty.overViewPropertyFile).textWriter("");
 

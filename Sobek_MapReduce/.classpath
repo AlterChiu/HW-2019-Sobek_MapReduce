@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="F:/JAVA library/commonTool.jar"/>
-	<classpathentry kind="lib" path="F:/JAVA library/Apache/commons-math3-3.6.1/commons-math3-3.6.1.jar"/>
-	<classpathentry kind="lib" path="F:/JAVA library/Apache/commons-math3-3.6.1/javaml-0.1.7.jar"/>
-	<classpathentry kind="lib" path="F:/JAVA library/Apache/commons-math3-3.6.1/jdistlib-0.4.5-bin.jar"/>
-	<classpathentry kind="lib" path="F:/JAVA library/Apache/common-Lang/common-lang3.jar"/>
-	<classpathentry kind="lib" path="F:/JAVA library/Gson/gson-2.2.2.jar"/>
-	<classpathentry kind="lib" path="F:/gdal/GDAL/gdal.jar">
+	<classpathentry including="**/*.java" kind="src" output="target/classes" path="src">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="F:/gdal/GDAL"/>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
+		<attributes>
+			<attribute name="module" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="K:/JAVA library/commonTool.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/GDAL"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

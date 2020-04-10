@@ -111,7 +111,7 @@ public class ConvergenceError extends DeterminRoughAsciiFile {
 
 	private double settingBufferDisplace(int index)
 			throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
-		JsonObject json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		JsonObject json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJson().getAsJsonObject();
 		double delicatePartSpend = json.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject()
 				.get(GlobalProperty.overviewProperty_SplitDelicateBoundary).getAsJsonObject()
 				.get(GlobalProperty.overviewProperty_SpendTime_Split).getAsDouble();
@@ -122,7 +122,7 @@ public class ConvergenceError extends DeterminRoughAsciiFile {
 
 	private double settingBufferLimit(int index)
 			throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
-		JsonObject json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		JsonObject json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJson().getAsJsonObject();
 		double delicateSpend = json.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject()
 				.get(GlobalProperty.overviewProperty_SplitDelicateBoundary).getAsJsonObject()
 				.get(GlobalProperty.overviewProperty_SpendTime_Split).getAsDouble();
@@ -157,7 +157,7 @@ public class ConvergenceError extends DeterminRoughAsciiFile {
 
 	private void outPutCoefficientProperty(int index)
 			throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
-		JsonObject json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		JsonObject json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJson().getAsJsonObject();
 		JsonObject temptObject = json.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject()
 				.get(GlobalProperty.overviewProperty_SplitDelicateBoundary).getAsJsonObject();
 
@@ -168,7 +168,7 @@ public class ConvergenceError extends DeterminRoughAsciiFile {
 
 	private void outPutCoefficientMin(int index)
 			throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
-		JsonObject json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		JsonObject json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJson().getAsJsonObject();
 		JsonObject temptObject = json.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject()
 				.get(GlobalProperty.overviewProperty_SplitDelicateBoundary).getAsJsonObject();
 
@@ -192,7 +192,7 @@ public class ConvergenceError extends DeterminRoughAsciiFile {
 		resultFolder = resultFolder + index;
 		resultFolder = resultFolder + "\\" + (new File(resultFolder).list().length - 1) + "\\";
 
-		JsonObject overviewJson = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		JsonObject overviewJson = new AtFileReader(GlobalProperty.overViewPropertyFile).getJson().getAsJsonObject();
 		JsonArray outJsonArray = overviewJson.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject()
 				.get(GlobalProperty.overviewProperty_SplitRoughBoundary).getAsJsonArray();
 

@@ -22,8 +22,6 @@ import usualTool.AtFileWriter;
 import usualTool.FileFunction;
 
 public class InitializeFolder {
-	private FileFunction ff = new FileFunction();
-
 	/**
 	 * 
 	 * 
@@ -32,21 +30,21 @@ public class InitializeFolder {
 	 */
 	public void resetWorkSpace() {
 		try {
-			ff.copyFile(GlobalProperty.saveFile_SobekFriction, GlobalProperty.caseFrictionDescription);
-			ff.copyFile(GlobalProperty.saveFile_SobekNetWorkD12, GlobalProperty.caseNetWork_D12);
-			ff.copyFile(GlobalProperty.saveFile_SobekNetWorkNtw, GlobalProperty.caseNetWork_NTW);
-			ff.copyFile(GlobalProperty.saveFile_SobekNodes, GlobalProperty.caseNodeDescription);
+			FileFunction.copyFile(GlobalProperty.saveFile_SobekFriction, GlobalProperty.caseFrictionDescription);
+			FileFunction.copyFile(GlobalProperty.saveFile_SobekNetWorkD12, GlobalProperty.caseNetWork_D12);
+			FileFunction.copyFile(GlobalProperty.saveFile_SobekNetWorkNtw, GlobalProperty.caseNetWork_NTW);
+			FileFunction.copyFile(GlobalProperty.saveFile_SobekNodes, GlobalProperty.caseNodeDescription);
 		} catch (Exception e) {
 
 		}
-		ff.delete(GlobalProperty.saveFolder_Total);
-		ff.delete(GlobalProperty.saveFolder_Analysis);
-		ff.delete(GlobalProperty.saveFolder_Split);
-		ff.delete(GlobalProperty.saveFolder_Merge);
-		ff.delete(GlobalProperty.saveFolder_Sobek);
-		ff.delete(GlobalProperty.saveFolder_convergence);
-		ff.delete(GlobalProperty.saveFolder_tempt);
-		ff.delete(GlobalProperty.overViewPropertyFile);
+		FileFunction.delete(GlobalProperty.saveFolder_Total);
+		FileFunction.delete(GlobalProperty.saveFolder_Analysis);
+		FileFunction.delete(GlobalProperty.saveFolder_Split);
+		FileFunction.delete(GlobalProperty.saveFolder_Merge);
+		FileFunction.delete(GlobalProperty.saveFolder_Sobek);
+		FileFunction.delete(GlobalProperty.saveFolder_convergence);
+		FileFunction.delete(GlobalProperty.saveFolder_tempt);
+		FileFunction.delete(GlobalProperty.overViewPropertyFile);
 	}
 
 	/**
@@ -65,22 +63,22 @@ public class InitializeFolder {
 		}
 
 		// ==================total===================
-		ff.newFolder(GlobalProperty.saveFolder_Total);
-		ff.newFolder(GlobalProperty.saveFolder_Total_Delicate);
-		ff.newFolder(GlobalProperty.saveFolder_Total_Rough);
+		FileFunction.newFolder(GlobalProperty.saveFolder_Total);
+		FileFunction.newFolder(GlobalProperty.saveFolder_Total_Delicate);
+		FileFunction.newFolder(GlobalProperty.saveFolder_Total_Rough);
 
 		// =============== Sobek Model ================
-		ff.newFolder(GlobalProperty.saveFolder_Sobek);
-		ff.copyFile(GlobalProperty.caseFrictionDescription, GlobalProperty.saveFile_SobekFriction);
-		ff.copyFile(GlobalProperty.caseNetWork_D12, GlobalProperty.saveFile_SobekNetWorkD12);
-		ff.copyFile(GlobalProperty.caseNetWork_NTW, GlobalProperty.saveFile_SobekNetWorkNtw);
-		ff.copyFile(GlobalProperty.caseNodeDescription, GlobalProperty.saveFile_SobekNodes);
+		FileFunction.newFolder(GlobalProperty.saveFolder_Sobek);
+		FileFunction.copyFile(GlobalProperty.caseFrictionDescription, GlobalProperty.saveFile_SobekFriction);
+		FileFunction.copyFile(GlobalProperty.caseNetWork_D12, GlobalProperty.saveFile_SobekNetWorkD12);
+		FileFunction.copyFile(GlobalProperty.caseNetWork_NTW, GlobalProperty.saveFile_SobekNetWorkNtw);
+		FileFunction.copyFile(GlobalProperty.caseNodeDescription, GlobalProperty.saveFile_SobekNodes);
 
 		// =============== Merge Save Folder =============
-		ff.newFolder(GlobalProperty.saveFolder_Merge);
+		FileFunction.newFolder(GlobalProperty.saveFolder_Merge);
 
 		// =============== Analysis Folder ===============
-		ff.newFolder(GlobalProperty.saveFolder_Analysis);
+		FileFunction.newFolder(GlobalProperty.saveFolder_Analysis);
 	}
 
 	/**
@@ -92,20 +90,20 @@ public class InitializeFolder {
 	 * @throws IOException
 	 */
 	public void createAfterTotalRun() throws IOException {
-		ff.delete(GlobalProperty.saveFolder_Split);
+		FileFunction.delete(GlobalProperty.saveFolder_Split);
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
 		// ====================Split==================
-		ff.newFolder(GlobalProperty.saveFolder_Split);
+		FileFunction.newFolder(GlobalProperty.saveFolder_Split);
 		for (int i = 0; i < GlobalProperty.splitSize; i++) {
-			ff.newFolder(GlobalProperty.saveFolder_Split + i);
+			FileFunction.newFolder(GlobalProperty.saveFolder_Split + i);
 		}
 
 		// clear the overview property
-		JsonObject json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		JsonObject json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJson().getAsJsonObject();
 		for (int index = 0; index < index + 1; index++) {
 			try {
 				if (!json.get(GlobalProperty.overviewProperty_Split + index).isJsonNull()) {
@@ -119,14 +117,14 @@ public class InitializeFolder {
 	}
 
 	public void setSplitSize() throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
-		JsonObject object = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		JsonObject object = new AtFileReader(GlobalProperty.overViewPropertyFile).getJson().getAsJsonObject();
 		double totalTimeCount = object.get(GlobalProperty.overviewProperty_SpendTime_delicateTotal).getAsDouble();
 		GlobalProperty.splitSize = new BigDecimal(totalTimeCount / GlobalProperty.splitTime)
 				.setScale(0, BigDecimal.ROUND_UP).intValue();
 	}
 
 	public void createBeforeDelicateConvergence() {
-		ff.newFolder(GlobalProperty.saveFolder_tempt);
+		FileFunction.newFolder(GlobalProperty.saveFolder_tempt);
 	}
 
 	/**
@@ -140,7 +138,7 @@ public class InitializeFolder {
 	 * 
 	 */
 	public void createAfterSplitRun() throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
-		JsonObject object = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		JsonObject object = new AtFileReader(GlobalProperty.overViewPropertyFile).getJson().getAsJsonObject();
 		// clear rough covergence result
 		for (int index = 0; index < GlobalProperty.splitSize; index++) {
 			JsonArray nullArray = new JsonArray();
@@ -159,10 +157,10 @@ public class InitializeFolder {
 
 		new AtFileWriter(object, GlobalProperty.overViewPropertyFile).textWriter("");
 
-		ff.delete(GlobalProperty.saveFolder_convergence);
-		ff.newFolder(GlobalProperty.saveFolder_convergence);
+		FileFunction.delete(GlobalProperty.saveFolder_convergence);
+		FileFunction.newFolder(GlobalProperty.saveFolder_convergence);
 		for (int index = 0; index < GlobalProperty.splitSize; index++) {
-			ff.newFolder(GlobalProperty.saveFolder_convergence + index);
+			FileFunction.newFolder(GlobalProperty.saveFolder_convergence + index);
 		}
 	}
 

@@ -46,8 +46,10 @@ public class SplitAscii_Kmeas extends DeterminRoughAsciiFile {
 		// the boundary(classifiedBoundary) of the delicate demFile here is the most
 		// outer coordinate
 		Map<String, Double> classifiedBoundary = getListStatics(this.classified.get(index));
-		AsciiBasicControl delicateAscii = this.originalDelicateAscii.getIntersectAscii(classifiedBoundary);
-		AsciiBasicControl delicateAsciiKn = this.originalDelicateAsciiKn.getIntersectAscii(classifiedBoundary);
+		AsciiBasicControl delicateAscii = this.originalDelicateAscii
+				.getClipAsciiFile(this.originalDelicateAscii.getIntersectBoundary(classifiedBoundary));
+		AsciiBasicControl delicateAsciiKn = this.originalDelicateAsciiKn
+				.getClipAsciiFile(this.originalDelicateAsciiKn.getIntersectBoundary(classifiedBoundary));
 		new AtFileWriter(delicateAscii.getAsciiFile(), splitFodler + GlobalProperty.saveFile_DelicateDem)
 				.textWriter(" ");
 		new AtFileWriter(delicateAsciiKn.getAsciiFile(), splitFodler + GlobalProperty.saveFile_DelicateDemKn)

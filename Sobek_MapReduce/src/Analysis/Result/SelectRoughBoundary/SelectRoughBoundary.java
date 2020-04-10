@@ -59,7 +59,7 @@ public class SelectRoughBoundary {
 	 * @throws IOException
 	 */
 	public void autoSelected() throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
-		JsonObject overViewObject = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		JsonObject overViewObject = new AtFileReader(GlobalProperty.overViewPropertyFile).getJson().getAsJsonObject();
 		for (int index = 0; index < GlobalProperty.splitSize; index++) {
 			JsonArray resultList = overViewObject.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject()
 					.get(GlobalProperty.overviewProperty_SplitRoughBoundary).getAsJsonArray();

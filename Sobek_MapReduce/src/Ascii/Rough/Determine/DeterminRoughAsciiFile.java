@@ -19,7 +19,7 @@ public class DeterminRoughAsciiFile {
 	// <==================================================================>
 	// determine the unitDem , roughDem is defined by the delicateDem
 	public void determinRoughAsciiFile(String targetFolder, double restTimeCoefficient, int index) throws IOException {
-		this.overviewPorperty = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		this.overviewPorperty = new AtFileReader(GlobalProperty.overViewPropertyFile).getJson().getAsJsonObject();
 		double restTime = GlobalProperty.totalAllowTime
 				- (overviewPorperty.get(GlobalProperty.overviewProperty_Split + index).getAsJsonObject()
 						.get(GlobalProperty.overviewProperty_SplitDelicateBoundary).getAsJsonObject()

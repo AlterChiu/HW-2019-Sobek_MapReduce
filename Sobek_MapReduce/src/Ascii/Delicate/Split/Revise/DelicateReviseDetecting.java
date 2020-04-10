@@ -127,7 +127,7 @@ public class DelicateReviseDetecting {
 	 */
 	private void initialliszeVariable()
 			throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
-		this.json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		this.json = new AtFileReader(GlobalProperty.overViewPropertyFile).getJson().getAsJsonObject();
 		for (int index = 0; index < GlobalProperty.splitSize; index++) {
 
 			// get the delicate split demFile index and it's spend time in demMap
@@ -194,7 +194,7 @@ public class DelicateReviseDetecting {
 	// <=====================================================>
 	// output the boundary of the unitDem
 	private void outPutResult(int index, double simulationTime) throws IOException {
-		JsonObject overviewProperty = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		JsonObject overviewProperty = new AtFileReader(GlobalProperty.overViewPropertyFile).getJson().getAsJsonObject();
 		JsonObject outJsonObject = new JsonObject();
 		JsonArray roughArray = new JsonArray();
 

@@ -37,7 +37,7 @@ public class ReportMaker {
 	// <=================================================================>
 	public void outPutConvergenceReport(String saveAdd)
 			throws JsonIOException, JsonSyntaxException, FileNotFoundException, IOException {
-		JsonObject overViewObject = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		JsonObject overViewObject = new AtFileReader(GlobalProperty.overViewPropertyFile).getJson().getAsJsonObject();
 		List<Map<String, List<String>>> dataTree = outPutConvergenceReport_Data(overViewObject);
 		outPutConvergenceReport_Picture(dataTree, saveAdd);
 	}

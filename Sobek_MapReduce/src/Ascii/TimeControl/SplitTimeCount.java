@@ -111,7 +111,7 @@ public class SplitTimeCount {
 	// output the boundary of the unitDem
 	// <==========================================================>
 	private void outPutResult(int index, double simulationTime) throws IOException {
-		JsonObject overviewProperty = new AtFileReader(GlobalProperty.overViewPropertyFile).getJsonObject();
+		JsonObject overviewProperty = new AtFileReader(GlobalProperty.overViewPropertyFile).getJson().getAsJsonObject();
 		JsonObject outJsonObject = new JsonObject();
 		JsonArray roughArray = new JsonArray();
 
